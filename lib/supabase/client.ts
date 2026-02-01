@@ -5,11 +5,11 @@ export function createClient() {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Supabase environment variables are missing.')
+    throw new Error('Supabase project URL and Anon Key are missing. Check your Vercel Environment Variables.')
   }
 
   return createBrowserClient(
-    supabaseUrl || '',
-    supabaseAnonKey || '',
+    supabaseUrl,
+    supabaseAnonKey,
   )
 }
