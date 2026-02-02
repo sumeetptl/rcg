@@ -13,15 +13,15 @@ import { createClient } from "@/lib/supabase/server"
 
 export default async function HomePage() {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
+  const { data: { user } } = await supabase.auth.getUser()
   
   // Check if user is admin
   let isAdmin = false
-  if (session?.user) {
+  if (user) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
-      .eq("id", session.user.id)
+      .eq("id", user.id)
       .single()
     isAdmin = profile?.role === "admin"
   }
@@ -29,7 +29,7 @@ export default async function HomePage() {
   return (
     <div className="relative flex min-h-screen flex-col">
       <Header 
-        isAuthenticated={!!session} 
+        isAuthenticated={!!user} 
         isAdmin={isAdmin}
         className="fixed top-4 left-0 right-0" 
       />
