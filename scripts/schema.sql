@@ -153,8 +153,8 @@ BEGIN
     NEW.raw_user_meta_data->>'first_name',
     NEW.raw_user_meta_data->>'last_name',
     NEW.raw_user_meta_data->>'avatar_url',
-    -- Safely cast role, default to 'user' if missing or invalid
-    COALESCE(NULLIF(NEW.raw_user_meta_data->>'role', ''), 'user')::user_role,
+    -- FIX: Hardcode role to 'user' to prevent privilege escalation via metadata
+    'user'::user_role,
     'free'
   );
   RETURN NEW;
@@ -191,7 +191,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Profiles
-CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
+CREATE POLICY "Profiles viewable by self or admin" ON public.profiles FOR SELECT USING ((auth.uid() = id) OR (public.is_admin()));
 CREATE POLICY "Users can insert their own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
@@ -226,13 +226,29 @@ CREATE POLICY "Premium signals viewable by premium users" ON public.signals FOR 
 );
 
 -- 8. STORAGE BUCKETS
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('avatars', 'avatars', true)
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+    'avatars', 
+    'avatars', 
+    true, 
+    5242880, 
+    ARRAY['image/png', 'image/jpeg', 'image/gif', 'image/webp']
+)
+ON CONFLICT (id) DO UPDATE SET
+    file_size_limit = EXCLUDED.file_size_limit,
+    allowed_mime_types = EXCLUDED.allowed_mime_types;
 
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('images', 'images', true)
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+    'images', 
+    'images', 
+    true, 
+    5242880, 
+    ARRAY['image/png', 'image/jpeg', 'image/gif', 'image/webp']
+)
+ON CONFLICT (id) DO UPDATE SET
+    file_size_limit = EXCLUDED.file_size_limit,
+    allowed_mime_types = EXCLUDED.allowed_mime_types;
 
 -- Storage Policies
 CREATE POLICY "Public Object Access" ON storage.objects FOR SELECT USING ( bucket_id IN ('avatars', 'images') );

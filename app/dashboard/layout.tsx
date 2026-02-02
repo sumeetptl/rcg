@@ -17,7 +17,14 @@ export default async function DashboardLayout({
     redirect("/auth/login");
   }
 
-  const isAdmin = user.user_metadata?.is_admin === true;
+  // Check admin role from database (source of truth)
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single()
+
+  const isAdmin = profile?.role === 'admin'
 
   return (
     <div className="flex min-h-screen flex-col">
