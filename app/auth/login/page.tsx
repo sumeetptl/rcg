@@ -25,7 +25,7 @@ export default function LoginPage() {
     setError(null)
     setIsLoading(true)
 
-    console.log("[v0] Attempting sign in with email:", email)
+
 
     const supabase = createClient()
 
@@ -34,16 +34,16 @@ export default function LoginPage() {
       password,
     })
 
-    console.log("[v0] Sign in response:", { data, error: signInError })
+
 
     if (signInError) {
-      console.log("[v0] Sign in error:", signInError.message)
+
       setError(signInError.message)
       setIsLoading(false)
       return
     }
 
-    console.log("[v0] Sign in successful, redirecting to dashboard")
+
     router.push("/dashboard")
     router.refresh()
   }

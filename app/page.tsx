@@ -9,28 +9,17 @@ import { TransparencyMethodology } from "@/components/home/transparency-methodol
 import { StatsSection } from "@/components/home/stats-section"
 import { ComparisonSection } from "@/components/home/comparison-section"
 import { FinalCTA } from "@/components/home/final-cta"
-import { createClient } from "@/lib/supabase/server"
+import { getUser, isAdmin } from "@/lib/auth"
 
 export default async function HomePage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  
-  // Check if user is admin
-  let isAdmin = false
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single()
-    isAdmin = profile?.role === "admin"
-  }
+  const user = await getUser()
+  const admin = await isAdmin()
 
   return (
     <div className="relative flex min-h-screen flex-col">
       <Header 
         isAuthenticated={!!user} 
-        isAdmin={isAdmin}
+        isAdmin={admin}
         className="fixed top-4 left-0 right-0" 
       />
 
