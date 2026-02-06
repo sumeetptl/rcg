@@ -94,27 +94,28 @@ export function ProfileHeader({ profile, isAdmin }: ProfileHeaderProps) {
           )}
         </div>
 
-        {/* Read-only Metadata */}
-        <div className="space-y-2 border-l-2 border-border/40 pl-4 text-xs text-muted-foreground">
+      </div>
+
+      {/* Read-only Metadata */}
+      <div className="space-y-2 border-l-2 border-border/40 pl-4 text-sm text-muted-foreground sm:ml-auto">
+        <div className="flex items-baseline gap-2">
+          <span className="font-mono uppercase tracking-wider">Email:</span>
+          <span className="font-medium text-foreground/80">{profile.email}</span>
+        </div>
+        <div className="flex items-baseline gap-2">
+          <span className="font-mono uppercase tracking-wider">Member Since:</span>
+          <span className="font-medium text-foreground/80">
+            {formatDate(profile.created_at)}
+          </span>
+        </div>
+        {profile.last_sign_in_at && (
           <div className="flex items-baseline gap-2">
-            <span className="font-mono uppercase tracking-wider">Email:</span>
-            <span className="font-medium text-foreground/80">{profile.email}</span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-mono uppercase tracking-wider">Member Since:</span>
+            <span className="font-mono uppercase tracking-wider">Last Login:</span>
             <span className="font-medium text-foreground/80">
-              {formatDate(profile.created_at)}
+              {formatDate(profile.last_sign_in_at)}
             </span>
           </div>
-          {profile.last_sign_in_at && (
-            <div className="flex items-baseline gap-2">
-              <span className="font-mono uppercase tracking-wider">Last Login:</span>
-              <span className="font-medium text-foreground/80">
-                {formatDate(profile.last_sign_in_at)}
-              </span>
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </section>
   )
