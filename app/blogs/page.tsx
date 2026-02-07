@@ -1,10 +1,9 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { BlogCard } from "@/components/blog-card"
 import { getBlogs } from "@/lib/services/blogs"
-import { Badge } from "@/components/ui/badge"
-import { ContentViewSwitcher } from "@/components/content-view-switcher"
 import { BlogViewContainer } from "@/components/blogs/blog-view-container"
+import { MostReadBlogs } from "@/components/blogs/most-read-blogs"
+import { BlogShortcuts } from "@/components/blogs/blog-shortcuts"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -26,9 +25,6 @@ export default async function BlogsPage({
     publishedOnly: true 
   })
 
-  const featuredBlog = blogs?.[0]
-  const restBlogs = blogs?.slice(1) || []
-
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -44,36 +40,26 @@ export default async function BlogsPage({
                   Deep-dive market analysis and institutional-grade trading insights from the RCG editorial board.
                 </p>
               </div>
-              <ContentViewSwitcher />
-            </div>
-          </div>
-        </section>
-
-        {/* Category Filter */}
-        <section className="border-b border-border py-4">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="flex flex-wrap gap-2">
-              {categories.map((cat) => (
-                <a
-                  key={cat}
-                  href={cat === "All" ? "/blogs" : `/blogs?category=${encodeURIComponent(cat)}`}
-                >
-                  <Badge
-                    variant={(!category && cat === "All") || category === cat ? "default" : "outline"}
-                    className="cursor-pointer transition-colors hover:bg-primary hover:text-primary-foreground font-medium uppercase tracking-tighter"
-                  >
-                    {cat}
-                  </Badge>
-                </a>
-              ))}
             </div>
           </div>
         </section>
 
         {/* Content Section */}
-        <section className="py-16">
+        <section className="py-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <BlogViewContainer blogs={blogs || []} />
+             <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8 lg:gap-12">
+                
+                {/* Left Sidebar (Shortcuts) */}
+                <aside className="hidden lg:block space-y-8 pt-2">
+                   <BlogShortcuts />
+                </aside>
+
+                {/* Main Content */}
+                <div className="min-w-0">
+                   <BlogViewContainer blogs={blogs || []} />
+                </div>
+
+             </div>
           </div>
         </section>
       </main>

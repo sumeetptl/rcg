@@ -1,8 +1,8 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { HeroSection } from "@/components/home/hero-section"
+import { HomeMarketPulse } from "@/components/home/home-market-pulse"
 import { MarketTexture } from "@/components/home/market-texture"
-import { PlatformPillars } from "@/components/home/platform-pillars"
 import { PlatformPreview } from "@/components/home/platform-preview"
 import { AnalysisPhilosophy } from "@/components/home/analysis-philosophy"
 import { TransparencyMethodology } from "@/components/home/transparency-methodology"
@@ -20,6 +20,7 @@ export default async function HomePage() {
       <Header 
         isAuthenticated={!!user} 
         isAdmin={admin}
+        user={user}
         className="fixed top-4 left-0 right-0" 
       />
 
@@ -30,7 +31,7 @@ export default async function HomePage() {
           <HeroSection />
         </div>
 
-        <PlatformPillars />
+        <HomeMarketPulse />
         <PlatformPreview />
         <AnalysisPhilosophy />
         <TransparencyMethodology />

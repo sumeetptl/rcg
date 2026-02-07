@@ -1,18 +1,15 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { NewsCard } from "@/components/news-card"
 import { createClient } from "@/lib/supabase/server"
-import { Badge } from "@/components/ui/badge"
-import { ContentViewSwitcher } from "@/components/content-view-switcher"
-import { NewsViewContainer } from "@/components/news/news-view-container"
+import { BreakingNewsBar } from "@/components/news/breaking-news-bar"
+import { NewsLayout } from "@/components/news/news-layout"
+import { EditorialNewsCard } from "@/components/news/editorial-news-card"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "News",
-  description: "Latest cryptocurrency news, market updates, and industry developments.",
+  description: "Institutional market intelligence and technical reporting.",
 }
-
-const categories = ["All", "Bitcoin", "Ethereum", "Altcoins", "DeFi", "NFT", "Regulation"]
 
 export default async function NewsPage({
   searchParams,
@@ -21,6 +18,7 @@ export default async function NewsPage({
 }) {
   const { category } = await searchParams
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
   let query = supabase
     .from("news")
@@ -33,55 +31,44 @@ export default async function NewsPage({
   }
 
   const { data: news } = await query
+  const featuredNews = news?.[0]
+  const standardNews = news?.slice(1) || []
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
+    <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/20">
+      <BreakingNewsBar />
+      <Header isAuthenticated={!!user} user={user} className="border-b border-border/40" />
 
-      <main className="flex-1">
-        {/* Header */}
-        <section className="border-b border-border bg-muted/30 py-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-             <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h1 className="font-serif text-4xl font-semibold tracking-tight">Market Intelligence</h1>
-                <p className="mt-4 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-                  Real-time validation and reporting on high-impact events across the digital asset ecosystem.
-                </p>
-              </div>
-              <ContentViewSwitcher />
+      <NewsLayout>
+        {/* Feed Header */}
+        <div className="mb-8 border-b border-border pb-6">
+            <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
+                {category || "Global Wire"}
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground font-mono uppercase tracking-widest">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+        </div>
+
+        {/* Featured Story */}
+        {featuredNews && (
+            <div className="mb-12 pb-12 border-b border-border">
+                <EditorialNewsCard news={featuredNews} featured={true} />
             </div>
-          </div>
-        </section>
+        )}
 
-        {/* Category Filter */}
-        <section className="border-b border-border py-4">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="flex flex-wrap gap-2">
-              {categories.map((cat) => (
-                <a
-                  key={cat}
-                  href={cat === "All" ? "/news" : `/news?category=${encodeURIComponent(cat)}`}
-                >
-                  <Badge
-                    variant={(!category && cat === "All") || category === cat ? "default" : "outline"}
-                    className="cursor-pointer transition-colors hover:bg-primary hover:text-primary-foreground font-medium uppercase tracking-tighter"
-                  >
-                    {cat}
-                  </Badge>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* News Section */}
-        <section className="py-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-             <NewsViewContainer news={news || []} />
-          </div>
-        </section>
-      </main>
+        {/* Standard Feed */}
+        <div className="space-y-4">
+            {standardNews.map((item: any) => (
+                <EditorialNewsCard key={item.id} news={item} />
+            ))}
+            {(!news || news.length === 0) && (
+                <div className="py-12 text-center text-muted-foreground">
+                    No reports filed in this sector.
+                </div>
+            )}
+        </div>
+      </NewsLayout>
 
       <Footer />
     </div>

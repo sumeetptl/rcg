@@ -28,7 +28,7 @@ export default async function ProfileLayout({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header isAuthenticated={true} isAdmin={isAdmin} />
+      <Header isAuthenticated={true} isAdmin={isAdmin} user={user} />
       <main className="flex-1 bg-background">{children}</main>
     </div>
   )
