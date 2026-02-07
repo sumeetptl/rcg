@@ -1,5 +1,7 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+
 import {
   Table,
   TableBody,
@@ -11,9 +13,11 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { ArrowUp, ArrowDown } from "lucide-react"
+import { MarketData } from "@/lib/types"
+import { CryptoLogo } from "@/components/crypto/crypto-logo"
 
-// Mock Data Structure
-const MARKET_DATA = [
+// Mock Data Structure (Fallback)
+const MOCK_DATA = [
   {
     asset: "BTC-PERP",
     price: 44250.50,
@@ -30,35 +34,28 @@ const MARKET_DATA = [
     funding: 0.0120,
     oiDelta: -1.2,
   },
-  {
-    asset: "SOL-PERP",
-    price: 98.45,
-    change24h: 5.60,
-    volume24h: 3200000000,
-    funding: -0.0050,
-    oiDelta: 12.5,
-  },
-  {
-    asset: "ARB-PERP",
-    price: 1.85,
-    change24h: -2.30,
-    volume24h: 450000000,
-    funding: 0.0100,
-    oiDelta: -3.5,
-  },
-  {
-    asset: "TIA-PERP",
-    price: 16.20,
-    change24h: 8.40,
-    volume24h: 210000000,
-    funding: 0.0250,
-    oiDelta: 15.2,
-  },
 ]
 
-export function LiveMarketTab() {
+interface LiveMarketTabProps {
+  initialData?: MarketData[]
+}
+
+export function LiveMarketTab({ initialData = [] }: LiveMarketTabProps) {
+  const router = useRouter()
+  const hasRealData = initialData.length > 0
+  
+  // Map or Fallback
+  const displayData = hasRealData ? initialData.map(coin => ({
+      asset: coin.symbol,
+      price: coin.quote.USD.price,
+      change24h: coin.quote.USD.percent_change_24h,
+      volume24h: coin.quote.USD.volume_24h,
+      funding: 0.0100, // API doesn't provide funding, using mock flat rate for now or 0
+      oiDelta: 0, // API doesn't provide OI, using 0
+  })) : MOCK_DATA
+
   return (
-    <div className="rounded-lg border border-border bg-background overflow-hidden animate-in fade-in-50 duration-500">
+    <div className="rounded-lg border border-border/40 bg-background/50 overflow-hidden animate-in fade-in-50 duration-500">
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -83,20 +80,24 @@ export function LiveMarketTab() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {MARKET_DATA.map((row) => (
+          {displayData.map((row) => (
             <TableRow 
               key={row.asset}
               className="group cursor-pointer hover:bg-muted/50 transition-colors"
+              onClick={() => router.push(`/market-data/asset/${row.asset}`)}
             >
               <TableCell className="font-mono font-bold text-foreground">
-                <div className="flex items-center gap-2">
-                   {/* Placeholder for Logo if needed */}
-                   {row.asset}
+                <div className="flex items-center gap-3">
+                   <CryptoLogo symbol={row.asset} size={24} />
+                   <div className="flex items-center gap-2">
+                       {row.asset}
+                       {hasRealData && <Badge variant="outline" className="text-[9px] h-4 px-1 border-border/50 text-muted-foreground">SPOT</Badge>}
+                   </div>
                 </div>
               </TableCell>
               
               <TableCell className="text-right font-mono font-medium">
-                ${row.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ${row.price < 1 ? row.price.toFixed(6) : row.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </TableCell>
               
               <TableCell className="text-right">

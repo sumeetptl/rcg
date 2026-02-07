@@ -7,39 +7,48 @@ import { ArrowUp, ArrowDown } from "lucide-react"
 export function OITrackerTab() {
   return (
     <div className="space-y-6 animate-in fade-in-50 duration-500">
-      {/* Top Metrics */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Card className="border-border/60 bg-background/50">
-          <CardContent className="p-6">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
-              Total BTC OI
+      {/* Top Metrics Strip */}
+      <div className="border-y border-border/40 bg-background/50 py-4 overflow-x-auto">
+        <div className="flex items-center gap-8 min-w-max px-2">
+            {/* Metric 1 */}
+            <div className="flex items-center gap-4">
+                <div className="w-0.5 h-6 bg-border/60" />
+                <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Total BTC OI</span>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-xl font-mono font-medium tracking-tight text-foreground">$14.2B</span>
+                        <span className="flex items-center text-xs font-bold text-signal-hit font-mono">
+                            <ArrowUp className="mr-0.5 h-3 w-3" />
+                            2.1%
+                        </span>
+                    </div>
+                </div>
             </div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-mono font-medium text-foreground">
-                $14.2B
-              </span>
-              <span className="flex items-center text-xs font-bold text-signal-hit font-mono">
-                <ArrowUp className="mr-0.5 h-3 w-3" />
-                2.1%
-              </span>
+
+            {/* Metric 2 */}
+            <div className="flex items-center gap-4">
+                <div className="w-0.5 h-6 bg-border/60" />
+                <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Long/Short Ratio</span>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-xl font-mono font-medium tracking-tight text-foreground">1.12</span>
+                        <span className="text-xs font-bold font-mono text-signal-hit">Long Bias</span>
+                    </div>
+                </div>
             </div>
-          </CardContent>
-        </Card>
-         <Card className="border-border/60 bg-background/50">
-          <CardContent className="p-6">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
-               Long/Short Ratio
+
+             {/* Metric 3 (Derived/Static for now to fill strip) */}
+            <div className="flex items-center gap-4">
+                <div className="w-0.5 h-6 bg-border/60" />
+                <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Est. Leverage</span>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-xl font-mono font-medium tracking-tight text-foreground">12x</span>
+                        <span className="text-xs font-bold font-mono text-muted-foreground">High</span>
+                    </div>
+                </div>
             </div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-mono font-medium text-foreground">
-                1.12
-              </span>
-              <span className="text-xs text-muted-foreground font-medium">
-                Slightly Long Biased
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
        {/* Main Chart Section */}

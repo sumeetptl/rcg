@@ -11,11 +11,11 @@ import { Badge } from "@/components/ui/badge"
 
 export function MarketDataHeader() {
   return (
-    <div className="flex flex-col gap-6 border-b border-border bg-background px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-7xl flex-col justify-between gap-6 md:flex-row md:items-start">
+    <div className="flex flex-col gap-6 py-8">
+      <div className="flex w-full flex-col justify-between gap-6 md:flex-row md:items-start">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            <h1 className="font-serif text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
               Market Data
             </h1>
             <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest border-primary/20 text-primary">

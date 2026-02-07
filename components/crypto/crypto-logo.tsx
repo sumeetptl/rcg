@@ -27,7 +27,7 @@ export function CryptoLogo({ symbol, size = 24, className }: CryptoLogoProps) {
 
   return (
     <div 
-      className={cn("relative flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center bg-muted/20", className)}
+      className={cn("relative flex-shrink-0 rounded-full overflow-hidden flex items-center justify-center bg-white/10 dark:border dark:border-white/10", className)}
       style={{ width: size, height: size }}
     >
       <Image
