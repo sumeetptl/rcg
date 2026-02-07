@@ -18,8 +18,8 @@ export function InsightBox({
     <div
       className={cn(
         "relative overflow-hidden rounded-lg border p-4 sm:p-6",
-        variant === "default" && "border-blue-500/20 bg-blue-500/5 text-blue-100",
-        variant === "warning" && "border-amber-500/20 bg-amber-500/5 text-amber-100",
+        variant === "default" && "border-blue-500/20 bg-blue-500/5 text-blue-900 dark:text-blue-100",
+        variant === "warning" && "border-amber-500/20 bg-amber-500/5 text-amber-900 dark:text-amber-100",
         className
       )}
     >

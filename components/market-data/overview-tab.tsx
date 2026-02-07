@@ -1,8 +1,5 @@
-"use client"
-
-import { MarketPulseCard } from "@/components/market-data/market-pulse-card"
-import { InsightBox } from "@/components/market-data/insight-box"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { LongShortRatioChart } from "@/components/market-data/long-short-ratio-chart"
+import { LiquidationClusters } from "@/components/market-data/liquidation-clusters"
 
 export function OverviewTab() {
   return (
@@ -64,33 +61,23 @@ export function OverviewTab() {
         </div>
       </div>
 
-      {/* Middle Row: Heatmaps & Charts */}
-      <div className="grid gap-8 lg:grid-cols-3">
-        <Card className="col-span-2 border-border/40 bg-background/50 shadow-none rounded-none border-x-0 sm:border-x sm:rounded-lg">
-          <CardHeader className="pb-2 border-b border-border/40">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Long vs Short Dominance
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center justify-center h-[300px] text-muted-foreground text-sm font-medium pt-6">
-            <div className="p-4 border border-dashed border-border rounded opacity-50">
-                [Visualization: LS Ratio Heatmap]
-            </div>
-          </CardContent>
-        </Card>
+      {/* Middle Row: Liquidation Clusters (Primary Focus) */}
+      <div className="grid gap-8">
+         <LiquidationClusters />
+      </div>
 
-        <Card className="border-border/40 bg-background/50 shadow-none rounded-none border-x-0 sm:border-x sm:rounded-lg">
-           <CardHeader className="pb-2 border-b border-border/40">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Liquidation Clusters
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center justify-center h-[300px] text-muted-foreground text-sm font-medium pt-6">
-             <div className="p-4 border border-dashed border-border rounded opacity-50">
-                [Visualization: Liq Levels]
-             </div>
-          </CardContent>
-        </Card>
+      {/* Bottom Row: Charts & Market Structure */}
+      <div className="grid gap-8 lg:grid-cols-3">
+        <div className="col-span-2">
+           <LongShortRatioChart />
+        </div>
+
+        {/* Keeping a placeholder or moving other metrics here in future */}
+         <div className="border border-border/40 bg-background/50 rounded-lg p-6 flex flex-col justify-center gap-4">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Session Bias</h4>
+            <div className="text-2xl font-serif font-medium text-foreground">Neutral-Bullish</div>
+            <p className="text-sm text-muted-foreground">Market is absorbing sell pressure at key support. Skew favors patience.</p>
+         </div>
       </div>
 
       {/* Bottom Row: Editorial Insight - Cleaner Design */}

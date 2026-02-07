@@ -3,6 +3,8 @@
 import { InsightBox } from "@/components/market-data/insight-box"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowUp, ArrowDown } from "lucide-react"
+import { LongShortRatioChart } from "@/components/market-data/long-short-ratio-chart"
+import { OpenInterestChart } from "@/components/market-data/open-interest-chart"
 
 export function OITrackerTab() {
   return (
@@ -53,16 +55,11 @@ export function OITrackerTab() {
 
        {/* Main Chart Section */}
        <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="col-span-2 border-border/60 bg-background/50 h-[400px]">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground/80">
-              Open Interest vs Price
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center justify-center h-[320px] text-muted-foreground text-sm font-medium">
-            [Chart: OI Line + Price Overlay Placeholder]
-          </CardContent>
-        </Card>
+        <div className="col-span-2 space-y-6">
+            <OpenInterestChart className="bg-background/50 border-border/60" />
+            
+            <LongShortRatioChart />
+        </div>
 
         <div className="space-y-6">
            {/* Insight Box */}

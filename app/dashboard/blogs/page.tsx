@@ -1,8 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
-import { BlogCard } from "@/components/blog-card"
 import { Badge } from "@/components/ui/badge"
-import { ContentViewSwitcher } from "@/components/content-view-switcher"
 import { BlogViewContainer } from "@/components/blogs/blog-view-container"
+import { MostReadBlogs } from "@/components/blogs/most-read-blogs"
+import { BlogShortcuts } from "@/components/blogs/blog-shortcuts"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -41,7 +41,6 @@ export default async function DashboardBlogsPage({
             In-depth market research, trading strategies, and educational content.
           </p>
         </div>
-        <ContentViewSwitcher />
       </header>
 
       {/* Category Filter */}
@@ -61,10 +60,21 @@ export default async function DashboardBlogsPage({
         ))}
       </div>
 
-      {/* Content Section */}
-      <div className="pb-12">
-        <BlogViewContainer blogs={blogs || []} />
-      </div>
+       <div className="pb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8 lg:gap-12">
+             
+             {/* Left Sidebar (Shortcuts) */}
+             <aside className="hidden lg:block space-y-8 pt-2">
+                <BlogShortcuts />
+             </aside>
+
+             {/* Main Content */}
+             <div className="min-w-0">
+                <BlogViewContainer blogs={blogs || []} />
+             </div>
+
+          </div>
+       </div>
     </div>
   )
 }

@@ -3,6 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { InsightBox } from "@/components/market-data/insight-box"
+import { LiquidationChart } from "@/components/market-data/liquidation-chart"
+import { SlippageHeatmap } from "@/components/market-data/slippage-heatmap"
+import { LiquidationClusters } from "@/components/market-data/liquidation-clusters"
 
 export function LiquidationsTab() {
   return (
@@ -46,23 +49,21 @@ export function LiquidationsTab() {
         </div>
       </div>
 
+      {/* Heatmap Section */}
+      <LiquidationClusters />
+
       {/* Charts */}
-      <div className="grid gap-6 lg:grid-cols-3">
-         <Card className="col-span-2 border-border/60 bg-background/50 h-[350px]">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground/80">
-              Liquidation Cascades (Timeline)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center justify-center h-[280px] text-muted-foreground text-sm font-medium">
-            [Chart: Hourly Liq Bars Placeholder]
-          </CardContent>
-        </Card>
+      <div className="grid gap-8 lg:grid-cols-3">
+        <div className="col-span-3 lg:col-span-2 space-y-6">
+            <LiquidationChart className="bg-background/50 border-border/60" />
+            
+            <SlippageHeatmap className="bg-background/50 border-border/60" />
+        </div>
 
         <InsightBox 
             title="Pain Points"
             content="74% of recent liquidations are Longs, suggesting an over-leveraged bull bias is being flushed out. A move below $42,500 could trigger a secondary cascade."
-            className="h-[350px]"
+            className="h-full min-h-[300px]"
         />
       </div>
     </div>

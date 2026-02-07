@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 
 export function PlatformPreview() {
   return (
-    <section className="py-24 px-4 overflow-hidden">
+    <section className="py-16 px-4 overflow-hidden md:py-24">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
           <motion.div
@@ -43,47 +43,68 @@ export function PlatformPreview() {
               <div className="space-y-6">
                 {/* Header Mock */}
                 <div className="flex items-center justify-between border-b border-border pb-6">
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-6 w-48" />
+                  <div className="space-y-1">
+                    <h3 className="font-mono text-lg font-bold tracking-tight">BTC/USDT Perpetual</h3>
+                    <p className="text-sm text-muted-foreground">Bitcoin - Tether US</p>
                   </div>
-                  <Badge variant="outline" className="h-6 px-3">Live Feed</Badge>
+                  <Badge variant="outline" className="h-6 px-3 gap-1.5 border-green-500/20 bg-green-500/5 text-green-500">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    Live Feed
+                  </Badge>
                 </div>
 
                 {/* Signal Card Mock */}
                 <Card className="border-border/60 bg-muted/5">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded bg-primary/10" />
-                      <Skeleton className="h-5 w-24" />
+                      <div className="h-8 w-8 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 font-bold text-xs ring-1 ring-orange-500/20">
+                        BTC
+                      </div>
+                      <span className="font-bold text-sm">Bitcoin</span>
                     </div>
-                    <Badge className="bg-signal-long/20 text-signal-long border-signal-long/30">LONG</Badge>
+                    <Badge className="bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20">LONG</Badge>
                   </CardHeader>
                   <CardContent className="space-y-4 pt-4">
                     <div className="grid grid-cols-3 gap-4">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="space-y-2">
-                          <Skeleton className="h-3 w-12" />
-                          <Skeleton className="h-5 w-16" />
-                        </div>
-                      ))}
+                      <div className="space-y-1">
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Entry</p>
+                        <p className="text-sm font-mono font-medium">$44,250</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Target</p>
+                        <p className="text-sm font-mono font-medium text-green-500">$45,800</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Stop</p>
+                        <p className="text-sm font-mono font-medium text-red-500">$43,500</p>
+                      </div>
                     </div>
-                    <Skeleton className="h-20 w-full" />
+                    <div className="p-3 rounded-lg bg-background/50 border border-border/50 text-xs text-muted-foreground leading-relaxed">
+                      Bullish divergence on 4H RSI coupled with increasing volume delta confirms strength. Key support held at $43.8k.
+                    </div>
                   </CardContent>
                 </Card>
 
                 {/* Metrics Bar Mock */}
-                <div className="grid grid-cols-4 gap-4 pt-4">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="space-y-2 text-center">
-                      <div className="mx-auto h-2 w-12 rounded bg-muted" />
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border sm:grid-cols-4">
+                  {[
+                    { label: "Win Rate", value: "84.2%" },
+                    { label: "Avg R:R", value: "1:2.4" },
+                    { label: "Profit Factor", value: "2.14" },
+                    { label: "Active", value: "12" }
+                  ].map((metric, i) => (
+                    <div key={i} className="space-y-1 text-center">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{metric.label}</p>
                       <motion.div 
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: 1 + i * 0.1 }}
+                        initial={{ opacity: 0, y: 5 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 + i * 0.1 }}
                         className="text-sm font-mono font-medium"
                       >
-                        {i === 1 ? "84.2%" : i === 2 ? "12.4x" : i === 3 ? "2.14" : "98"}
+                        {metric.value}
                       </motion.div>
                     </div>
                   ))}

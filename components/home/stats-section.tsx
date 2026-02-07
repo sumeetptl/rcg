@@ -44,7 +44,7 @@ function CountUp({ value, prefix = "", suffix = "", decimal = 0 }: { value: numb
 
 export function StatsSection() {
   return (
-    <section className="py-24 px-4 bg-background">
+    <section className="py-16 px-4 bg-background md:py-24">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (

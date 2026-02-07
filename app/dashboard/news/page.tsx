@@ -1,15 +1,12 @@
 import { createClient } from "@/lib/supabase/server"
-import { NewsCard } from "@/components/news-card"
-import { Badge } from "@/components/ui/badge"
-import { ContentViewSwitcher } from "@/components/content-view-switcher"
-import { NewsViewContainer } from "@/components/news/news-view-container"
+import { NewsLayout } from "@/components/news/news-layout"
+import { EditorialNewsCard } from "@/components/news/editorial-news-card"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Market News",
+  description: "Institutional market intelligence.",
 }
-
-const categories = ["All", "Bitcoin", "Ethereum", "Altcoins", "DeFi", "NFT", "Regulation"]
 
 export default async function DashboardNewsPage({
   searchParams,
@@ -30,41 +27,42 @@ export default async function DashboardNewsPage({
   }
 
   const { data: news } = await query
+  const featuredNews = news?.[0]
+  const standardNews = news?.slice(1) || []
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:border-x lg:border-border/40 lg:min-h-screen">
-      {/* Calm Header */}
-      <header className="mb-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex flex-col gap-2">
-          <h1 className="font-serif text-3xl font-medium tracking-tight text-foreground">Market News</h1>
-          <p className="text-muted-foreground text-sm font-medium">
-            Stay updated with the latest cryptocurrency news and market developments.
-          </p>
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
+      
+      <NewsLayout>
+        {/* Feed Header */}
+        <div className="mb-8 border-b border-border pb-6">
+            <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
+                {category || "Global Wire"}
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground font-mono uppercase tracking-widest">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
         </div>
-        <ContentViewSwitcher />
-      </header>
 
-      {/* Category Filter */}
-      <div className="mb-8 flex flex-wrap gap-2">
-        {categories.map((cat) => (
-          <a
-            key={cat}
-            href={cat === "All" ? "/dashboard/news" : `/dashboard/news?category=${encodeURIComponent(cat)}`}
-          >
-            <Badge
-              variant={(!category && cat === "All") || category === cat ? "default" : "outline"}
-              className="cursor-pointer transition-colors px-3 py-1 font-medium uppercase tracking-tighter"
-            >
-              {cat}
-            </Badge>
-          </a>
-        ))}
-      </div>
+        {/* Featured Story */}
+        {featuredNews && (
+            <div className="mb-12 pb-12 border-b border-border">
+                <EditorialNewsCard news={featuredNews} featured={true} />
+            </div>
+        )}
 
-      {/* Content Section */}
-      <div className="pb-12">
-        <NewsViewContainer news={news || []} />
-      </div>
+        {/* Standard Feed */}
+        <div className="space-y-4">
+            {standardNews.map((item: any) => (
+                <EditorialNewsCard key={item.id} news={item} />
+            ))}
+            {(!news || news.length === 0) && (
+                <div className="py-12 text-center text-muted-foreground">
+                    No reports filed in this sector.
+                </div>
+            )}
+        </div>
+      </NewsLayout>
     </div>
   )
 }

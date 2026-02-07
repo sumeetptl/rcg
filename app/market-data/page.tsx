@@ -4,6 +4,8 @@ import { LiveMarketTab } from "@/components/market-data/live-market-tab"
 import { OITrackerTab } from "@/components/market-data/oi-tracker-tab"
 import { LiquidationsTab } from "@/components/market-data/liquidations-tab"
 import { WhaleActivityTab } from "@/components/market-data/whale-activity-tab"
+import { EconomicCalendarTab } from "@/components/market-data/economic-calendar-tab"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getLatestMarketData } from "@/lib/api/coinmarketcap"
 
@@ -61,6 +63,12 @@ export default async function MarketDataPage({
                     Whale Activity
                   </TabsTrigger>
                   <TabsTrigger
+                    value="economic-calendar"
+                    className="relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                  >
+                    Economic Calendar
+                  </TabsTrigger>
+                  <TabsTrigger
                     value="funding"
                     disabled
                     className="relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground/50 opacity-50 cursor-not-allowed"
@@ -88,6 +96,10 @@ export default async function MarketDataPage({
 
               <TabsContent value="whale-activity" className="mt-0">
                 <WhaleActivityTab />
+              </TabsContent>
+
+              <TabsContent value="economic-calendar" className="mt-0">
+                <EconomicCalendarTab />
               </TabsContent>
             </Tabs>
           </main>
