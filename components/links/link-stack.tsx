@@ -9,7 +9,9 @@ import {
   BookOpen, 
   ChevronRight,
   Lock,
-  Twitter,
+  X,
+  Instagram,
+
   Send,
   Unlock,
   ArrowUpRight
@@ -18,8 +20,10 @@ import Link from "next/link"
 
 // 1. Social Links - Unlocked
 const socialLinks = [
-  { icon: Twitter, label: "Twitter / X", href: "https://twitter.com/TheRealCryptoG", subtext: "@TheRealCryptoG" },
-  { icon: Send, label: "Telegram Community", href: "https://t.me/therealcryptog", subtext: "Join the discussion" },
+
+  { icon: X, label: "X", href: "https://twitter.com/therealcryptog_", subtext: "@therealcryptog_" },
+  { icon: Send, label: "Telegram Community", href: "https://t.me/therealcryptog_official", subtext: "Join the discussion" },
+  { icon: Instagram, label: "Instagram", href: "https://instagram.com/therealcrypto_g", subtext: "@therealcrypto_g" },
 ]
 
 // 2. Public Resources - Unlocked (News, Blogs, Calendar)

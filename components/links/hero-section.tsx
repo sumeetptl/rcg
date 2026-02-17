@@ -65,9 +65,9 @@ export function HeroSection({ onJoinWaitlist }: { onJoinWaitlist?: () => void })
         transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
         className="text-muted-foreground text-lg md:text-xl font-medium max-w-md leading-relaxed mb-10"
       >
-        Crypto signals, market data & macro intelligence.
+       Institutional-Grade Crypto Intelligence Suite.
         <br />
-        <span className="text-muted-foreground/80 text-base">Built for disciplined traders.</span>
+        <span className="text-muted-foreground/80 text-base">Your edge in one unified platform.</span>
       </motion.p>
 
       {/* Primary CTA */}
