@@ -11,12 +11,12 @@ interface ContextTabsProps {
 
 export function ContextTabs({ symbol }: ContextTabsProps) {
   return (
-    <Tabs defaultValue="market-context" className="w-full space-y-4">
-      <TabsList className="bg-muted/20 border border-border/40">
-        <TabsTrigger value="market-context">Market Context</TabsTrigger>
-        <TabsTrigger value="derivatives">Derivatives</TabsTrigger>
-        <TabsTrigger value="flows">Flows</TabsTrigger>
-        <TabsTrigger value="notes">Notes</TabsTrigger>
+    <Tabs defaultValue="market-context" className="w-full space-y-4" id="market-context-tabs">
+      <TabsList className="bg-muted/20 border border-border/40 w-full justify-start overflow-x-auto flex-nowrap no-scrollbar p-1">
+        <TabsTrigger value="market-context" className="flex-shrink-0">Market Context</TabsTrigger>
+        <TabsTrigger value="derivatives" className="flex-shrink-0">Derivatives</TabsTrigger>
+        <TabsTrigger value="flows" className="flex-shrink-0">Flows</TabsTrigger>
+        <TabsTrigger value="notes" className="flex-shrink-0">Notes</TabsTrigger>
       </TabsList>
 
       <TabsContent value="market-context" className="space-y-4 animate-in fade-in-50">

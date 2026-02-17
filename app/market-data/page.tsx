@@ -30,48 +30,48 @@ export default async function MarketDataPage({
           <main className="pb-8">
             <Tabs defaultValue={currentTab} className="space-y-8">
               {/* Sticky Tabs List - Adjusted for new layout */}
-              <div className="sticky top-[0px] z-40 bg-background/95 pb-4 pt-2 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-none border-b border-border bg-transparent p-0">
+              <div className="sticky top-[80px] z-40 bg-background/95 pb-4 pt-2 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-none border-b border-border bg-transparent p-0 flex-nowrap no-scrollbar">
                   <TabsTrigger
                     value="overview"
-                    className="relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="flex-shrink-0 relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                   >
                     Overview
                   </TabsTrigger>
                   <TabsTrigger
                     value="live-market"
-                    className="relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="flex-shrink-0 relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                   >
                     Live Market
                   </TabsTrigger>
                   <TabsTrigger
                     value="open-interest"
-                    className="relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="flex-shrink-0 relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                   >
                     Open Interest
                   </TabsTrigger>
                   <TabsTrigger
                     value="liquidations"
-                    className="relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="flex-shrink-0 relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                   >
                     Liquidations
                   </TabsTrigger>
                   <TabsTrigger
                     value="whale-activity"
-                    className="relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="flex-shrink-0 relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                   >
                     Whale Activity
                   </TabsTrigger>
                   <TabsTrigger
                     value="economic-calendar"
-                    className="relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="flex-shrink-0 relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                   >
                     Economic Calendar
                   </TabsTrigger>
                   <TabsTrigger
                     value="funding"
                     disabled
-                    className="relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground/50 opacity-50 cursor-not-allowed"
+                    className="flex-shrink-0 relative rounded-none border-b-2 border-transparent px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-muted-foreground/50 opacity-50 cursor-not-allowed"
                   >
                     Funding & Metrics <span className="ml-2 text-[9px] bg-muted px-1 py-0.5 rounded">SOON</span>
                   </TabsTrigger>

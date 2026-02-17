@@ -65,10 +65,10 @@ export function HeroSection() {
               className="mt-8 flex items-center justify-center gap-8"
             >
               <Link 
-                href="/auth/login" 
+                href="/links" 
                 className="text-sm font-medium border-b border-foreground/30 pb-0.5 transition-colors hover:border-foreground"
               >
-                Explore Platform
+                Join Waitlist
               </Link>
               <Link 
                 href="/methodology" 
