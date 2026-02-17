@@ -82,6 +82,11 @@ const navGroups = [
         url: "/admin/users",
         icon: Users,
       },
+      {
+        title: "Waitlist",
+        url: "/admin/waitlist",
+        icon: Users, 
+      },
     ],
   },
 ]

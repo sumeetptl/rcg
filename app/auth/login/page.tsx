@@ -1,9 +1,8 @@
 "use client"
 
-import React from "react"
-
-import { useState } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
@@ -25,8 +24,6 @@ export default function LoginPage() {
     setError(null)
     setIsLoading(true)
 
-
-
     const supabase = createClient()
 
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -34,15 +31,11 @@ export default function LoginPage() {
       password,
     })
 
-
-
     if (signInError) {
-
       setError(signInError.message)
       setIsLoading(false)
       return
     }
-
 
     router.push("/dashboard")
     router.refresh()
@@ -51,9 +44,22 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <Link href="/" className="inline-block">
-            <span className="font-serif text-2xl font-semibold tracking-tight">RealCryptoG</span>
+        <div className="mb-8 text-center flex justify-center">
+          <Link href="/" className="inline-block relative w-20 h-20">
+            <Image 
+               src="/night-logo.png" 
+               alt="Real Crypto G" 
+               fill 
+               className="object-contain dark:opacity-100 opacity-0 transition-opacity duration-300 absolute inset-0"
+               priority
+            />
+            <Image 
+               src="/day-logo.png" 
+               alt="Real Crypto G" 
+               fill 
+               className="object-contain dark:opacity-0 opacity-100 transition-opacity duration-300 absolute inset-0"
+               priority
+            />
           </Link>
         </div>
 
@@ -104,12 +110,10 @@ export default function LoginPage() {
               <p className="text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{" "}
                 <Link 
-                  href="https://t.me/RealCryptoG_Admin" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                  href="/links" 
                   className="font-medium text-primary hover:underline"
                 >
-                  Get credentials on Telegram
+                  Join Waitlist
                 </Link>
               </p>
             </CardFooter>

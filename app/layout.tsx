@@ -12,15 +12,15 @@ const _jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-je
 
 export const metadata: Metadata = {
   title: {
-    default: 'RealCryptoG | Premium Crypto Signals & Analysis',
-    template: '%s | RealCryptoG',
+    default: 'Real Crypto G | Crypto Research and Live Market Tools',
+    template: '%s | Real Crypto G Research',
   },
-  description: 'Professional crypto trading signals and in-depth market analysis. Trusted by serious traders for premium content and real-time trading insights.',
-  keywords: ['crypto', 'trading signals', 'bitcoin', 'ethereum', 'market analysis', 'cryptocurrency'],
-  authors: [{ name: 'RealCryptoG' }],
+  description: 'Institutional-grade crypto market intelligence and research-driven trading signals. The Real Crypto G provides deep-dive analysis for serious traders and investors.',
+  keywords: ['crypto research', 'institutional signals', 'bitcoin analysis', 'market intelligence', 'digital assets', 'trading strategy'],
+  authors: [{ name: 'Real Crypto G Research' }],
   openGraph: {
-    title: 'RealCryptoG',
-    description: 'Professional crypto trading signals and in-depth market analysis.',
+    title: 'Real Crypto G | Crypto Research and Live Market Tools',
+    description: 'Institutional-grade crypto market intelligence and research-driven trading signals.',
     type: 'website',
   },
     generator: 'v0.app'

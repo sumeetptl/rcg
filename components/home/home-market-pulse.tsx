@@ -41,7 +41,7 @@ export function HomeMarketPulse() {
   ]
 
   return (
-    <section className="py-16 md:py-24 bg-muted/20 border-y border-border/40 relative overflow-hidden">
+    <section className="py-16 md:py-24 relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10 mb-12">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div className="space-y-4 max-w-2xl">
@@ -80,7 +80,7 @@ export function HomeMarketPulse() {
           {[...features, ...features].map((feature, index) => (
             <div 
               key={index}
-              className="flex-shrink-0 w-[300px] sm:w-[350px] p-6 rounded-xl border border-border/60 bg-background/50 backdrop-blur-sm"
+              className="flex-shrink-0 w-[300px] sm:w-[350px] p-6 rounded-xl border border-border bg-card shadow-sm"
             >
               <div className="text-4xl mb-4">{feature.icon}</div>
               <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
@@ -92,7 +92,7 @@ export function HomeMarketPulse() {
         </motion.div>
       </div>
       
-      {/* Decorative Gradients */}
+      {/* Decorative Gradients (Subtle) */}
       <div className="absolute top-0 right-0 -transtale-y-1/2 translate-x-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
     </section>
