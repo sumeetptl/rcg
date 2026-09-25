@@ -30,3 +30,6 @@ next-env.d.ts
 
 docs/
 /supabase/.temp/
+
+ai-architecture-context.md
+design-system.md
