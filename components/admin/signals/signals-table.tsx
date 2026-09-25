@@ -41,6 +41,8 @@ import {
   Trash2,
   ArrowUp,
   ArrowDown,
+  Copy,
+  Archive,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -82,6 +84,54 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
       console.error(error);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleArchive = async (signalId: string) => {
+    try {
+      const supabase = createClient();
+      
+      const previousData = [...data];
+      setData(data.map(item => item.id === signalId ? { ...item, status: "cancelled" } : item));
+
+      const { error } = await supabase
+        .from("signals")
+        .update({ status: "cancelled" })
+        .eq("id", signalId);
+
+      if (error) {
+        setData(previousData);
+        throw error;
+      }
+      
+      toast.success("Signal archived (cancelled)");
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to archive signal");
+      console.error(error);
+    }
+  };
+
+  const handleDuplicate = async (signal: Signal) => {
+    try {
+      const supabase = createClient();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, created_at, updated_at, ...rest } = signal;
+      
+      const newSignal = {
+        ...rest,
+        status: "draft"
+      };
+
+      const { error } = await supabase.from("signals").insert(newSignal);
+
+      if (error) throw error;
+      
+      toast.success("Signal duplicated as draft");
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to duplicate signal");
+      console.error(error);
     }
   };
 
@@ -226,6 +276,12 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
                           <Link href={`/admin/signals/${signal.id}/edit`}>
                             <Pencil className="mr-2 h-3.5 w-3.5" /> Edit Signal
                           </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDuplicate(signal)} className="text-xs">
+                          <Copy className="mr-2 h-3.5 w-3.5" /> Duplicate
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleArchive(signal.id)} className="text-xs">
+                          <Archive className="mr-2 h-3.5 w-3.5" /> Archive
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
