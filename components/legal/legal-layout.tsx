@@ -1,5 +1,4 @@
 import { ReactNode } from "react"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { createClient } from "@/lib/supabase/server"
 
@@ -16,7 +15,6 @@ export async function LegalLayout({ children, title, subtitle, lastUpdated }: Le
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header isAuthenticated={!!user} />
       
       <main className="flex-1 py-12 md:py-20">
         <div className="container mx-auto px-4 sm:px-6 max-w-7xl">

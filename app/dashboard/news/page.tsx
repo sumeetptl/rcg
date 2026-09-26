@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
-import { NewsLayout } from "@/components/news/news-layout"
-import { EditorialNewsCard } from "@/components/news/editorial-news-card"
+import { NewsLayout } from "@/components/community/news/news-layout"
+import { EditorialNewsCard } from "@/components/community/news/editorial-news-card"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {

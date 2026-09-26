@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Separator } from "@/components/ui/separator"
 import { createClient } from "@/lib/supabase/server"
@@ -16,7 +15,6 @@ export default async function MethodologyPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <Header isAuthenticated={!!user} />
 
       <main className="flex-1 py-12">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">

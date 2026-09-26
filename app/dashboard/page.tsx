@@ -301,7 +301,7 @@ export default async function DashboardPage() {
                 </p>
               </div>
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/dashboard/signals">
+                <Link href="/intelligence/trade-ideas">
                   View All <ArrowUpRight className="ml-1 h-3 w-3" />
                 </Link>
               </Button>
@@ -472,7 +472,7 @@ export default async function DashboardPage() {
                   className="h-auto p-0"
                 >
                   <Link
-                    href="/blogs"
+                    href="/academy/blogs"
                     className="text-xs text-primary hover:text-primary/80"
                   >
                     All <ArrowUpRight className="ml-0.5 h-3 w-3 inline" />
@@ -550,7 +550,7 @@ export default async function DashboardPage() {
                   className="h-auto p-0"
                 >
                   <Link
-                    href="/news"
+                    href="/community/news"
                     className="text-xs text-primary hover:text-primary/80"
                   >
                     All <ArrowUpRight className="ml-0.5 h-3 w-3 inline" />

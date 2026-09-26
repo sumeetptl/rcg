@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { HeroSection } from "@/components/home/hero-section"
 import { HomeMarketPulse } from "@/components/home/home-market-pulse"
@@ -17,12 +16,7 @@ export default async function HomePage() {
 
   return (
     <div className="relative flex min-h-screen flex-col">
-      <Header 
-        isAuthenticated={!!user} 
-        isAdmin={admin}
-        user={user}
-        className="fixed top-4 left-0 right-0" 
-      />
+
 
       <main className="flex-1">
         {/* Background Texture for the entire top section */}

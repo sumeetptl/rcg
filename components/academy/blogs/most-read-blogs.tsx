@@ -64,7 +64,7 @@ export function MostReadBlogs() {
             <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
                Deep dive into the mechanics of perpetual swap funding rates and their impact on price action.
             </p>
-            <Link href="/blogs" className="text-xs font-bold uppercase tracking-wide flex items-center gap-1 hover:underline">
+            <Link href="/academy/blogs" className="text-xs font-bold uppercase tracking-wide flex items-center gap-1 hover:underline">
                Read Analysis <ArrowUpRight className="h-3 w-3" />
             </Link>
          </div>

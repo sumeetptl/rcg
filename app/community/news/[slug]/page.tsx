@@ -1,14 +1,13 @@
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { createClient } from "@/lib/supabase/server"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Clock, ExternalLink, Lock } from "lucide-react"
-import { NewsArticleLayout } from "@/components/news/news-article-layout"
-import { NewsReadingProgress } from "@/components/news/news-reading-progress"
+import { NewsArticleLayout } from "@/components/community/news/news-article-layout"
+import { NewsReadingProgress } from "@/components/community/news/news-reading-progress"
 import type { Metadata } from "next"
 
 interface NewsPageProps {
@@ -70,7 +69,6 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/20">
       <NewsReadingProgress />
-      <Header isAuthenticated={!!user} user={user} className="border-b border-border/40" />
 
       <main className="flex-1">
          <NewsArticleLayout category={news.category}>

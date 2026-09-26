@@ -1,9 +1,8 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { getBlogs } from "@/lib/services/blogs"
-import { BlogViewContainer } from "@/components/blogs/blog-view-container"
-import { MostReadBlogs } from "@/components/blogs/most-read-blogs"
-import { BlogShortcuts } from "@/components/blogs/blog-shortcuts"
+import { BlogViewContainer } from "@/components/academy/blogs/blog-view-container"
+import { MostReadBlogs } from "@/components/academy/blogs/most-read-blogs"
+import { BlogShortcuts } from "@/components/academy/blogs/blog-shortcuts"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -27,7 +26,6 @@ export default async function BlogsPage({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header />
 
       <main className="flex-1">
         {/* Header */}

@@ -1,9 +1,8 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { createClient } from "@/lib/supabase/server"
-import { BreakingNewsBar } from "@/components/news/breaking-news-bar"
-import { NewsLayout } from "@/components/news/news-layout"
-import { EditorialNewsCard } from "@/components/news/editorial-news-card"
+import { BreakingNewsBar } from "@/components/community/news/breaking-news-bar"
+import { NewsLayout } from "@/components/community/news/news-layout"
+import { EditorialNewsCard } from "@/components/community/news/editorial-news-card"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -37,7 +36,6 @@ export default async function NewsPage({
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/20">
       <BreakingNewsBar />
-      <Header isAuthenticated={!!user} user={user} className="border-b border-border/40" />
 
       <NewsLayout>
         {/* Feed Header */}

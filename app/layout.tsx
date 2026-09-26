@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Lora, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/theme-provider'
+import { TopNavigation } from '@/components/layout/TopNavigation'
+import { createClient } from '@/lib/supabase/server'
 import './globals.css'
 import { Disclaimer } from '@/components/disclaimer'
 
@@ -35,11 +37,15 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const isAdmin = user?.user_metadata?.role === 'admin'
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased">
@@ -49,6 +55,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <TopNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
           {children}
         </ThemeProvider>
         <Disclaimer />

@@ -2,7 +2,6 @@
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { createClient } from "@/lib/supabase/server"
 import { Badge } from "@/components/ui/badge"
@@ -10,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { ArrowLeft, Clock, Lock } from "lucide-react"
 import type { Metadata } from "next"
-import { MostReadBlogs } from "@/components/blogs/most-read-blogs"
+import { MostReadBlogs } from "@/components/academy/blogs/most-read-blogs"
 
 interface BlogPageProps {
   params: Promise<{ slug: string }>
@@ -66,7 +65,6 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header isAuthenticated={!!user} />
 
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
@@ -78,7 +76,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
                 {/* Header section with category, title, and meta */}
                 <header className="p-8 sm:p-12">
                   <Link
-                    href="/blogs"
+                    href="/academy/blogs"
                     className="mb-8 inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     <ArrowLeft className="mr-2 h-4 w-4" />

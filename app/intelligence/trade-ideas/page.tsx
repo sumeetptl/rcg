@@ -3,7 +3,7 @@ import { SignalCard } from "@/components/signal-card"
 import { Badge } from "@/components/ui/badge"
 import { MetricsRail } from "@/components/metrics-rail"
 import { ContentViewSwitcher } from "@/components/content-view-switcher"
-import { SignalViewContainer } from "@/components/signals/signal-view-container"
+import { SignalViewContainer } from "@/components/intelligence/trade-ideas/signal-view-container"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -97,7 +97,7 @@ export default async function SignalsPage({
         {statusFilters.map((filterStatus) => (
           <a
             key={filterStatus}
-            href={filterStatus === "All" ? "/dashboard/signals" : `/dashboard/signals?status=${filterStatus}`}
+            href={filterStatus === "All" ? "/intelligence/trade-ideas" : `/intelligence/trade-ideas?status=${filterStatus}`}
           >
             <Badge
               variant={(!status && filterStatus === "All") || status === filterStatus.toLowerCase() ? "default" : "outline"}
