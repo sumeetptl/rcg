@@ -33,7 +33,7 @@ export function BlogViewContainer({ blogs }: BlogViewContainerProps) {
               <span>•</span>
               <span>{formatDate(blog.published_at)}</span>
             </div>
-            <Link href={`/blogs/${blog.slug}`} className="block">
+            <Link href={`/academy/blogs/${blog.slug}`} className="block">
               <h2 className="font-serif text-2xl font-bold leading-tight group-hover:text-primary transition-colors sm:text-3xl">
                 {blog.title}
               </h2>
@@ -52,7 +52,7 @@ export function BlogViewContainer({ blogs }: BlogViewContainerProps) {
               )}
             </div>
           </div>
-          <Link href={`/blogs/${blog.slug}`} className="relative h-44 w-full sm:w-64 flex-shrink-0 overflow-hidden rounded-md border border-border bg-muted">
+          <Link href={`/academy/blogs/${blog.slug}`} className="relative h-44 w-full sm:w-64 flex-shrink-0 overflow-hidden rounded-md border border-border bg-muted">
             {blog.cover_image ? (
               <Image
                 src={blog.cover_image}

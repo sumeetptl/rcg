@@ -27,7 +27,7 @@ export function NewsCard({ news, compact = false }: NewsCardProps) {
 
   if (compact) {
     return (
-      <Link href={`/news/${news.slug}`} className="group block">
+      <Link href={`/community/news/${news.slug}`} className="group block">
         <article className="flex gap-4 py-4">
           <div className="flex-1 space-y-1">
             <div className="flex items-center gap-2">
@@ -70,7 +70,7 @@ export function NewsCard({ news, compact = false }: NewsCardProps) {
   }
 
   return (
-    <Link href={`/news/${news.slug}`} className="group block">
+    <Link href={`/community/news/${news.slug}`} className="group block">
       <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
         {news.thumbnail && (
           <div className="relative aspect-[16/9] overflow-hidden bg-muted">

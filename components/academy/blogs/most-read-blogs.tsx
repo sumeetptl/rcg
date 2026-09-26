@@ -41,7 +41,7 @@ export function MostReadBlogs() {
         {MOST_READ_BLOGS.map((blog, index) => (
           <Link 
             key={blog.id}
-            href={`/blogs/${blog.slug}`}
+            href={`/academy/blogs/${blog.slug}`}
             className="group block space-y-2"
           >
             <div className="flex items-start justify-between gap-4">

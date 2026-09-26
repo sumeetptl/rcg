@@ -78,7 +78,7 @@ export function SignalViewContainer({ signals }: SignalViewContainerProps) {
                 >
                   <td className="px-6 py-4">
                     <Link
-                      href={`/signals/${signal.id}`}
+                      href={`/intelligence/trade-ideas/${signal.id}`}
                       className="flex items-center gap-3"
                     >
                       <CryptoLogo 
@@ -151,7 +151,7 @@ export function SignalViewContainer({ signals }: SignalViewContainerProps) {
           return (
             <Link
               key={signal.id}
-              href={`/signals/${signal.id}`}
+              href={`/intelligence/trade-ideas/${signal.id}`}
               className="group block"
             >
               <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-lg border border-border bg-background hover:border-primary/40 transition-all hover:bg-muted/5">

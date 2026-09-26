@@ -42,7 +42,7 @@ export function NewsViewContainer({ news }: NewsViewContainerProps) {
             {news.map((item) => (
               <tr key={item.id} className="group hover:bg-muted/10 transition-colors">
                 <td className="px-6 py-4">
-                  <Link href={`/news/${item.slug}`} className="flex flex-col gap-1">
+                  <Link href={`/community/news/${item.slug}`} className="flex flex-col gap-1">
                     <span className="font-serif text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
                       {item.title}
                     </span>
@@ -80,7 +80,7 @@ export function NewsViewContainer({ news }: NewsViewContainerProps) {
               </div>
               <span>{formatDate(item.published_at)}</span>
             </div>
-            <Link href={`/news/${item.slug}`} className="block">
+            <Link href={`/community/news/${item.slug}`} className="block">
               <h2 className="font-serif text-2xl font-bold leading-tight group-hover:text-primary transition-colors sm:text-3xl">
                 {item.title}
               </h2>
@@ -89,7 +89,7 @@ export function NewsViewContainer({ news }: NewsViewContainerProps) {
               {item.summary}
             </p>
             <div className="pt-2">
-               <Link href={`/news/${item.slug}`} className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2 hover:underline">
+               <Link href={`/community/news/${item.slug}`} className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2 hover:underline">
                  Verification Feed <ExternalLink className="h-3 w-3" />
                </Link>
             </div>

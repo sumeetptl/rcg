@@ -37,7 +37,7 @@ export function EditorialNewsCard({ news, featured = false }: EditorialNewsCardP
       </div>
 
       {/* Main Content */}
-      <Link href={`/news/${news.slug}`} className="block group-hover:opacity-80 transition-opacity">
+      <Link href={`/community/news/${news.slug}`} className="block group-hover:opacity-80 transition-opacity">
         <h2 className={cn(
             "font-serif text-foreground leading-tight group-hover:underline decoration-1 underline-offset-4",
             featured ? "text-3xl sm:text-4xl font-bold mb-3" : "text-xl font-semibold mb-2"

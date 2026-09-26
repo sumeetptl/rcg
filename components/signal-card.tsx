@@ -104,7 +104,7 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
   }
 
   return (
-    <Link href={`/signals/${signal.id}`} className="group block h-full">
+    <Link href={`/intelligence/trade-ideas/${signal.id}`} className="group block h-full">
       <Card className="h-full overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-md">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
