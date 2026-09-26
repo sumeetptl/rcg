@@ -6,15 +6,7 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
-import { Menu, X } from "lucide-react"
-import { useState } from "react"
 import { UserNav } from "@/components/user-nav"
-
-const navItems = [
-  { href: "/intelligence", label: "Intelligence" },
-  { href: "/academy", label: "Academy" },
-  { href: "/community", label: "Community" },
-]
 
 interface TopNavigationProps {
   isAuthenticated?: boolean
@@ -25,7 +17,13 @@ interface TopNavigationProps {
 
 export function TopNavigation({ isAuthenticated = false, isAdmin = false, className, user }: TopNavigationProps) {
   const pathname = usePathname()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const currentNavItems = [
+    ...(isAuthenticated ? [{ href: "/dashboard", label: "Home" }] : []),
+    { href: "/intelligence", label: "Intelligence" },
+    { href: "/academy", label: "Academy" },
+    { href: "/community", label: "Community" },
+  ]
 
   // Do not render the global navigation bar in the admin console
   if (pathname.startsWith('/admin')) {
@@ -56,7 +54,7 @@ export function TopNavigation({ isAuthenticated = false, isAdmin = false, classN
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => (
+          {currentNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -95,59 +93,8 @@ export function TopNavigation({ isAuthenticated = false, isAdmin = false, classN
             </Button>
           )}
 
-          {/* Mobile Menu Toggle */}
-          <button
-            type="button"
-            className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-foreground md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
         </div>
       </div>
-
-      {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <div className="mt-2 mx-auto max-w-7xl rounded-xl border border-border/40 bg-background/95 p-4 shadow-lg backdrop-blur-md supports-[backdrop-filter]:bg-background/80 md:hidden">
-          <nav className="flex flex-col gap-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent",
-                  pathname.startsWith(item.href)
-                    ? "bg-accent text-foreground"
-                    : "text-muted-foreground"
-                )}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
-            {isAdmin && (
-              <Link
-                href="/admin"
-                className={cn(
-                  "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent",
-                  pathname.startsWith("/admin")
-                    ? "bg-accent text-foreground"
-                    : "text-muted-foreground"
-                )}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Admin
-              </Link>
-            )}
-             {isAuthenticated && (
-                <div className="pt-2 mt-2 border-t border-border">
-                    <UserNav user={user} />
-                </div>
-             )}
-          </nav>
-        </div>
-      )}
     </header>
   )
 }

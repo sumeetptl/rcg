@@ -4,6 +4,7 @@ import { Inter, Lora, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/theme-provider'
 import { TopNavigation } from '@/components/layout/TopNavigation'
+import { BottomNavigation } from '@/components/layout/BottomNavigation'
 import { createClient } from '@/lib/supabase/server'
 import './globals.css'
 import { Disclaimer } from '@/components/disclaimer'
@@ -72,8 +73,11 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TopNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
-          {children}
+          <div className="md:pb-0 pb-[68px]">
+            <TopNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
+            {children}
+          </div>
+          <BottomNavigation isAuthenticated={!!user} isAdmin={isAdmin} />
         </ThemeProvider>
         <Disclaimer />
         <Analytics />

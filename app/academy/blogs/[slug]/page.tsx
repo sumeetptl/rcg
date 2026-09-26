@@ -1,5 +1,5 @@
 
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { CloudinaryImage } from "@/components/cloudinary-image"
 import Link from "next/link"
 import { Footer } from "@/components/footer"
@@ -52,7 +52,12 @@ export default async function BlogPage({ params }: BlogPageProps) {
   }
 
   const { data: { user } } = await supabase.auth.getUser()
-  const canViewPremium = !!user
+  
+  if (!user) {
+    redirect("/auth/login")
+  }
+
+  const canViewPremium = true // All logged in users can read blogs
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "Draft"

@@ -18,6 +18,7 @@ import {
   Clock,
   Target,
   AlertTriangle,
+  Lock,
 } from "lucide-react";
 import { CryptoLogo } from "@/components/crypto/crypto-logo";
 
@@ -29,6 +30,18 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let isPremium = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan, role")
+      .eq("id", user.id)
+      .single();
+    
+    isPremium = profile?.plan === "premium" || profile?.role === "admin";
+  }
 
   const [signalsResult, newsResult, blogsResult] = await Promise.all([
     supabase
@@ -308,7 +321,8 @@ export default async function DashboardPage() {
             </div>
 
             <div className="rounded-xl border border-border/40 bg-card overflow-hidden shadow-sm">
-              <div className="max-h-[600px] overflow-y-auto">
+              {isPremium ? (
+                <div className="max-h-[600px] overflow-y-auto">
                 <Table>
                   <TableHeader className="bg-muted/20 hover:bg-muted/20 sticky top-0 z-10">
                     <TableRow className="hover:bg-transparent border-b border-border/40">
@@ -448,7 +462,21 @@ export default async function DashboardPage() {
                     )}
                   </TableBody>
                 </Table>
-              </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-20 text-center bg-muted/10">
+                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                    <Lock className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold tracking-tight text-foreground mb-2">Premium Signals Locked</h3>
+                  <p className="text-sm text-muted-foreground max-w-sm mb-6">
+                    Upgrade to Premium to view active trading setups, exact entry prices, and take-profit targets.
+                  </p>
+                  <Button asChild>
+                    <Link href="/profile">Upgrade to Premium</Link>
+                  </Button>
+                </div>
+              )}
             </div>
           </section>
 

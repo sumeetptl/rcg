@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { CloudinaryImage } from "@/components/cloudinary-image"
 import Link from "next/link"
 import { Footer } from "@/components/footer"
@@ -51,7 +51,12 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
   }
 
   const { data: { user } } = await supabase.auth.getUser()
-  const canViewPremium = !!user
+  
+  if (!user) {
+    redirect("/auth/login")
+  }
+
+  const canViewPremium = true // All logged in users can read news
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "Just now"
