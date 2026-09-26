@@ -3,7 +3,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Comprehensive privacy policy and data collection practices for RealCryptoG.",
+  description: "Comprehensive privacy policy and data collection practices for CoinStaq.",
 }
 
 export default function PrivacyPolicyPage() {
@@ -16,7 +16,7 @@ export default function PrivacyPolicyPage() {
       <section>
         <h2>1. Introduction & Scope</h2>
         <p className="mb-3 text-muted-foreground">
-          RealCryptoG ("we," "us," or "our") is committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy describes how we collect, use, and disclose your personal data when you use our website, mobile applications, and services (collectively, the "Platform"). By accessing or using the Platform, you consent to the data practices described in this policy.
+          CoinStaq ("we," "us," or "our") is committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy describes how we collect, use, and disclose your personal data when you use our website, mobile applications, and services (collectively, the "Platform"). By accessing or using the Platform, you consent to the data practices described in this policy.
         </p>
         <p className="mb-3 text-muted-foreground">
           This policy applies to all users, subscribers, and visitors globally. We adhere to principles of data minimization and transparency, collecting only what is necessary to provide our financial information services.
@@ -120,7 +120,7 @@ export default function PrivacyPolicyPage() {
           If you have any questions about this Privacy Policy or our privacy practices, please contact us at:
         </p>
         <div className="text-foreground font-medium pl-5 border-l-2 border-border">
-          RealCryptoG Legal Team<br />
+          CoinStaq Legal Team<br />
           Email: privacy@realcryptog.com<br />
           Address: 1209 Orange Street, Wilmington, DE 19801
         </div>

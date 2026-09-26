@@ -105,7 +105,7 @@ export function AdminSidebar({ userProfile }: { userProfile: any }) {
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                  <span className="truncate font-semibold">RealCryptoG</span>
+                  <span className="truncate font-semibold">CoinStaq</span>
                   <span className="truncate text-xs text-muted-foreground">Admin Console</span>
                 </div>
             </div>

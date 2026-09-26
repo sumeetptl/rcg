@@ -7,7 +7,7 @@ import { ShieldCheck, Target, BarChart3, Lock } from "lucide-react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "About — The Real Crypto G",
+  title: "About — CoinStaq",
   description: "Institutional research terminal providing technical execution parameters for digital asset markets.",
 }
 
@@ -27,7 +27,7 @@ export default async function AboutPage() {
             <header className="p-8 sm:p-12">
               <div className="space-y-4">
                 <h1 className="font-serif text-3xl font-semibold tracking-tight sm:text-4xl text-foreground">
-                  About The Real Crypto G
+                  About CoinStaq
                 </h1>
                 <p className="text-lg text-muted-foreground font-medium leading-relaxed max-w-3xl">
                   An institutional-grade research terminal providing technical execution parameters for digital asset markets.
@@ -49,7 +49,7 @@ export default async function AboutPage() {
                     <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-primary">Identity & Mission</h2>
                     <div className="prose prose-neutral dark:prose-invert max-w-none text-foreground leading-relaxed">
                       <p className="text-lg">
-                        The Real Crypto G is a research-first terminal designed for technical market participants. 
+                        CoinStaq is a research-first terminal designed for technical market participants. 
                         Our objective is to provide objective, mathematical execution protocols for the cryptocurrency markets.
                       </p>
                       <div className="grid sm:grid-cols-2 gap-8 mt-8">
@@ -141,7 +141,7 @@ export default async function AboutPage() {
                   {/* Closing Statement */}
                   <section className="pt-12 border-t border-border">
                     <p className="font-serif text-xl font-medium tracking-tight text-foreground max-w-2xl">
-                      The Real Crypto G remains committed to editorial integrity and analytical precision 
+                      CoinStaq remains committed to editorial integrity and analytical precision 
                       above all else.
                     </p>
                     <p className="mt-4 text-xs font-mono uppercase tracking-[0.3em] text-muted-foreground">

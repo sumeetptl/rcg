@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'The Real Crypto G',
-    short_name: 'RealCryptoG',
-    description: 'Institutional-grade crypto market intelligence and research-driven trading signals.',
+    name: 'CoinStaq',
+    short_name: 'CoinStaq',
+    description: 'Intelligence for Digital Markets. Less Noise. More Edge.',
     start_url: '/',
     display: 'standalone',
     background_color: '#000000',

@@ -6,7 +6,7 @@ import { ShieldAlert, Scale, Brain, Gauge, FileWarning } from "lucide-react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Responsible Usage Protocol — The Real Crypto G",
+  title: "Responsible Usage Protocol — CoinStaq",
   description: "Educational guidelines for ethical execution, capital management, and risk discipline.",
 }
 

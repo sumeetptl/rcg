@@ -8,7 +8,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "In-depth crypto analysis, market research, and trading insights from RealCryptoG.",
+  description: "In-depth crypto analysis, market research, and trading insights from CoinStaq.",
 }
 
 const categories = ["All", "Analysis", "Tutorial", "Market Update", "Strategy"]

@@ -159,7 +159,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
                 {/* Optional footer/meta section */}
                 <footer className="border-t border-border bg-muted/10 p-8 sm:px-12">
                   <p className="text-sm text-muted-foreground italic font-serif">
-                    &copy; {new Date().getFullYear()} The Real Crypto G Research. All rights reserved.
+                    &copy; {new Date().getFullYear()} CoinStaq Research. All rights reserved.
                   </p>
                 </footer>
               </div>

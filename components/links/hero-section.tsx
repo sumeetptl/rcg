@@ -19,14 +19,14 @@ export function HeroSection({ onJoinWaitlist }: { onJoinWaitlist?: () => void })
         <div className="relative w-full h-full">
           <Image 
              src="/night-logo.png" 
-             alt="The Real Crypto G" 
+             alt="CoinStaq" 
              fill 
              className="object-contain dark:opacity-100 opacity-0 transition-opacity duration-300 absolute inset-0"
              priority
           />
           <Image 
              src="/day-logo.png" 
-             alt="The Real Crypto G" 
+             alt="CoinStaq" 
              fill 
              className="object-contain dark:opacity-0 opacity-100 transition-opacity duration-300 absolute inset-0"
              priority
@@ -35,13 +35,13 @@ export function HeroSection({ onJoinWaitlist }: { onJoinWaitlist?: () => void })
         {/* 
         <Image 
            src="/night-logo.png" 
-           alt="The Real Crypto G" 
+           alt="CoinStaq" 
            fill 
            className="object-contain dark:block hidden"
         />
         <Image 
            src="/day-logo.png" 
-           alt="The Real Crypto G" 
+           alt="CoinStaq" 
            fill 
            className="object-contain dark:hidden block"
         /> 
@@ -55,7 +55,7 @@ export function HeroSection({ onJoinWaitlist }: { onJoinWaitlist?: () => void })
         transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
         className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground mb-3"
       >
-        The Real Crypto G
+        CoinStaq
       </motion.h1>
 
       {/* Subtitle */}

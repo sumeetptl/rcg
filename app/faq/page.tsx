@@ -6,7 +6,7 @@ import { HelpCircle, Info, MessageSquare, ShieldQuestion } from "lucide-react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Investor-Grade FAQ — The Real Crypto G",
+  title: "Investor-Grade FAQ — CoinStaq",
   description: "System transparency and operating procedures. Addressing the questions of serious market participants.",
 }
 
@@ -25,7 +25,7 @@ const faqs = [
   },
   {
     question: "What is your stance on 'paid' groups and signal scams?",
-    answer: "The Real Crypto G operates as a professional research terminal, not a marketing funnel. We strictly avoid the hyper-promotional 'guaranteed gains' language common in the industry. Our fee structure covers the operational costs of high-grade data feeds and analyst time, not profit-sharing from user trades."
+    answer: "CoinStaq operates as a professional research terminal, not a marketing funnel. We strictly avoid the hyper-promotional 'guaranteed gains' language common in the industry. Our fee structure covers the operational costs of high-grade data feeds and analyst time, not profit-sharing from user trades."
   },
   {
     question: "How often are signals published?",

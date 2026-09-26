@@ -43,21 +43,21 @@ export function HeroSection() {
               variants={itemVariants} 
               className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground"
             >
-              Research & Analysis Platform
+              Intelligence for Digital Markets.
             </motion.div>
             
             <motion.h1 
               variants={itemVariants}
               className="font-serif text-4xl font-medium leading-[1.15] tracking-tight sm:text-5xl md:text-6xl"
             >
-              Institutional grade research for active crypto participants.
+              Less Noise. More Edge.
             </motion.h1>
 
             <motion.p 
               variants={itemVariants}
               className="mt-6 text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto"
             >
-              A focused environment providing data-driven market insights, transparent trade logic, and disciplined execution frameworks.
+              Research-driven market insights, structured strategies, and disciplined thinking for digital asset participants.
             </motion.p>
 
             <motion.div 
@@ -68,7 +68,7 @@ export function HeroSection() {
                 href="/links" 
                 className="text-sm font-medium border-b border-foreground/30 pb-0.5 transition-colors hover:border-foreground"
               >
-                Join Waitlist
+                Explore Intelligence
               </Link>
               <Link 
                 href="/methodology" 

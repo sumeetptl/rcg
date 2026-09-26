@@ -6,7 +6,7 @@ import { GitBranch, Fingerprint, Activity, Microscope } from "lucide-react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Research Methodology — The Real Crypto G",
+  title: "Research Methodology — CoinStaq",
   description: "Detailed breakdown of the G-INTEL research framework and signal qualification protocols.",
 }
 

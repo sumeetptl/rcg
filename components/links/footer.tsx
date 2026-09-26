@@ -24,7 +24,7 @@ export function Footer() {
         ))}
       </div>
       <p className="text-center text-[10px] text-muted-foreground/30 mt-4">
-        © 2026 The Real Crypto G. All rights reserved.
+        © 2026 CoinStaq. All rights reserved.
       </p>
     </footer>
   )

@@ -18,11 +18,12 @@ import {
 
 const publicNavItems = [
   { href: "/", label: "Home" },
+  { href: "/news", label: "News & Community" },
   {
-    label: "Resources",
+    label: "Intelligence",
     children: [
-      { href: "/news", label: "News" },
-      { href: "/blogs", label: "Blogs" },
+      { href: "/blogs", label: "Market Insights" },
+      { href: "/methodology", label: "Research" },
     ],
   },
   { href: "/about", label: "About" },
@@ -31,12 +32,12 @@ const publicNavItems = [
 const authNavItems = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/market-data", label: "Market Data" },
-  { href: "/dashboard/signals", label: "Signals" },
+  { href: "/dashboard/signals", label: "Intelligence" },
   {
     label: "Resources",
     children: [
-      { href: "/dashboard/news", label: "News" },
-      { href: "/dashboard/blogs", label: "Blogs" },
+      { href: "/dashboard/news", label: "Community" },
+      { href: "/dashboard/blogs", label: "Academy" },
     ],
   },
 ]
@@ -61,20 +62,20 @@ export function Header({ isAuthenticated = false, isAdmin = false, className, us
           <div className="relative h-10 w-10 overflow-hidden">
              <Image 
                src="/day-logo.png" 
-               alt="RealCryptoG Logo" 
+               alt="CoinStaq Logo" 
                fill
                className="object-contain dark:hidden"
                priority
              />
              <Image 
                src="/night-logo.png" 
-               alt="RealCryptoG Logo" 
+               alt="CoinStaq Logo" 
                fill
                className="hidden object-contain dark:block"
                priority
              />
           </div>
-          {/* <span className="font-serif text-xl font-semibold tracking-tight">RealCryptoG</span> */}
+          {/* <span className="font-serif text-xl font-semibold tracking-tight">CoinStaq</span> */}
         </Link>
 
         {/* Desktop Navigation */}

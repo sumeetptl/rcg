@@ -48,14 +48,14 @@ export default function LoginPage() {
           <Link href="/" className="inline-block relative w-20 h-20">
             <Image 
                src="/night-logo.png" 
-               alt="Real Crypto G" 
+               alt="CoinStaq" 
                fill 
                className="object-contain dark:opacity-100 opacity-0 transition-opacity duration-300 absolute inset-0"
                priority
             />
             <Image 
                src="/day-logo.png" 
-               alt="Real Crypto G" 
+               alt="CoinStaq" 
                fill 
                className="object-contain dark:opacity-0 opacity-100 transition-opacity duration-300 absolute inset-0"
                priority
