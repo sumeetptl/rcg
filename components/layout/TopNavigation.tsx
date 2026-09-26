@@ -27,6 +27,11 @@ export function TopNavigation({ isAuthenticated = false, isAdmin = false, classN
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  // Do not render the global navigation bar in the admin console
+  if (pathname.startsWith('/admin')) {
+    return null
+  }
+
   return (
     <header className={cn("sticky top-4 z-50 w-full px-4 sm:px-6", className)}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between rounded-xl border border-border bg-background/80 px-4 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60">

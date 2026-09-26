@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import Image from "next/image"
+import { CloudinaryImage } from "@/components/cloudinary-image"
 import Link from "next/link"
 import { Footer } from "@/components/footer"
 import { createClient } from "@/lib/supabase/server"
@@ -114,8 +114,8 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
 
             {/* Thumbnail (only if exists) */}
             {news.thumbnail && (
-               <div className="relative mb-12 aspect-[2/1] w-full overflow-hidden rounded bg-muted border border-border/40 grayscale hover:grayscale-0 transition-all duration-700">
-                  <Image
+               <div className="relative mb-12 aspect-video w-full overflow-hidden rounded bg-muted border border-border/40 grayscale hover:grayscale-0 transition-all duration-700">
+                  <CloudinaryImage
                      src={news.thumbnail}
                      alt={news.title}
                      fill

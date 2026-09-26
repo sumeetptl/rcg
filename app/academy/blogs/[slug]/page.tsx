@@ -1,6 +1,6 @@
 
 import { notFound } from "next/navigation"
-import Image from "next/image"
+import { CloudinaryImage } from "@/components/cloudinary-image"
 import Link from "next/link"
 import { Footer } from "@/components/footer"
 import { createClient } from "@/lib/supabase/server"
@@ -118,9 +118,9 @@ export default async function BlogPage({ params }: BlogPageProps) {
                 <div className="p-8 sm:p-12">
                   {/* Cover Image inside content for reading flow */}
                   {blog.cover_image && (
-                    <div className="relative mb-12 aspect-[21/9] overflow-hidden rounded-lg bg-muted border border-border/40">
-                      <Image
-                        src={blog.cover_image || "/placeholder.svg"}
+                    <div className="relative mb-12 aspect-video overflow-hidden rounded-lg bg-muted border border-border/40">
+                      <CloudinaryImage
+                        src={blog.cover_image}
                         alt={blog.title}
                         fill
                         className="object-cover"

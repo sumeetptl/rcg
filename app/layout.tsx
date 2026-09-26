@@ -44,7 +44,24 @@ export default async function RootLayout({
 }>) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const isAdmin = user?.user_metadata?.role === 'admin'
+  
+  let isAdmin = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role, avatar_url, first_name, username")
+      .eq("id", user.id)
+      .single()
+      
+    if (profile) {
+      isAdmin = profile.role === 'admin'
+      user.user_metadata = {
+         ...user.user_metadata,
+         avatar_url: profile.avatar_url || user.user_metadata?.avatar_url,
+         name: profile.first_name || profile.username || user.user_metadata?.name
+      }
+    }
+  }
 
   return (
     <html lang="en" suppressHydrationWarning>

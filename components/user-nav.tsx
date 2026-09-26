@@ -16,6 +16,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 
 interface UserNavProps {
   user?: {
@@ -28,6 +30,15 @@ interface UserNavProps {
 }
 
 export function UserNav({ user }: UserNavProps) {
+  const router = useRouter()
+  
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/')
+    router.refresh()
+  }
+
   const email = user?.email
   const name = user?.user_metadata?.name || email?.split("@")[0]
   const avatarUrl = user?.user_metadata?.avatar_url
@@ -61,12 +72,11 @@ export function UserNav({ user }: UserNavProps) {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-             <form action="/auth/signout" method="post" className="w-full">
-                <button type="submit" className="w-full text-left cursor-pointer">
-                    Log out
-                </button>
-            </form>
+        <DropdownMenuItem 
+          onClick={handleLogout}
+          className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-100 dark:focus:bg-red-900/20"
+        >
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

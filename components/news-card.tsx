@@ -1,5 +1,5 @@
 import Link from "next/link"
-import Image from "next/image"
+import { CloudinaryImage } from "@/components/cloudinary-image"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Clock, ExternalLink } from "lucide-react"
@@ -56,8 +56,8 @@ export function NewsCard({ news, compact = false }: NewsCardProps) {
           </div>
           {news.thumbnail && (
             <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
-              <Image
-                src={news.thumbnail || "/placeholder.svg"}
+              <CloudinaryImage
+                src={news.thumbnail}
                 alt={news.title}
                 fill
                 className="object-cover"
@@ -74,8 +74,8 @@ export function NewsCard({ news, compact = false }: NewsCardProps) {
       <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
         {news.thumbnail && (
           <div className="relative aspect-[16/9] overflow-hidden bg-muted">
-            <Image
-              src={news.thumbnail || "/placeholder.svg"}
+            <CloudinaryImage
+              src={news.thumbnail}
               alt={news.title}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"

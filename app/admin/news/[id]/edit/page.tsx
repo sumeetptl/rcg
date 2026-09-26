@@ -34,7 +34,7 @@ export default function EditNewsPage() {
     slug: "",
     summary: "",
     content: "",
-    cover_image: "",
+    thumbnail: "",
     source: "",
     source_url: "",
     category: "Bitcoin",
@@ -62,7 +62,7 @@ export default function EditNewsPage() {
         slug: data.slug,
         summary: data.summary || "",
         content: data.content || "",
-        cover_image: data.cover_image || "",
+        thumbnail: data.thumbnail || "",
         source: data.source || "",
         source_url: data.source_url || "",
         category: data.category || "Bitcoin",
@@ -89,7 +89,7 @@ export default function EditNewsPage() {
         slug: formData.slug,
         summary: formData.summary || null,
         content: formData.content,
-        cover_image: formData.cover_image || null,
+        thumbnail: formData.thumbnail || null,
         source: formData.source || null,
         source_url: formData.source_url || null,
         category: formData.category,
@@ -243,9 +243,9 @@ export default function EditNewsPage() {
                      <div className="space-y-2">
                          <Label>Cover Image</Label>
                          <ImageUpload 
-                            value={formData.cover_image}
-                            onChange={(url) => setFormData({ ...formData, cover_image: url })}
-                            onRemove={() => setFormData({ ...formData, cover_image: "" })}
+                            value={formData.thumbnail}
+                            onChange={(url) => setFormData({ ...formData, thumbnail: url })}
+                            onRemove={() => setFormData({ ...formData, thumbnail: "" })}
                         />
                     </div>
                 </div>
