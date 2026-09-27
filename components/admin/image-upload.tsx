@@ -30,7 +30,7 @@ export function ImageUpload({
     <div className="w-full space-y-4">
       {value ? (
         <Card className="relative overflow-hidden group">
-          <div className="relative aspect-video w-full h-64 bg-muted/30 flex items-center justify-center">
+          <div className="relative aspect-video w-full max-h-64 bg-muted/30 flex items-center justify-center">
              {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src={value} 

@@ -141,7 +141,7 @@ export default function EditNewsPage() {
   return (
     <div className="mx-auto max-w-5xl p-6 lg:p-8 space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4">
             <div className="flex flex-col gap-1">
                 <Link
                 href="/admin/news"
@@ -152,23 +152,24 @@ export default function EditNewsPage() {
                 </Link>
                 <h1 className="font-serif text-3xl font-semibold tracking-tight">Edit News Article</h1>
             </div>
-             <div className="flex gap-3">
+             <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
                  <Button
                     type="button"
                     variant="destructive"
                     onClick={handleDelete}
                     disabled={isDeleting}
                     size="icon"
+                    className="shrink-0"
                 >
                     {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                 </Button>
-                <Button variant="outline" onClick={() => router.back()}>
+                <Button variant="outline" onClick={() => router.back()} className="flex-1 sm:flex-none">
                     Cancel
                 </Button>
-                <Button onClick={handleSubmit} disabled={isLoading}>
+                <Button onClick={handleSubmit} disabled={isLoading} className="flex-1 sm:flex-none">
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {!isLoading && <Save className="mr-2 h-4 w-4" />}
-                    Save Changes
+                    Save
                 </Button>
             </div>
       </div>
@@ -183,7 +184,7 @@ export default function EditNewsPage() {
              {/* 1. News Details */}
             <FormSection title="News Details">
                 <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-4">
+                    <div className="space-y-4 min-w-0">
                         <div className="space-y-2">
                             <Label htmlFor="title">Headline</Label>
                             <Input
@@ -240,7 +241,7 @@ export default function EditNewsPage() {
                             </div>
                         </div>
                     </div>
-                     <div className="space-y-2">
+                     <div className="space-y-2 min-w-0">
                          <Label>Cover Image</Label>
                          <ImageUpload 
                             value={formData.thumbnail}

@@ -87,7 +87,7 @@ export default function NewNewsPage() {
   return (
     <div className="mx-auto max-w-5xl p-6 lg:p-8 space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4">
             <div className="flex flex-col gap-1">
                 <Link
                 href="/admin/news"
@@ -98,11 +98,11 @@ export default function NewNewsPage() {
                 </Link>
                 <h1 className="font-serif text-3xl font-semibold tracking-tight">Add News Article</h1>
             </div>
-             <div className="flex gap-3">
-                <Button variant="outline" onClick={() => router.back()}>
+             <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                <Button variant="outline" onClick={() => router.back()} className="flex-1 sm:flex-none">
                     Cancel
                 </Button>
-                <Button onClick={handleSubmit} disabled={isLoading}>
+                <Button onClick={handleSubmit} disabled={isLoading} className="flex-1 sm:flex-none">
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {!isLoading && <Save className="mr-2 h-4 w-4" />}
                     Save Article
@@ -120,7 +120,7 @@ export default function NewNewsPage() {
             {/* 1. News Details */}
             <FormSection title="News Details" description="Core information about the news event.">
                 <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-4">
+                    <div className="space-y-4 min-w-0">
                         <div className="space-y-2">
                             <Label htmlFor="title">Headline</Label>
                             <Input
@@ -181,7 +181,7 @@ export default function NewNewsPage() {
                             </div>
                         </div>
                     </div>
-                     <div className="space-y-2">
+                     <div className="space-y-2 min-w-0">
                          <Label>Cover Image</Label>
                          <ImageUpload 
                             value={formData.thumbnail}
