@@ -77,7 +77,7 @@ export default async function RootLayout({
             <TopNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
             {children}
           </div>
-          <BottomNavigation isAuthenticated={!!user} isAdmin={isAdmin} />
+          <BottomNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
         </ThemeProvider>
         <Disclaimer />
         <Analytics />

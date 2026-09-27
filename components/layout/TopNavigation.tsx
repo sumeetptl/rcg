@@ -31,7 +31,7 @@ export function TopNavigation({ isAuthenticated = false, isAdmin = false, classN
   }
 
   return (
-    <header className={cn("sticky top-4 z-50 w-full px-4 sm:px-6", className)}>
+    <header className={cn("hidden md:block sticky top-4 z-50 w-full px-4 sm:px-6", className)}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between rounded-xl border border-border bg-background/80 px-4 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
         <Link href={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-2 ml-2">
           <div className="relative h-10 w-10 overflow-hidden">

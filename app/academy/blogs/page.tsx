@@ -29,14 +29,18 @@ export default async function BlogsPage({
 
       <main className="flex-1">
         {/* Header */}
-        <header className="mb-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between px-4 sm:px-6 mx-auto max-w-7xl">
-          <div className="flex flex-col gap-2">
-            <h1 className="font-serif text-3xl font-medium tracking-tight text-foreground">Technical Research</h1>
-            <p className="text-muted-foreground text-sm font-medium">
-              Deep-dive market analysis and institutional-grade trading insights from the RCG editorial board.
-            </p>
+        <section className="border-b border-border bg-muted/30 py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h1 className="font-serif text-4xl font-semibold tracking-tight">Technical Research</h1>
+                <p className="mt-4 max-w-2xl text-lg text-muted-foreground leading-relaxed">
+                  Deep-dive market analysis and institutional-grade trading insights from the RCG editorial board.
+                </p>
+              </div>
+            </div>
           </div>
-        </header>
+        </section>
 
         {/* Content Section */}
         <section className="py-12">
