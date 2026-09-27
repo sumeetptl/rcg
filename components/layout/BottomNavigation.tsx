@@ -71,7 +71,7 @@ export function BottomNavigation({ isAuthenticated = false, isAdmin = false, use
   const avatarUrl = user?.user_metadata?.avatar_url
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[100] flex h-[68px] items-center justify-around border-t border-border bg-background/95 px-2 shadow-[0_-4px_24px_rgba(0,0,0,0.05)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 pb-safe">
+    <nav className="md:hidden fixed bottom-6 left-4 right-4 z-[100] flex h-[64px] items-center justify-around rounded-2xl border border-foreground/10 dark:border-border/80 bg-background/95 px-2 shadow-2xl dark:shadow-[0_0_30px_rgba(0,0,0,0.5)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/85">
       {navItems.map((item) => {
         const Icon = item.icon
         // Check if the current pathname matches the active pattern

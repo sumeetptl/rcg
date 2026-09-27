@@ -7,11 +7,18 @@ import { AIInputArea } from "./ai-input-area"
 import { AIMarketContext } from "./ai-market-context"
 import { Sparkles, TrendingUp, Search, ShieldAlert } from "lucide-react"
 
-type Message = {
+export type ThinkingStep = {
+  id: string
+  text: string
+  status: "pending" | "done"
+}
+
+export type Message = {
   id: string
   role: "user" | "assistant"
   content: string
   timestamp: Date
+  thinkingSteps?: ThinkingStep[]
 }
 
 const suggestedPrompts = [
@@ -37,7 +44,7 @@ export function AIChatInterface() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  const handleSend = (text: string) => {
+  const handleSend = async (text: string) => {
     if (!text.trim()) return
 
     const userMessage: Message = {
@@ -47,24 +54,56 @@ export function AIChatInterface() {
       timestamp: new Date(),
     }
     
-    setMessages(prev => [...prev, userMessage])
+    const aiMessageId = (Date.now() + 1).toString()
+    const initialAiMessage: Message = {
+      id: aiMessageId,
+      role: "assistant",
+      content: "",
+      timestamp: new Date(),
+      thinkingSteps: []
+    }
+
+    setMessages(prev => [...prev, userMessage, initialAiMessage])
     setIsGenerating(true)
 
-    // Simulate AI response for now
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: "I'm currently running in UI-only mode. Once backend capabilities are connected, I'll be able to analyze this data instantly.",
-        timestamp: new Date(),
+    const steps = [
+      "Parsing user query and intent...",
+      "Fetching real-time on-chain data...",
+      "Analyzing order book liquidity...",
+      "Synthesizing market sentiment..."
+    ]
+
+    for (let i = 0; i < steps.length; i++) {
+      setMessages(prev => prev.map(msg => {
+        if (msg.id === aiMessageId) {
+          const newSteps = [...(msg.thinkingSteps || [])];
+          if (newSteps.length > 0) {
+            newSteps[newSteps.length - 1].status = "done";
+          }
+          newSteps.push({ id: `step-${i}`, text: steps[i], status: "pending" });
+          return { ...msg, thinkingSteps: newSteps };
+        }
+        return msg;
+      }))
+      await new Promise(r => setTimeout(r, 600 + Math.random() * 600));
+    }
+
+    setMessages(prev => prev.map(msg => {
+      if (msg.id === aiMessageId) {
+         const finalSteps = (msg.thinkingSteps || []).map(s => ({ ...s, status: "done" as const }));
+         return { 
+           ...msg, 
+           thinkingSteps: finalSteps, 
+           content: "I've analyzed the technical structure. However, I am currently running in UI-only mode to demonstrate the thinking process. Once backend LLM capabilities are connected, I will provide a full comprehensive breakdown." 
+         };
       }
-      setMessages(prev => [...prev, aiMessage])
-      setIsGenerating(false)
-    }, 1500)
+      return msg;
+    }))
+    setIsGenerating(false)
   }
 
   return (
-    <div className="flex h-[calc(100vh-14rem)] w-full gap-6">
+    <div className="flex h-[calc(100dvh-270px)] md:h-[calc(100dvh-290px)] w-full gap-6 pb-2">
       {/* Main Chat Area */}
       <div className="flex flex-1 flex-col rounded-xl border border-border bg-background shadow-sm overflow-hidden">
         
@@ -84,27 +123,14 @@ export function AIChatInterface() {
               ))}
             </AnimatePresence>
             
-            {isGenerating && (
-              <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                className="flex items-center gap-2 text-sm text-muted-foreground ml-12"
-              >
-                <div className="flex gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
-                <span>Analyzing market data...</span>
-              </motion.div>
-            )}
+            {/* Removed standalone isGenerating text because we render thinking inside the bubble now */}
             <div ref={bottomRef} />
           </div>
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-border/50 bg-muted/10 p-4 sm:px-6 sm:pb-6">
-          <div className="mx-auto max-w-3xl flex flex-col gap-3">
+        <div className="p-2 sm:p-4">
+          <div className="mx-auto max-w-3xl flex flex-col gap-2">
             {messages.length === 1 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                 {suggestedPrompts.map((prompt, i) => (

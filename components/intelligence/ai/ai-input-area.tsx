@@ -40,10 +40,10 @@ export function AIInputArea({ onSend, isGenerating }: AIInputAreaProps) {
   }
 
   return (
-    <div className="relative flex w-full items-end gap-2 rounded-xl border border-border bg-card p-2 shadow-sm transition-shadow focus-within:ring-1 focus-within:ring-primary/30">
-      <div className="flex flex-col justify-end pb-1 pl-1">
-        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-muted-foreground hover:text-foreground">
-          <Paperclip className="h-4 w-4" />
+    <div className="relative flex w-full items-end gap-1 rounded-[24px] border border-border/80 bg-background p-1 pl-3 pr-1 shadow-sm transition-shadow focus-within:ring-1 focus-within:ring-primary/30">
+      <div className="flex flex-col justify-end pb-0.5">
+        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-muted-foreground hover:text-foreground">
+          <Paperclip className="h-3.5 w-3.5" />
         </Button>
       </div>
       
@@ -53,21 +53,21 @@ export function AIInputArea({ onSend, isGenerating }: AIInputAreaProps) {
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Ask CoinStaq AI to analyze an asset, macro trend, or wallet..."
-        className="min-h-[40px] w-full resize-none border-0 bg-transparent px-2 py-2.5 text-sm shadow-none focus-visible:ring-0"
+        className="min-h-[36px] w-full resize-none border-0 bg-transparent px-1 py-2 text-sm shadow-none focus-visible:ring-0"
         rows={1}
       />
       
-      <div className="flex flex-col justify-end pb-1 pr-1">
+      <div className="flex flex-col justify-end pb-0.5">
         <Button 
           size="icon" 
           className={cn(
-            "h-8 w-8 rounded-full transition-all",
+            "h-7 w-7 rounded-full transition-all",
             input.trim() ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground opacity-50"
           )}
           onClick={handleSend}
           disabled={!input.trim() || isGenerating}
         >
-          <Send className="h-4 w-4 ml-0.5" />
+          <Send className="h-3.5 w-3.5 ml-0.5" />
         </Button>
       </div>
     </div>
