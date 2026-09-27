@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
+import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { MoreHorizontal, Pencil, Trash2, Eye, EyeOff, ExternalLink } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
@@ -86,7 +86,92 @@ export function NewsTable({ initialData }: NewsTableProps) {
 
   return (
     <>
-      <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+      {/* Mobile Card View */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {data.length === 0 ? (
+          <div className="text-center text-sm text-muted-foreground p-8 bg-card rounded-xl border border-border">
+            No news articles found.
+          </div>
+        ) : (
+          data.map((item) => (
+            <Card key={item.id} className="overflow-hidden">
+              <CardHeader className="p-4 pb-2 flex flex-row items-start justify-between space-y-0">
+                <div className="flex flex-col gap-1 pr-2">
+                  <span className="font-semibold text-sm line-clamp-2 leading-tight" title={item.title}>
+                    {item.title}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground font-mono">
+                    {item.status === 'published' ? formatDate(item.published_at) : formatDate(item.created_at || null)}
+                  </span>
+                  {item.source_url && (
+                    <a href={item.source_url} target="_blank" rel="noreferrer" className="text-[10px] text-primary hover:underline flex items-center gap-1 w-fit mt-1">
+                      Original Link <ExternalLink className="h-2.5 w-2.5" />
+                    </a>
+                  )}
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground shrink-0">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[160px]">
+                    <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Actions</DropdownMenuLabel>
+                    <DropdownMenuItem asChild className="text-xs">
+                      <Link href={`/admin/news/${item.id}/edit`}>
+                        <Pencil className="mr-2 h-3.5 w-3.5" /> Edit Article
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                        onClick={() => handleToggleStatus(item)}
+                        className="text-xs"
+                    >
+                      {item.status === 'published' ? (
+                          <><EyeOff className="mr-2 h-3.5 w-3.5" /> Unpublish</>
+                      ) : (
+                          <><Eye className="mr-2 h-3.5 w-3.5" /> Publish</>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      onClick={() => setDeleteId(item.id)}
+                      className="text-xs text-red-600 focus:text-red-600 focus:bg-red-100 dark:focus:bg-red-900/20"
+                    >
+                      <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete Article
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardHeader>
+              <CardContent className="p-4 pt-2">
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Category</span>
+                    <span className="inline-flex w-fit items-center px-1.5 py-0.5 rounded text-[10px] font-medium border bg-muted text-muted-foreground border-border capitalize">
+                      {item.category}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Status</span>
+                    {item.status === "published" ? (
+                      <span className="inline-flex w-fit items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase border bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400">
+                        Published
+                      </span>
+                    ) : (
+                      <span className="inline-flex w-fit items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase border bg-muted text-muted-foreground border-border">
+                        Draft
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden hidden md:block">
         <Table>
             <TableHeader className="bg-muted/20">
               <TableRow className="hover:bg-transparent border-b border-border">

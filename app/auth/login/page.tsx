@@ -31,13 +31,24 @@ export default function LoginPage() {
       password,
     })
 
-    if (signInError) {
-      setError(signInError.message)
+    if (signInError || !data.user) {
+      setError(signInError?.message || "Failed to sign in")
       setIsLoading(false)
       return
     }
 
-    router.push("/dashboard")
+    // Check if user is an admin
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .single()
+
+    if (profile?.role === "admin") {
+      router.push("/admin")
+    } else {
+      router.push("/dashboard")
+    }
     router.refresh()
   }
 

@@ -166,7 +166,108 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
 
   return (
     <>
-      <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+      {/* Mobile Card View */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {data.length === 0 ? (
+          <div className="text-center text-sm text-muted-foreground p-8 bg-card rounded-xl border border-border">
+            No signals found.
+          </div>
+        ) : (
+          data.map((signal) => (
+            <Card key={signal.id} className="overflow-hidden">
+              <CardHeader className="p-4 pb-2 flex flex-row items-start justify-between space-y-0">
+                <div className="flex items-center gap-3">
+                  <CryptoLogo symbol={signal.asset} size={32} />
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-mono text-sm font-bold">{signal.asset}</span>
+                    <span className="text-[10px] text-muted-foreground font-mono">{formatDate(signal.created_at)}</span>
+                  </div>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[160px]">
+                    <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Actions</DropdownMenuLabel>
+                    <DropdownMenuItem asChild className="text-xs">
+                      <Link href={`/admin/signals/${signal.id}/edit`}>
+                        <Pencil className="mr-2 h-3.5 w-3.5" /> Edit Signal
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => setDeleteId(signal.id)}
+                      className="text-xs text-red-600 focus:text-red-600 focus:bg-red-100 dark:focus:bg-red-900/20"
+                    >
+                      <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete Signal
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardHeader>
+              <CardContent className="p-4 pt-2">
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Direction</span>
+                    <span
+                      className={cn(
+                        "inline-flex items-center w-fit gap-1 px-2 py-0.5 rounded text-[10px] font-medium uppercase border",
+                        signal.direction === "LONG"
+                          ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400"
+                          : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-400",
+                      )}
+                    >
+                      {signal.direction === "LONG" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
+                      {signal.direction}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Status</span>
+                    <span
+                      className={cn(
+                        "inline-flex items-center w-fit px-2 py-0.5 rounded text-[10px] font-medium uppercase border",
+                        statusColors[signal.status.toLowerCase()] || statusColors.draft,
+                      )}
+                    >
+                      {signal.status}
+                    </span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Entry</span>
+                    <span className="font-mono text-sm">${formatPrice(signal.entry_price)}</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Result</span>
+                    {signal.result ? (
+                      <span
+                        className={cn(
+                          "font-mono text-sm font-medium",
+                          signal.result.toLowerCase() === "win"
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : signal.result.toLowerCase() === "loss"
+                              ? "text-rose-600 dark:text-rose-400"
+                              : "text-muted-foreground"
+                        )}
+                      >
+                        {signal.result}
+                      </span>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">—</span>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden hidden md:block">
         <Table>
           <TableHeader className="bg-muted/20">
             <TableRow className="hover:bg-transparent border-b border-border">

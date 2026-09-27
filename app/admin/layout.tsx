@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server"
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
+import { AdminBottomNavigation } from "@/components/admin/admin-bottom-navigation"
 
 export default async function AdminLayout({
   children,
@@ -51,10 +52,11 @@ export default async function AdminLayout({
              <h1 className="text-sm font-medium">Admin Console</h1>
           </div>
         </header>
-        <div className="flex-1 space-y-4 p-4 pt-0">
+        <div className="flex-1 space-y-4 p-4 pt-0 pb-20 md:pb-4">
             {children}
         </div>
       </SidebarInset>
+      <AdminBottomNavigation userProfile={userProfile} />
     </SidebarProvider>
   )
 }

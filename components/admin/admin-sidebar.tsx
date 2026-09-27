@@ -14,6 +14,7 @@ import {
   MoreHorizontal,
   LogOut,
   Command,
+  Hourglass,
 } from "lucide-react"
 
 import {
@@ -87,7 +88,7 @@ const navGroups = [
       {
         title: "Waitlist",
         url: "/admin/waitlist",
-        icon: Users, 
+        icon: Hourglass, 
       },
     ],
   },
@@ -206,7 +207,7 @@ export function AdminSidebar({ userProfile }: { userProfile: any }) {
                 <DropdownMenuItem asChild>
                     <Link href="/dashboard">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
-                        Back to User Dashboard
+                        Preview End User Experience
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
