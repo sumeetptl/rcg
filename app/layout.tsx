@@ -73,13 +73,13 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Disclaimer />
           <div className="md:pb-0 pb-[68px]">
             <TopNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
             {children}
           </div>
           <BottomNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
         </ThemeProvider>
-        <Disclaimer />
         <Analytics />
       </body>
     </html>
