@@ -62,14 +62,13 @@ export function HeroSection() {
 
             <motion.div 
               variants={itemVariants} 
-              className="mt-8 flex items-center justify-center gap-8"
+              className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6"
             >
-              <Link 
-                href="/links" 
-                className="text-sm font-medium border-b border-foreground/30 pb-0.5 transition-colors hover:border-foreground"
-              >
-                Explore Intelligence
-              </Link>
+              <Button asChild size="lg" className="rounded-full px-8">
+                <Link href="/links">
+                  Join Waitlist
+                </Link>
+              </Button>
               <Link 
                 href="/methodology" 
                 className="text-sm font-medium border-b border-transparent text-muted-foreground pb-0.5 transition-colors hover:text-foreground hover:border-foreground/30"

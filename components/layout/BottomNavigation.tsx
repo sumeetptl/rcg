@@ -147,6 +147,7 @@ export function BottomNavigation({ isAuthenticated = false, isAdmin = false, use
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
+
                 {isAdmin && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin" className="w-full cursor-pointer">
@@ -166,6 +167,17 @@ export function BottomNavigation({ isAuthenticated = false, isAdmin = false, use
               </Link>
             </DropdownMenuItem>
           )}
+          
+          <DropdownMenuSeparator />
+          
+          <DropdownMenuItem asChild>
+            <Link href="/links" className="w-full cursor-pointer">
+              <BookOpen className="mr-2 h-4 w-4" />
+              <span>Links</span>
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
           
           {/* Theme Toggle accessible via Menu */}
           <div className="flex items-center justify-between px-2 py-1.5">

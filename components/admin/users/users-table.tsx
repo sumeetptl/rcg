@@ -24,7 +24,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MoreHorizontal, User, Shield, Mail } from "lucide-react"
+import { MoreHorizontal, User, Shield, Mail, CheckCircle, Loader2 } from "lucide-react"
+import { confirmUserEmail } from "@/app/admin/users/actions"
+import { toast } from "sonner"
 
 interface UsersTableProps {
   initialData: Profile[]
@@ -32,6 +34,7 @@ interface UsersTableProps {
 
 export function UsersTable({ initialData }: UsersTableProps) {
   const [data] = React.useState<Profile[]>(initialData)
+  const [verifyingId, setVerifyingId] = React.useState<string | null>(null)
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -117,6 +120,30 @@ export function UsersTable({ initialData }: UsersTableProps) {
                           }} className="text-xs">
                             Copy ID
                           </DropdownMenuItem>
+                          
+                          <DropdownMenuItem 
+                            className="text-xs text-green-600 dark:text-green-500"
+                            onClick={async () => {
+                              setVerifyingId(profile.id)
+                              try {
+                                await confirmUserEmail(profile.id)
+                                toast.success("User email verified successfully!")
+                              } catch (err: any) {
+                                toast.error(err.message || "Failed to verify user")
+                              } finally {
+                                setVerifyingId(null)
+                              }
+                            }}
+                            disabled={verifyingId === profile.id}
+                          >
+                            {verifyingId === profile.id ? (
+                              <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <CheckCircle className="mr-2 h-3.5 w-3.5" /> 
+                            )}
+                            Verify Email
+                          </DropdownMenuItem>
+                          
                           <DropdownMenuSeparator />
                           <DropdownMenuItem disabled className="text-xs">
                             <Mail className="mr-2 h-3.5 w-3.5" /> Email User

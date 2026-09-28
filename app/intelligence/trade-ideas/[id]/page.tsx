@@ -17,6 +17,7 @@ import {
 import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import { CryptoLogo } from "@/components/crypto/crypto-logo";
+import { DownloadSignalButton } from "@/components/intelligence/trade-ideas/download-signal-button";
 
 interface SignalPageProps {
   params: Promise<{ id: string }>;
@@ -81,16 +82,32 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
 
       <main className="flex-1 py-12">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-          <div className="overflow-hidden rounded-lg border border-border bg-background">
+          <div id="signal-detail-capture" className="relative overflow-hidden rounded-lg border border-border bg-background">
+            
+            {/* Watermark */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.02] dark:opacity-[0.03] z-0 overflow-hidden">
+               <span className="font-serif text-[12rem] font-black rotate-[-30deg] tracking-tighter whitespace-nowrap">COINSTAQ</span>
+            </div>
+
             {/* Header section with asset, direction, and status */}
-            <header className="p-8 sm:p-12">
-              <Link
-                href="/dashboard"
-                className="mb-8 inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Signals
-              </Link>
+            <header className="relative z-10 p-8 sm:p-12">
+              <div className="flex items-center justify-between mb-8">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  data-html2canvas-ignore="true"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Signals
+                </Link>
+
+                <div data-html2canvas-ignore="true">
+                  <DownloadSignalButton 
+                    elementId="signal-detail-capture" 
+                    filename={`CoinStaq-${signal.asset}-Detailed`} 
+                  />
+                </div>
+              </div>
 
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                 <div className="space-y-4">
@@ -144,10 +161,10 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
               </div>
             </header>
 
-            <Separator />
+            <Separator className="relative z-10" />
 
             {/* Main content section */}
-            <div className="p-8 sm:p-12">
+            <div className="relative z-10 p-8 sm:p-12">
               {/* Signal Snapshot Grid */}
               <div className="mb-12 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-5">
                 <div className="p-5 border border-border bg-muted/20 rounded-md">
@@ -357,7 +374,7 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
             </div>
 
             {/* Optional footer/meta section */}
-            <footer className="border-t border-border bg-muted/10 p-8 sm:px-12 flex items-center justify-between">
+            <footer className="relative z-10 border-t border-border bg-muted/10 p-8 sm:px-12 flex items-center justify-between">
               <p className="text-xs text-muted-foreground font-mono uppercase tracking-[0.2em]">
                 System Archive // verified execution
               </p>

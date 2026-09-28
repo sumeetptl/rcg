@@ -16,12 +16,16 @@ export default async function DashboardLayout({
     redirect("/auth/login");
   }
 
-  // Check admin role from database (source of truth)
+  // Check admin role and onboarding status from database (source of truth)
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role, username")
     .eq("id", user.id)
     .single()
+
+  if (profile && !profile.username) {
+    redirect("/onboarding")
+  }
 
   const isAdmin = profile?.role === 'admin'
 

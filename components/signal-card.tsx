@@ -1,4 +1,5 @@
 "use client";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ArrowUp, ArrowDown, Clock, Target, AlertTriangle } from "lucide-react";
@@ -6,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Signal } from "@/lib/types";
 import { CryptoLogo } from "@/components/crypto/crypto-logo";
+import { toPng } from "html-to-image";
+import { toast } from "sonner";
+import { Download } from "lucide-react";
 
 interface SignalCardProps {
   signal: Signal;
@@ -13,6 +17,8 @@ interface SignalCardProps {
 }
 
 export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
+  const cardRef = React.useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = React.useState(false);
   // Normalize direction to uppercase for comparison/display if schema stores lowercase
   const directionUpper = signal.direction.toUpperCase() as "LONG" | "SHORT";
   const isLong = directionUpper === "LONG";
@@ -56,6 +62,37 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!cardRef.current) return;
+    
+    try {
+      setIsDownloading(true);
+      // Temporarily add a class for watermark visibility if needed, or just let the faint one show
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
+        pixelRatio: 2, // High quality
+        style: {
+          transform: 'scale(1)',
+          borderRadius: '16px',
+        }
+      });
+      
+      const link = document.createElement('a');
+      link.download = `CoinStaq-${signal.asset}-Signal.png`;
+      link.href = dataUrl;
+      link.click();
+      toast.success("Signal card downloaded!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to download signal card.");
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   if (showAnalysis === "compact") {
@@ -105,108 +142,121 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
 
   return (
     <Link href={`/intelligence/trade-ideas/${signal.id}`} className="group block h-full">
-      <Card className="h-full overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-md">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <CryptoLogo symbol={signal.asset} size={40} />
+      <Card ref={cardRef} className="relative h-full overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-md bg-card">
+        {/* Watermark */}
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.03] dark:opacity-[0.05] z-0 overflow-hidden">
+           <span className="font-serif text-8xl font-black rotate-[-30deg] tracking-tighter whitespace-nowrap">COINSTAQ</span>
+        </div>
+
+        <div className="relative z-10 h-full flex flex-col">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <CryptoLogo symbol={signal.asset} size={40} />
+                <div>
+                  <h3 className="font-mono text-lg font-semibold transition-colors group-hover:text-primary">
+                    {signal.asset}
+                  </h3>
+                  <p
+                    className={cn(
+                      "text-sm font-medium",
+                      isLong ? "text-signal-long" : "text-signal-short",
+                    )}
+                  >
+                    {directionUpper}
+                  </p>
+                </div>
+              </div>
+              <Badge
+                variant="outline"
+                className={cn(
+                  "border",
+                  statusColors[signal.status] || statusColors["active"],
+                )}
+              >
+                {signal.status}
+              </Badge>
+            </div>
+          </CardHeader>
+
+          <CardContent className="space-y-4 flex-1 flex flex-col">
+            <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <h3 className="font-mono text-lg font-semibold transition-colors group-hover:text-primary">
-                  {signal.asset}
-                </h3>
-                <p
-                  className={cn(
-                    "text-sm font-medium",
-                    isLong ? "text-signal-long" : "text-signal-short",
-                  )}
-                >
-                  {directionUpper}
+                <p className="text-muted-foreground">Entry</p>
+                <p className="font-mono font-medium">
+                  ${formatPrice(signal.entry_price)}
+                </p>
+              </div>
+              <div>
+                <p className="flex items-center gap-1 text-muted-foreground">
+                  <AlertTriangle className="h-3 w-3" /> Stop Loss
+                </p>
+                <p className="font-mono font-medium text-signal-short">
+                  ${formatPrice(signal.stop_loss)}
                 </p>
               </div>
             </div>
-            <Badge
-              variant="outline"
-              className={cn(
-                "border",
-                statusColors[signal.status] || statusColors["active"],
-              )}
-            >
-              {signal.status}
-            </Badge>
-          </div>
-        </CardHeader>
 
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">Entry</p>
-              <p className="font-mono font-medium">
-                ${formatPrice(signal.entry_price)}
+            <div className="space-y-2">
+              <p className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Target className="h-3 w-3" /> Targets
               </p>
-            </div>
-            <div>
-              <p className="flex items-center gap-1 text-muted-foreground">
-                <AlertTriangle className="h-3 w-3" /> Stop Loss
-              </p>
-              <p className="font-mono font-medium text-signal-short">
-                ${formatPrice(signal.stop_loss)}
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <p className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Target className="h-3 w-3" /> Targets
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <span className="rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit">
-                TP1: ${formatPrice(signal.target_1)}
-              </span>
-              {signal.target_2 && (
+              <div className="flex flex-wrap gap-2">
                 <span className="rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit">
-                  TP2: ${formatPrice(signal.target_2)}
+                  TP1: ${formatPrice(signal.target_1)}
                 </span>
-              )}
-              {signal.target_3 && (
-                <span className="rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit">
-                  TP3: ${formatPrice(signal.target_3)}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {signal.result && (
-            <div className="rounded-lg bg-muted/50 p-3">
-              <p className="text-sm text-muted-foreground">Result</p>
-              <p
-                className={cn(
-                  "font-mono text-lg font-semibold uppercase",
-                  resultColors[signal.result],
+                {signal.target_2 && (
+                  <span className="rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit">
+                    TP2: ${formatPrice(signal.target_2)}
+                  </span>
                 )}
+                {signal.target_3 && (
+                  <span className="rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit">
+                    TP3: ${formatPrice(signal.target_3)}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {signal.result && (
+              <div className="rounded-lg bg-muted/50 p-3">
+                <p className="text-sm text-muted-foreground">Result</p>
+                <p
+                  className={cn(
+                    "font-mono text-lg font-semibold uppercase",
+                    resultColors[signal.result],
+                  )}
+                >
+                  {signal.result}
+                </p>
+              </div>
+            )}
+
+            {showAnalysis && signal.context && (
+              <div className="border-t border-border pt-4">
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {signal.context}
+                </p>
+              </div>
+            )}
+
+            <div className="mt-auto pt-4 flex items-center justify-between">
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Clock className="h-3 w-3" />
+                {formatDate(signal.created_at)}
+              </div>
+              
+              <button 
+                 onClick={handleDownload}
+                 disabled={isDownloading}
+                 className="relative z-20 flex items-center justify-center p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                 title="Download Signal Card"
               >
-                {signal.result}
-              </p>
+                <Download className={cn("h-4 w-4", isDownloading && "animate-pulse opacity-50")} />
+              </button>
             </div>
-          )}
-
-          {showAnalysis && signal.context && (
-            <div className="border-t border-border pt-4">
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                {signal.context}
-              </p>
-            </div>
-          )}
-
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" />
-              {formatDate(signal.created_at)}
-            </div>
-            <span className="text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-              View Details &rarr;
-            </span>
-          </div>
-        </CardContent>
+          </CardContent>
+        </div>
       </Card>
     </Link>
   );

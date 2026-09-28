@@ -25,8 +25,8 @@ export function TopNavigation({ isAuthenticated = false, isAdmin = false, classN
     { href: "/community", label: "Community" },
   ]
 
-  // Do not render the global navigation bar in the admin console
-  if (pathname.startsWith('/admin')) {
+  // Do not render the global navigation bar in the admin console or links page
+  if (pathname.startsWith('/admin') || pathname === '/links') {
     return null
   }
 

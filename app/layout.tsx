@@ -8,6 +8,7 @@ import { BottomNavigation } from '@/components/layout/BottomNavigation'
 import { createClient } from '@/lib/supabase/server'
 import './globals.css'
 import { Disclaimer } from '@/components/disclaimer'
+import { Toaster } from '@/components/ui/sonner'
 
 const _inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const _lora = Lora({ subsets: ['latin'], variable: '--font-lora' })
@@ -79,6 +80,7 @@ export default async function RootLayout({
             {children}
           </div>
           <BottomNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
+          <Toaster />
         </ThemeProvider>
         <Analytics />
       </body>

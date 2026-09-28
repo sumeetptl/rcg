@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { User, BrainCircuit, ChevronDown, ChevronRight, Check, Loader2 } from "lucide-react"
+import { User, BrainCircuit, ChevronDown, ChevronRight, Check, Loader2, Sparkles } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Message } from "./ai-chat-interface"
 
@@ -20,8 +20,8 @@ export function AIMessageBubble({ message }: AIMessageBubbleProps) {
   return (
     <div className={cn("flex w-full gap-4", isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
-        <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border border-primary/20 bg-primary/10 text-primary">
-          <BrainCircuit className="h-5 w-5" />
+        <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-xl bg-foreground text-background">
+          <Sparkles className="h-4 w-4" />
         </div>
       )}
       
@@ -29,7 +29,7 @@ export function AIMessageBubble({ message }: AIMessageBubbleProps) {
         
         {/* Thinking Process UI */}
         {!isUser && hasThinking && (
-           <div className="flex flex-col gap-2 w-full sm:min-w-[280px] rounded-lg border border-border/50 bg-muted/20 p-3">
+           <div className="flex flex-col gap-2 w-full sm:min-w-[280px] rounded-2xl border border-border/50 bg-muted/20 p-3">
              <button 
                onClick={() => setIsThinkingOpen(!isThinkingOpen)}
                className="flex items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -73,30 +73,18 @@ export function AIMessageBubble({ message }: AIMessageBubbleProps) {
         {message.content && (
           <div
             className={cn(
-              "relative flex flex-col gap-2 rounded-xl px-4 py-3 text-sm shadow-sm",
+              "relative flex flex-col gap-2 text-sm shadow-none",
               isUser
-                ? "bg-primary text-primary-foreground"
-                : "bg-card border border-border text-card-foreground"
+                ? "bg-muted text-foreground rounded-[24px] rounded-br-[4px] px-5 py-3"
+                : "bg-transparent text-foreground px-1 py-1"
             )}
           >
-            <div className="whitespace-pre-wrap leading-relaxed">
+            <div className="whitespace-pre-wrap leading-relaxed text-[15px]">
               {message.content}
             </div>
-            <span className={cn(
-              "text-[10px] opacity-70 flex justify-end",
-              isUser ? "text-primary-foreground/80" : "text-muted-foreground"
-            )}>
-              {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </span>
           </div>
         )}
       </div>
-
-      {isUser && (
-        <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full bg-secondary text-secondary-foreground border border-border">
-          <User className="h-4 w-4" />
-        </div>
-      )}
     </div>
   )
 }

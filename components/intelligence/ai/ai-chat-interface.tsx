@@ -103,13 +103,27 @@ export function AIChatInterface() {
   }
 
   return (
-    <div className="flex h-[calc(100dvh-270px)] md:h-[calc(100dvh-290px)] w-full gap-6 pb-2">
+    <div className="flex h-full w-full flex-col">
       {/* Main Chat Area */}
-      <div className="flex flex-1 flex-col rounded-xl border border-border bg-background shadow-sm overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden relative">
         
         {/* Chat Feed */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-          <div className="mx-auto flex max-w-3xl flex-col gap-6">
+        <div className="flex-1 overflow-y-auto px-4 pb-24 sm:px-6">
+          <div className="mx-auto flex max-w-3xl flex-col gap-6 py-6 sm:py-12">
+            
+            {/* Grok-like Empty State */}
+            {messages.length === 0 && (
+              <div className="flex flex-col items-center justify-center text-center mt-12 sm:mt-24 mb-12 animate-in fade-in zoom-in duration-500">
+                <div className="h-16 w-16 rounded-2xl bg-foreground text-background flex items-center justify-center mb-6">
+                   <Sparkles className="h-8 w-8" />
+                </div>
+                <h2 className="text-3xl sm:text-5xl font-serif font-medium tracking-tight mb-4">How can I help you?</h2>
+                <p className="text-muted-foreground max-w-md">
+                  I have real-time access to market data, funding rates, and liquidation levels. Ask me anything.
+                </p>
+              </div>
+            )}
+
             <AnimatePresence initial={false}>
               {messages.map((msg) => (
                 <motion.div
@@ -123,46 +137,34 @@ export function AIChatInterface() {
               ))}
             </AnimatePresence>
             
-            {/* Removed standalone isGenerating text because we render thinking inside the bubble now */}
             <div ref={bottomRef} />
           </div>
         </div>
 
-        {/* Input Area */}
-        <div className="p-2 sm:p-4">
-          <div className="mx-auto max-w-3xl flex flex-col gap-2">
-            {messages.length === 1 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+        {/* Input Area - Absolute positioned at bottom like Grok */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background to-transparent pt-10 pb-0 px-4 sm:px-6">
+          <div className="mx-auto max-w-3xl flex flex-col gap-3">
+            {messages.length === 0 && (
+              <div className="flex flex-wrap justify-center gap-2 mb-4">
                 {suggestedPrompts.map((prompt, i) => (
                   <button
                     key={i}
                     onClick={() => handleSend(prompt.text)}
-                    className="flex items-center gap-2 rounded-lg border border-border/50 bg-card p-3 text-left text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                    className="flex items-center gap-2 rounded-full border border-border/50 bg-background/80 backdrop-blur-md px-4 py-2 text-xs font-medium text-muted-foreground transition-all hover:border-primary/50 hover:text-foreground"
                   >
-                    <prompt.icon className="h-4 w-4 text-primary" />
+                    <prompt.icon className="h-3.5 w-3.5 text-primary" />
                     {prompt.text}
                   </button>
                 ))}
               </div>
             )}
+            
             <AIInputArea onSend={handleSend} isGenerating={isGenerating} />
-            <p className="text-center text-[10px] text-muted-foreground">
+            
+            <p className="text-center text-[10px] text-muted-foreground mt-1">
               CoinStaq AI can make mistakes. Consider verifying critical technical levels.
             </p>
           </div>
-        </div>
-      </div>
-
-      {/* Right Sidebar (Context) */}
-      <div className="hidden w-72 flex-col gap-4 lg:flex">
-        <AIMarketContext />
-        <div className="rounded-xl border border-border bg-card/50 p-4">
-          <h3 className="text-sm font-semibold tracking-tight mb-2">Capabilities</h3>
-          <ul className="text-xs text-muted-foreground space-y-2">
-            <li className="flex items-center gap-2"><Sparkles className="h-3.5 w-3.5 text-primary" /> Multi-timeframe trend analysis</li>
-            <li className="flex items-center gap-2"><Sparkles className="h-3.5 w-3.5 text-primary" /> Aggregated funding rate mapping</li>
-            <li className="flex items-center gap-2"><Sparkles className="h-3.5 w-3.5 text-primary" /> NLP sentiment on SEC filings</li>
-          </ul>
         </div>
       </div>
     </div>

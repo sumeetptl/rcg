@@ -7,13 +7,7 @@ export const metadata = {
 
 export default function AIPage() {
   return (
-    <div className="flex flex-col gap-4 py-4 -mb-24">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-serif font-medium">CoinStaq AI Analyst</h1>
-        <p className="text-sm text-muted-foreground">
-          Real-time market intelligence and technical analysis powered by LLMs.
-        </p>
-      </div>
+    <div className="flex flex-col h-[calc(100dvh-180px)] -mx-4 sm:-mx-6 -mb-24">
       <AIChatInterface />
     </div>
   )

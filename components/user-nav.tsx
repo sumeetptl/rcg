@@ -70,6 +70,9 @@ export function UserNav({ user }: UserNavProps) {
           <DropdownMenuItem asChild>
             <Link href="/dashboard" className="w-full cursor-pointer">Dashboard</Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/links" className="w-full cursor-pointer">Links</Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem 
