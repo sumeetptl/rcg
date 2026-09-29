@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge"
 import { MetricsRail } from "@/components/metrics-rail"
 import { ContentViewSwitcher } from "@/components/content-view-switcher"
 import { SignalViewContainer } from "@/components/intelligence/trade-ideas/signal-view-container"
+import { Lock } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -19,6 +22,34 @@ export default async function SignalsPage({
 }) {
   const { status } = await searchParams
   const supabase = await createClient()
+
+  // Get user premium status
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 text-center min-h-[60vh]">
+        <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+          <Lock className="h-10 w-10 text-primary" />
+        </div>
+        <h2 className="text-3xl font-serif font-bold tracking-tight mb-4">Trading Terminal</h2>
+        <p className="text-muted-foreground max-w-md mb-8">
+          Sign in to access institutional execution parameters and risk-adjusted market entries.
+        </p>
+        <Button asChild size="lg" className="rounded-full px-8">
+          <Link href="/auth/login">Sign in to Access</Link>
+        </Button>
+      </div>
+    )
+  }
+
+  let isPremium = false
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("plan, role")
+    .eq("id", user.id)
+    .single()
+  isPremium = profile?.plan === "premium" || profile?.role === "admin"
 
   let query = supabase
     .from("signals")
@@ -111,7 +142,7 @@ export default async function SignalsPage({
 
       {/* Signals Section */}
       <div className="pb-12">
-        <SignalViewContainer signals={signals || []} />
+        <SignalViewContainer signals={signals || []} isPremium={isPremium} />
       </div>
     </div>
   )

@@ -14,14 +14,16 @@ import { Download } from "lucide-react";
 interface SignalCardProps {
   signal: Signal;
   showAnalysis?: boolean | "compact";
+  isPremium?: boolean;
 }
 
-export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
+export function SignalCard({ signal, showAnalysis = false, isPremium = false }: SignalCardProps) {
   const cardRef = React.useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = React.useState(false);
   // Normalize direction to uppercase for comparison/display if schema stores lowercase
   const directionUpper = signal.direction.toUpperCase() as "LONG" | "SHORT";
   const isLong = directionUpper === "LONG";
+  const isLocked = !isPremium && signal.access_level === "premium";
 
   // Map schema statuses to colors
   const statusColors: Record<string, string> = {
@@ -95,9 +97,22 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
     }
   };
 
+  const getPriceDisplay = (price: number | null | undefined) => {
+    if (isLocked) return "$***.**";
+    return `$${formatPrice(price)}`;
+  };
+
   if (showAnalysis === "compact") {
     return (
-      <div className="flex items-center justify-between rounded-lg border border-border bg-card p-3 transition-colors hover:bg-muted/50">
+      <div className="flex items-center justify-between rounded-lg border border-border bg-card p-3 transition-colors hover:bg-muted/50 relative overflow-hidden">
+        {isLocked && (
+          <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px] z-10 flex items-center justify-center">
+            <Link href="/profile" className="bg-background/90 border px-3 py-1 rounded-full flex items-center gap-2 shadow-sm hover:bg-muted transition-colors">
+              <AlertTriangle className="h-3 w-3 text-amber-500" />
+              <span className="text-[10px] font-bold uppercase tracking-widest">Upgrade to View</span>
+            </Link>
+          </div>
+        )}
         <div className="flex items-center gap-3">
           <CryptoLogo symbol={signal.asset} size={32} />
           <div>
@@ -116,14 +131,16 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
               </Badge>
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{directionUpper}</span>
-              <span>@ {formatPrice(signal.entry_price)}</span>
+              <span className={cn(isLocked && "blur-sm")}>{isLocked ? "XXX" : directionUpper}</span>
+              <span className={cn(isLocked && "blur-sm")}>@ {getPriceDisplay(signal.entry_price)}</span>
             </div>
           </div>
         </div>
 
         <div className="text-right">
-          {signal.result ? (
+          {isLocked ? (
+             <span className="text-muted-foreground text-xs uppercase tracking-widest font-bold">Premium</span>
+          ) : signal.result ? (
             <span
               className={cn(
                 "font-mono font-bold text-sm uppercase",
@@ -141,8 +158,21 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
   }
 
   return (
-    <Link href={`/intelligence/trade-ideas/${signal.id}`} className="group block h-full">
+    <Link href={isLocked ? "/profile" : `/intelligence/trade-ideas/${signal.id}`} className="group block h-full">
       <Card ref={cardRef} className="relative h-full overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-md bg-card">
+        {/* Lock Overlay */}
+        {isLocked && (
+          <div className="absolute inset-0 bg-background/40 backdrop-blur-[3px] z-20 flex flex-col items-center justify-center pointer-events-none">
+            <div className="bg-background/90 border border-border px-5 py-3 rounded-full flex items-center gap-3 shadow-xl backdrop-blur-md pointer-events-auto hover:bg-muted transition-colors cursor-pointer">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              <div className="flex flex-col">
+                <span className="text-xs font-bold uppercase tracking-widest text-foreground">Premium Signal</span>
+                <span className="text-[10px] text-muted-foreground">Upgrade to view setup</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Watermark */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.03] dark:opacity-[0.05] z-0 overflow-hidden">
            <span className="font-serif text-8xl font-black rotate-[-30deg] tracking-tighter whitespace-nowrap">COINSTAQ</span>
@@ -160,10 +190,10 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
                   <p
                     className={cn(
                       "text-sm font-medium",
-                      isLong ? "text-signal-long" : "text-signal-short",
+                      isLocked ? "text-muted-foreground blur-sm select-none" : (isLong ? "text-signal-long" : "text-signal-short"),
                     )}
                   >
-                    {directionUpper}
+                    {isLocked ? "XXXXX" : directionUpper}
                   </p>
                 </div>
               </div>
@@ -183,16 +213,16 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="text-muted-foreground">Entry</p>
-                <p className="font-mono font-medium">
-                  ${formatPrice(signal.entry_price)}
+                <p className={cn("font-mono font-medium", isLocked && "blur-sm select-none")}>
+                  {getPriceDisplay(signal.entry_price)}
                 </p>
               </div>
               <div>
                 <p className="flex items-center gap-1 text-muted-foreground">
                   <AlertTriangle className="h-3 w-3" /> Stop Loss
                 </p>
-                <p className="font-mono font-medium text-signal-short">
-                  ${formatPrice(signal.stop_loss)}
+                <p className={cn("font-mono font-medium text-signal-short", isLocked && "blur-sm select-none text-muted-foreground")}>
+                  {getPriceDisplay(signal.stop_loss)}
                 </p>
               </div>
             </div>
@@ -202,17 +232,17 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
                 <Target className="h-3 w-3" /> Targets
               </p>
               <div className="flex flex-wrap gap-2">
-                <span className="rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit">
-                  TP1: ${formatPrice(signal.target_1)}
+                <span className={cn("rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit", isLocked && "blur-sm select-none bg-muted text-muted-foreground")}>
+                  TP1: {getPriceDisplay(signal.target_1)}
                 </span>
                 {signal.target_2 && (
-                  <span className="rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit">
-                    TP2: ${formatPrice(signal.target_2)}
+                  <span className={cn("rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit", isLocked && "blur-sm select-none bg-muted text-muted-foreground")}>
+                    TP2: {getPriceDisplay(signal.target_2)}
                   </span>
                 )}
                 {signal.target_3 && (
-                  <span className="rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit">
-                    TP3: ${formatPrice(signal.target_3)}
+                  <span className={cn("rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit", isLocked && "blur-sm select-none bg-muted text-muted-foreground")}>
+                    TP3: {getPriceDisplay(signal.target_3)}
                   </span>
                 )}
               </div>
@@ -232,11 +262,21 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
               </div>
             )}
 
-            {showAnalysis && signal.context && (
+            {showAnalysis && signal.context && !isLocked && (
               <div className="border-t border-border pt-4">
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {signal.context}
                 </p>
+              </div>
+            )}
+            
+            {showAnalysis && signal.context && isLocked && (
+              <div className="border-t border-border pt-4">
+                <div className="space-y-2">
+                  <div className="h-4 bg-muted rounded w-full animate-pulse" />
+                  <div className="h-4 bg-muted rounded w-5/6 animate-pulse" />
+                  <div className="h-4 bg-muted rounded w-4/6 animate-pulse" />
+                </div>
               </div>
             )}
 
@@ -248,9 +288,9 @@ export function SignalCard({ signal, showAnalysis = false }: SignalCardProps) {
               
               <button 
                  onClick={handleDownload}
-                 disabled={isDownloading}
-                 className="relative z-20 flex items-center justify-center p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                 title="Download Signal Card"
+                 disabled={isDownloading || isLocked}
+                 className={cn("relative z-20 flex items-center justify-center p-1.5 rounded-md text-muted-foreground transition-colors cursor-pointer", isLocked ? "opacity-30 cursor-not-allowed" : "hover:bg-muted hover:text-foreground")}
+                 title={isLocked ? "Unlock to Download" : "Download Signal Card"}
               >
                 <Download className={cn("h-4 w-4", isDownloading && "animate-pulse opacity-50")} />
               </button>

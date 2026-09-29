@@ -27,27 +27,29 @@ export async function sendInviteEmail(email: string) {
 <html>
 <head>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #faf9f7; margin: 0; padding: 0; }
-    .container { max-width: 600px; margin: 40px auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
-    .header { background-color: #1a1a2e; padding: 32px 24px; text-align: center; }
-    .header h1 { color: #faf9f7; margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.5px; }
-    .content { padding: 40px 32px; color: #1a1a2e; font-size: 16px; line-height: 1.6; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #fcfbf9; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #ffffff; border: 1px solid #e2e1dd; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+    .header { background-color: #ffffff; padding: 40px 32px 24px; text-align: center; border-bottom: 1px solid #e2e1dd; }
+    .header h1 { color: #0a0a0b; margin: 0; font-size: 28px; font-weight: 600; font-family: 'Lora', Georgia, serif; letter-spacing: -0.5px; }
+    .content { padding: 40px 32px; color: #2a2a2f; font-size: 16px; line-height: 1.6; }
     .content p { margin-bottom: 24px; }
-    .button-container { text-align: center; margin: 32px 0; }
-    .button { display: inline-block; background-color: #1a1a2e; color: #faf9f7; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 500; font-size: 16px; }
-    .footer { background-color: #faf9f7; padding: 24px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; }
-    .subtext { font-size: 14px; color: #6b7280; text-align: center; margin-top: 24px; border-top: 1px solid #e5e7eb; padding-top: 24px; }
-    .link { color: #1a1a2e; text-decoration: underline; word-break: break-all; }
+    .button-container { text-align: center; margin: 40px 0; }
+    .button { display: inline-block; background-color: #0a0a0b; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 9999px; font-weight: 500; font-size: 15px; letter-spacing: 0.3px; }
+    .footer { background-color: #fcfbf9; padding: 32px 24px; text-align: center; color: #6b7280; font-size: 12px; border-top: 1px solid #e2e1dd; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+    .subtext { font-size: 13px; color: #6b7280; text-align: center; margin-top: 32px; border-top: 1px solid #e2e1dd; padding-top: 32px; }
+    .link { color: #0a0a0b; text-decoration: underline; word-break: break-all; font-weight: 500; }
+    .badge { display: inline-block; background-color: #f0eee8; color: #4a4a4f; padding: 4px 12px; border-radius: 9999px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
+      <div class="badge">Application Approved</div>
       <h1>CoinStaq</h1>
     </div>
     <div class="content">
       <p>Hello,</p>
-      <p>Your request to join the CoinStaq waitlist has been approved. We are excited to welcome you to our platform for digital market intelligence.</p>
+      <p>Your request to join the CoinStaq waitlist has been approved. We are excited to welcome you to our platform for digital market intelligence and institutional execution parameters.</p>
       
       <div class="button-container">
         <a href="${signupLink}" class="button">Create Your Account</a>
@@ -59,6 +61,7 @@ export async function sendInviteEmail(email: string) {
       
       <div class="subtext">
         If the button doesn't work, copy and paste this link into your browser:<br/>
+        <br/>
         <a href="${signupLink}" class="link">${signupLink}</a>
       </div>
     </div>

@@ -229,7 +229,7 @@ export default async function AdminPage() {
                         </TableCell>
                         <TableCell>
                            <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                              <Link href={`/admin/blogs/${b.slug}/edit`}>
+                              <Link href={`/admin/blogs/${b.id}/edit`}>
                                  <MoreHorizontal className="h-4 w-4" />
                               </Link>
                            </Button>

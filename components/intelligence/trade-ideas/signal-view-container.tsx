@@ -19,9 +19,10 @@ import { CryptoLogo } from "@/components/crypto/crypto-logo";
 
 interface SignalViewContainerProps {
   signals: Signal[];
+  isPremium?: boolean;
 }
 
-export function SignalViewContainer({ signals }: SignalViewContainerProps) {
+export function SignalViewContainer({ signals, isPremium = false }: SignalViewContainerProps) {
   const searchParams = useSearchParams();
   const view = (searchParams.get("view") || "grid") as
     | "grid"
@@ -71,14 +72,16 @@ export function SignalViewContainer({ signals }: SignalViewContainerProps) {
             {signals.map((signal) => {
               const directionUpper = signal.direction.toUpperCase();
               const isLong = directionUpper === "LONG";
+              const isLocked = !isPremium && signal.access_level === "premium";
+
               return (
                 <tr
                   key={signal.id}
-                  className="group hover:bg-muted/10 transition-colors"
+                  className="group hover:bg-muted/10 transition-colors relative"
                 >
                   <td className="px-6 py-4">
                     <Link
-                      href={`/intelligence/trade-ideas/${signal.id}`}
+                      href={isLocked ? "/profile" : `/intelligence/trade-ideas/${signal.id}`}
                       className="flex items-center gap-3"
                     >
                       <CryptoLogo 
@@ -87,16 +90,17 @@ export function SignalViewContainer({ signals }: SignalViewContainerProps) {
                         className="mr-1"
                       />
                       <div className="flex flex-col">
-                        <span className="font-mono text-sm font-bold text-foreground">
+                        <span className="font-mono text-sm font-bold text-foreground flex items-center gap-2">
                           {signal.asset}
+                          {isLocked && <AlertTriangle className="h-3 w-3 text-amber-500" />}
                         </span>
                         <span
                           className={cn(
                             "text-[10px] font-bold uppercase tracking-widest",
-                            isLong ? "text-signal-long" : "text-signal-short",
+                            isLocked ? "text-muted-foreground blur-sm select-none" : (isLong ? "text-signal-long" : "text-signal-short"),
                           )}
                         >
-                          {directionUpper}
+                          {isLocked ? "XXXXX" : directionUpper}
                         </span>
                       </div>
                     </Link>
@@ -109,17 +113,21 @@ export function SignalViewContainer({ signals }: SignalViewContainerProps) {
                       {signal.status}
                     </Badge>
                   </td>
-                  <td className="px-6 py-4 text-xs font-mono font-medium text-foreground">
-                    ${formatPrice(signal.entry_price)}
+                  <td className={cn("px-6 py-4 text-xs font-mono font-medium text-foreground", isLocked && "blur-sm select-none")}>
+                    {isLocked ? "$***.**" : `$${formatPrice(signal.entry_price)}`}
                   </td>
-                  <td className="px-6 py-4 text-xs font-mono font-medium text-signal-hit">
-                    ${formatPrice(signal.target_1)}
+                  <td className={cn("px-6 py-4 text-xs font-mono font-medium text-signal-hit", isLocked && "blur-sm select-none text-muted-foreground")}>
+                    {isLocked ? "$***.**" : `$${formatPrice(signal.target_1)}`}
                   </td>
-                  <td className="px-6 py-4 text-xs font-mono font-medium text-signal-missed">
-                    ${formatPrice(signal.stop_loss)}
+                  <td className={cn("px-6 py-4 text-xs font-mono font-medium text-signal-missed", isLocked && "blur-sm select-none text-muted-foreground")}>
+                    {isLocked ? "$***.**" : `$${formatPrice(signal.stop_loss)}`}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    {signal.result ? (
+                    {isLocked ? (
+                      <Link href="/profile" className="text-[10px] font-bold uppercase text-amber-500 tracking-widest hover:underline flex items-center justify-end gap-1">
+                        Upgrade
+                      </Link>
+                    ) : signal.result ? (
                       <span
                         className={cn(
                           "font-mono text-[10px] font-bold uppercase tracking-widest",
@@ -148,13 +156,24 @@ export function SignalViewContainer({ signals }: SignalViewContainerProps) {
       <div className="mx-auto max-w-5xl space-y-8">
         {signals.map((signal) => {
           const isLong = signal.direction.toUpperCase() === "LONG";
+          const isLocked = !isPremium && signal.access_level === "premium";
+
           return (
             <Link
               key={signal.id}
-              href={`/intelligence/trade-ideas/${signal.id}`}
-              className="group block"
+              href={isLocked ? "/profile" : `/intelligence/trade-ideas/${signal.id}`}
+              className="group block relative"
             >
-              <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-lg border border-border bg-background hover:border-primary/40 transition-all hover:bg-muted/5">
+              <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-lg border border-border bg-background hover:border-primary/40 transition-all hover:bg-muted/5 relative overflow-hidden">
+                {isLocked && (
+                  <div className="absolute inset-0 bg-background/50 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center pointer-events-none">
+                    <div className="bg-background/80 border px-4 py-2 rounded-full flex items-center gap-2 shadow-lg backdrop-blur-md pointer-events-auto hover:bg-muted transition-colors cursor-pointer">
+                      <AlertTriangle className="h-4 w-4 text-amber-500" />
+                      <span className="text-xs font-bold uppercase tracking-widest">Premium Signal - Upgrade to View</span>
+                    </div>
+                  </div>
+                )}
+                
                 <CryptoLogo 
                   symbol={signal.asset} 
                   size={48} 
@@ -183,24 +202,24 @@ export function SignalViewContainer({ signals }: SignalViewContainerProps) {
                     <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
                       Entry
                     </span>
-                    <span className="font-mono text-sm font-bold">
-                      ${formatPrice(signal.entry_price)}
+                    <span className={cn("font-mono text-sm font-bold", isLocked && "blur-sm")}>
+                      {isLocked ? "$***.**" : `$${formatPrice(signal.entry_price)}`}
                     </span>
                   </div>
                   <div className="space-y-1">
                     <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
                       Target
                     </span>
-                    <span className="font-mono text-sm font-bold text-signal-hit">
-                      ${formatPrice(signal.target_1)}
+                    <span className={cn("font-mono text-sm font-bold text-signal-hit", isLocked && "blur-sm text-muted-foreground")}>
+                      {isLocked ? "$***.**" : `$${formatPrice(signal.target_1)}`}
                     </span>
                   </div>
                   <div className="space-y-1">
                     <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
                       Stop
                     </span>
-                    <span className="font-mono text-sm font-bold text-signal-missed">
-                      ${formatPrice(signal.stop_loss)}
+                    <span className={cn("font-mono text-sm font-bold text-signal-missed", isLocked && "blur-sm text-muted-foreground")}>
+                      {isLocked ? "$***.**" : `$${formatPrice(signal.stop_loss)}`}
                     </span>
                   </div>
                 </div>
@@ -237,7 +256,7 @@ export function SignalViewContainer({ signals }: SignalViewContainerProps) {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {signals.map((signal) => (
-        <SignalCard key={signal.id} signal={signal} showAnalysis />
+        <SignalCard key={signal.id} signal={signal} showAnalysis isPremium={isPremium} />
       ))}
     </div>
   );

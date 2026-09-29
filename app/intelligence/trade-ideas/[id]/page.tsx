@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Footer } from "@/components/footer";
 import { createClient } from "@/lib/supabase/server";
@@ -13,8 +13,10 @@ import {
   XCircle,
   AlertCircle,
   Clock,
+  Lock
 } from "lucide-react";
 import type { Metadata } from "next";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CryptoLogo } from "@/components/crypto/crypto-logo";
 import { DownloadSignalButton } from "@/components/intelligence/trade-ideas/download-signal-button";
@@ -49,6 +51,37 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
   const { id } = await params;
   const supabase = await createClient();
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background text-foreground">
+        <main className="flex-1 py-24 flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center text-center max-w-lg px-4">
+            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+              <Lock className="h-10 w-10 text-primary" />
+            </div>
+            <h2 className="text-3xl font-serif font-bold tracking-tight mb-4">Sign in Required</h2>
+            <p className="text-muted-foreground mb-8">
+              You must be signed in to view detailed signal executions and parameters.
+            </p>
+            <div className="flex gap-4">
+              <Button asChild variant="outline" className="rounded-full px-8">
+                <Link href="/intelligence/trade-ideas">Back</Link>
+              </Button>
+              <Button asChild size="lg" className="rounded-full px-8">
+                <Link href="/auth/login">Sign in to Access</Link>
+              </Button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   const { data: signal } = await supabase
     .from("signals")
     .select("*")
@@ -59,9 +92,44 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
     notFound();
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let isPremium = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan, role")
+      .eq("id", user.id)
+      .single();
+    isPremium = profile?.plan === "premium" || profile?.role === "admin";
+  }
+
+  if (signal.access_level === "premium" && !isPremium) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background text-foreground">
+        <main className="flex-1 py-24 flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center text-center max-w-lg px-4">
+            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+              <Lock className="h-10 w-10 text-primary" />
+            </div>
+            <h2 className="text-3xl font-serif font-bold tracking-tight mb-4">Premium Signal</h2>
+            <p className="text-muted-foreground mb-8">
+              This setup is reserved for premium members. Upgrade your account to unlock full institutional execution parameters, entry points, and take-profit levels.
+            </p>
+            <div className="flex gap-4">
+              <Button asChild variant="outline" className="rounded-full px-8">
+                <Link href="/intelligence/trade-ideas">Back</Link>
+              </Button>
+              <Button asChild size="lg" className="rounded-full px-8">
+                <Link href={user ? "/profile" : "/auth/login"}>
+                  {user ? "Upgrade to Premium" : "Sign in to Access"}
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   // --- Server-Side Analytics Calculation ---
   // This runs on the server before HTML is generated.
