@@ -4,7 +4,7 @@ import React from "react"
 import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase/client"
+import { getAdminBlogById, updateAdminBlog, deleteAdminBlog } from "@/app/admin/blogs/actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -42,14 +42,9 @@ export default function EditBlogPage() {
 
   useEffect(() => {
     const fetchBlog = async () => {
-      const supabase = createClient()
-      const { data, error: fetchError } = await supabase
-        .from("blogs")
-        .select("*")
-        .eq("id", blogId)
-        .single()
+      const data = await getAdminBlogById(blogId)
 
-      if (fetchError || !data) {
+      if (!data) {
         setError("Blog not found")
         setIsFetching(false)
         return
@@ -76,11 +71,8 @@ export default function EditBlogPage() {
     setError(null)
     setIsLoading(true)
 
-    const supabase = createClient()
-
-    const { error: updateError } = await supabase
-      .from("blogs")
-      .update({
+    try {
+      await updateAdminBlog(blogId, {
         title: formData.title,
         slug: formData.slug,
         excerpt: formData.excerpt || null,
@@ -91,37 +83,31 @@ export default function EditBlogPage() {
         status: formData.status,
         published_at: formData.status === "published" ? new Date().toISOString() : null,
       })
-      .eq("id", blogId)
-
-    if (updateError) {
-      setError(updateError.message)
+    } catch (err: any) {
+      setError(err.message)
       setIsLoading(false)
       return
     }
 
+    setIsLoading(false)
     router.push("/admin/blogs")
-    router.refresh()
   }
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this blog post?")) return
 
     setIsDeleting(true)
-    const supabase = createClient()
-
-    const { error: deleteError } = await supabase
-      .from("blogs")
-      .delete()
-      .eq("id", blogId)
-
-    if (deleteError) {
-      setError(deleteError.message)
+    
+    try {
+      await deleteAdminBlog(blogId)
+    } catch (err: any) {
+      setError(err.message)
       setIsDeleting(false)
       return
     }
 
+    setIsDeleting(false)
     router.push("/admin/blogs")
-    router.refresh()
   }
 
   if (isFetching) {
@@ -184,7 +170,7 @@ export default function EditBlogPage() {
                             <Input
                                 id="title"
                                 value={formData.title}
-                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                                 required
                                 className="font-serif text-lg"
                             />
@@ -198,7 +184,7 @@ export default function EditBlogPage() {
                                 <Input
                                     id="slug"
                                     value={formData.slug}
-                                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
                                     required
                                     className="rounded-l-none font-mono text-sm"
                                 />
@@ -208,7 +194,7 @@ export default function EditBlogPage() {
                             <Label htmlFor="category">Category</Label>
                             <Select
                                 value={formData.tags[0]}
-                                onValueChange={(value) => setFormData({ ...formData, tags: [value] })}
+                                onValueChange={(value) => setFormData(prev => ({ ...prev, tags: [value] }))}
                             >
                                 <SelectTrigger>
                                     <SelectValue />
@@ -226,7 +212,7 @@ export default function EditBlogPage() {
                                 id="excerpt"
                                 rows={3}
                                 value={formData.excerpt}
-                                onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                                onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
                                 className="resize-none"
                             />
                         </div>
@@ -235,8 +221,8 @@ export default function EditBlogPage() {
                         <Label>Cover Image</Label>
                         <ImageUpload 
                             value={formData.cover_image}
-                            onChange={(url) => setFormData({ ...formData, cover_image: url })}
-                            onRemove={() => setFormData({ ...formData, cover_image: "" })}
+                            onChange={(url) => setFormData(prev => ({ ...prev, cover_image: url }))}
+                            onRemove={() => setFormData(prev => ({ ...prev, cover_image: "" }))}
                         />
                     </div>
                 </div>
@@ -246,7 +232,7 @@ export default function EditBlogPage() {
              <FormSection title="Content">
                     <RichTextEditor
                         value={formData.content}
-                        onChange={(html) => setFormData({ ...formData, content: html })}
+                        onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
                     />
             </FormSection>
 
@@ -257,7 +243,7 @@ export default function EditBlogPage() {
                             <Label htmlFor="access_level">Access Level</Label>
                             <Select
                                 value={formData.access_level}
-                                onValueChange={(value) => setFormData({ ...formData, access_level: value })}
+                                onValueChange={(value) => setFormData(prev => ({ ...prev, access_level: value }))}
                             >
                                 <SelectTrigger>
                                     <SelectValue />
@@ -279,7 +265,7 @@ export default function EditBlogPage() {
                         <Switch
                             id="status"
                             checked={formData.status === "published"}
-                            onCheckedChange={(checked) => setFormData({ ...formData, status: checked ? "published" : "draft" })}
+                            onCheckedChange={(checked) => setFormData(prev => ({ ...prev, status: checked ? "published" : "draft" }))}
                         />
                     </div>
                 </div>

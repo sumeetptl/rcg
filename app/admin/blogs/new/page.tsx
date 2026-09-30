@@ -4,7 +4,7 @@ import React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase/client"
+import { createAdminBlog } from "@/app/admin/blogs/actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -55,28 +55,26 @@ export default function NewBlogPage() {
     setError(null)
     setIsLoading(true)
 
-    const supabase = createClient()
-
-    const { error: insertError } = await supabase.from("blogs").insert({
-      title: formData.title,
-      slug: formData.slug,
-      excerpt: formData.excerpt || null,
-      content: formData.content,
-      cover_image: formData.cover_image || null,
-      tags: formData.tags,
-      access_level: formData.access_level,
-      status: formData.status,
-      published_at: formData.status === "published" ? new Date().toISOString() : null,
-    })
-
-    if (insertError) {
-      setError(insertError.message)
+    try {
+      await createAdminBlog({
+        title: formData.title,
+        slug: formData.slug,
+        excerpt: formData.excerpt || null,
+        content: formData.content,
+        cover_image: formData.cover_image || null,
+        tags: formData.tags,
+        access_level: formData.access_level,
+        status: formData.status,
+        published_at: formData.status === "published" ? new Date().toISOString() : null,
+      })
+    } catch (err: any) {
+      setError(err.message)
       setIsLoading(false)
       return
     }
 
+    setIsLoading(false)
     router.push("/admin/blogs")
-    router.refresh()
   }
 
   return (
@@ -137,7 +135,7 @@ export default function NewBlogPage() {
                                 id="slug"
                                 placeholder="url-friendly-slug"
                                 value={formData.slug}
-                                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                                onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
                                 required
                                 className="rounded-l-none font-mono text-sm"
                             />
@@ -147,7 +145,7 @@ export default function NewBlogPage() {
                         <Label htmlFor="category">Category</Label>
                         <Select
                             value={formData.tags[0]}
-                            onValueChange={(value) => setFormData({ ...formData, tags: [value] })}
+                            onValueChange={(value) => setFormData(prev => ({ ...prev, tags: [value] }))}
                         >
                             <SelectTrigger>
                                 <SelectValue />
@@ -166,7 +164,7 @@ export default function NewBlogPage() {
                             placeholder="Brief summary for SEO and previews..."
                             rows={3}
                             value={formData.excerpt}
-                            onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                            onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
                             className="resize-none"
                         />
                     </div>
@@ -176,8 +174,8 @@ export default function NewBlogPage() {
                     <Label>Cover Image</Label>
                     <ImageUpload 
                         value={formData.cover_image}
-                        onChange={(url) => setFormData({ ...formData, cover_image: url })}
-                        onRemove={() => setFormData({ ...formData, cover_image: "" })}
+                        onChange={(url) => setFormData(prev => ({ ...prev, cover_image: url }))}
+                        onRemove={() => setFormData(prev => ({ ...prev, cover_image: "" }))}
                     />
                 </div>
             </div>
@@ -187,7 +185,7 @@ export default function NewBlogPage() {
         <FormSection title="Content">
                 <RichTextEditor
                     value={formData.content}
-                    onChange={(html) => setFormData({ ...formData, content: html })}
+                    onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
                 />
         </FormSection>
 
@@ -198,7 +196,7 @@ export default function NewBlogPage() {
                         <Label htmlFor="access_level">Access Level</Label>
                         <Select
                             value={formData.access_level}
-                            onValueChange={(value) => setFormData({ ...formData, access_level: value })}
+                            onValueChange={(value) => setFormData(prev => ({ ...prev, access_level: value }))}
                         >
                             <SelectTrigger>
                                 <SelectValue />
@@ -221,7 +219,7 @@ export default function NewBlogPage() {
                     <Switch
                         id="status"
                         checked={formData.status === "published"}
-                        onCheckedChange={(checked) => setFormData({ ...formData, status: checked ? "published" : "draft" })}
+                        onCheckedChange={(checked) => setFormData(prev => ({ ...prev, status: checked ? "published" : "draft" }))}
                     />
                 </div>
             </div>

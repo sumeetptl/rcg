@@ -3,6 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { deleteAdminBlog, updateAdminBlog } from "@/app/admin/blogs/actions"
 import { createClient } from "@/lib/supabase/client"
 import { Blog } from "@/lib/types"
 
@@ -57,11 +58,7 @@ export function BlogsTable({ initialData }: BlogsTableProps) {
     setData(data.filter(item => item.id !== deleteId))
 
     try {
-      const supabase = createClient()
-      const { error } = await supabase.from("blogs").delete().eq("id", deleteId)
-
-      if (error) throw error
-
+      await deleteAdminBlog(deleteId)
       toast.success("Blog post deleted")
       setDeleteId(null)
       router.refresh()
@@ -71,6 +68,30 @@ export function BlogsTable({ initialData }: BlogsTableProps) {
       console.error(error)
     } finally {
       setIsDeleting(false)
+    }
+  }
+
+  const handleToggleStatus = async (blog: Blog) => {
+    const newStatus = blog.status === 'published' ? 'draft' : 'published'
+    const previousData = [...data]
+    
+    // Optimistic update
+    setData(data.map(item => 
+      item.id === blog.id ? { ...item, status: newStatus } : item
+    ))
+
+    try {
+      await updateAdminBlog(blog.id, { 
+        status: newStatus,
+        published_at: newStatus === 'published' ? new Date().toISOString() : null
+      })
+      toast.success(`Blog post ${newStatus === 'published' ? 'published' : 'unpublished'}`)
+      router.refresh()
+    } catch (error) {
+      // Revert on error
+      setData(previousData)
+      toast.error("Failed to update status")
+      console.error(error)
     }
   }
 

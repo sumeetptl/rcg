@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { getSignalStats } from "@/lib/services/signals"
-import { getBlogStats } from "@/lib/services/blogs"
+import { getAdminBlogStats } from "@/lib/services/blogs"
 import { getNewsStats } from "@/lib/services/news"
 import { getUserStats } from "@/lib/services/users"
 import { Button } from "@/components/ui/button"
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 export default async function AdminPage() {
   const [signals, blogs, news, users] = await Promise.all([
     getSignalStats(),
-    getBlogStats(),
+    getAdminBlogStats(),
     getNewsStats(),
     getUserStats(),
   ])

@@ -1,4 +1,4 @@
-import { getBlogs } from "@/lib/services/blogs"
+import { getAdminBlogs } from "@/lib/services/blogs"
 import { AdminPageHeader } from "@/components/admin/page-header"
 import { BlogsTable } from "@/components/admin/blogs/blogs-table"
 import type { Metadata } from "next"
@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminBlogsPage() {
-  // Fetch all blogs (draft + published)
-  const blogs = await getBlogs({ publishedOnly: false })
+  // Fetch all blogs (draft + published) bypassing RLS
+  const blogs = await getAdminBlogs()
 
   return (
     <div className="min-h-screen bg-muted/10 p-6 lg:p-10">
