@@ -11,12 +11,17 @@ interface EditorialNewsCardProps {
 }
 
 export function EditorialNewsCard({ news, featured = false }: EditorialNewsCardProps) {
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string | null) => {
+    if (!dateString) return "Not published"
+    
     const date = new Date(dateString)
+    // Check if the date is valid
+    if (isNaN(date.getTime())) return "Invalid Date"
+    
     const now = new Date()
     const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60)
     
-    if (diffInHours < 24) {
+    if (diffInHours < 24 && diffInHours >= 0) {
       return `${Math.floor(diffInHours)}h ago`
     }
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })

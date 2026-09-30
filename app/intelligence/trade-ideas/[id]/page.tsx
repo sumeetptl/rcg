@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CryptoLogo } from "@/components/crypto/crypto-logo";
 import { DownloadSignalButton } from "@/components/intelligence/trade-ideas/download-signal-button";
+import { SignalChart } from "@/components/intelligence/trade-ideas/signal-chart";
 
 interface SignalPageProps {
   params: Promise<{ id: string }>;
@@ -280,6 +281,15 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
               <div className="grid gap-12 lg:grid-cols-[2fr_1fr]">
                 {/* Main Content Column */}
                 <div className="space-y-12">
+                  
+                  {/* Signal Chart */}
+                  <section>
+                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6 flex items-center gap-3">
+                      <span className="h-px w-8 bg-border" /> Technical Setup
+                    </h3>
+                    <SignalChart signal={signal} />
+                  </section>
+
                   {/* Trade Rationale */}
                   <section>
                     <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6 flex items-center gap-3">

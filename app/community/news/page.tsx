@@ -43,7 +43,7 @@ export default async function NewsPage({
             <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
                 {category || "Global Wire"}
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground font-mono uppercase tracking-widest">
+            <p suppressHydrationWarning className="mt-2 text-sm text-muted-foreground font-mono uppercase tracking-widest">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
         </div>
