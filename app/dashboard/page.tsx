@@ -363,7 +363,7 @@ export default async function DashboardPage() {
                           >
                             <TableCell className="font-semibold text-sm tracking-tight pl-6">
                               <Link
-                                href={`/signals/${signal.id}`}
+                                href={`/intelligence/trade-ideas/${signal.id}`}
                                 className="block w-full h-full py-4"
                               >
                                 <div className="flex items-center gap-3">
@@ -381,7 +381,7 @@ export default async function DashboardPage() {
                             </TableCell>
                             <TableCell>
                               <Link
-                                href={`/signals/${signal.id}`}
+                                href={`/intelligence/trade-ideas/${signal.id}`}
                                 className="block w-full h-full py-4"
                               >
                                 <span
@@ -441,7 +441,7 @@ export default async function DashboardPage() {
                             </TableCell>
                             <TableCell>
                               <Link
-                                href={`/signals/${signal.id}`}
+                                href={`/intelligence/trade-ideas/${signal.id}`}
                                 className="flex items-center justify-end text-muted-foreground/60 group-hover:text-primary transition-colors pr-4"
                               >
                                 <ArrowUpRight className="h-4 w-4" />
