@@ -7,9 +7,11 @@ import { createClient } from "@/lib/supabase/server"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { ArrowLeft, Clock, Lock } from "lucide-react"
+import { ArrowLeft, Clock, Lock, BookOpen, Share2 } from "lucide-react"
 import type { Metadata } from "next"
 import { MostReadBlogs } from "@/components/academy/blogs/most-read-blogs"
+import { ReadingProgressBar } from "@/components/academy/blogs/reading-progress-bar"
+import { TableOfContents } from "@/components/academy/blogs/table-of-contents"
 
 interface BlogPageProps {
   params: Promise<{ slug: string }>
@@ -70,6 +72,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <ReadingProgressBar />
 
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
@@ -105,14 +108,22 @@ export default async function BlogPage({ params }: BlogPageProps) {
                     </h1>
                     
                     {blog.excerpt && (
-                      <p className="text-xl text-muted-foreground leading-relaxed">{blog.excerpt}</p>
+                      <p className="text-xl text-muted-foreground leading-relaxed border-l-4 border-primary/30 pl-5 py-1 italic">{blog.excerpt}</p>
                     )}
                     
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground font-medium uppercase tracking-wider">
-                      <span className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        {formatDate(blog.published_at)}
-                      </span>
+                    <div className="flex items-center justify-between flex-wrap gap-4">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-2 font-mono uppercase tracking-wider text-xs">
+                          <Clock className="h-3.5 w-3.5" />
+                          {formatDate(blog.published_at)}
+                        </span>
+                        {blog.reading_time && (
+                          <span className="flex items-center gap-2 font-mono uppercase tracking-wider text-xs">
+                            <BookOpen className="h-3.5 w-3.5" />
+                            {blog.reading_time} min read
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </header>
@@ -152,7 +163,23 @@ export default async function BlogPage({ params }: BlogPageProps) {
                         </div>
                       </div>
                     ) : (
-                      <div className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-semibold prose-p:leading-relaxed prose-p:text-lg prose-a:text-primary prose-a:no-underline hover:prose-a:underline">
+                      <div
+                        className="article-content prose prose-neutral dark:prose-invert max-w-none
+                          prose-headings:font-serif prose-headings:font-semibold prose-headings:tracking-tight
+                          prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
+                          prose-h1:mt-10 prose-h1:mb-5 prose-h2:mt-8 prose-h2:mb-4 prose-h3:mt-6 prose-h3:mb-3
+                          prose-p:text-base prose-p:leading-8 prose-p:text-foreground/90
+                          prose-a:text-primary prose-a:no-underline prose-a:underline-offset-2 hover:prose-a:underline
+                          prose-strong:text-foreground prose-strong:font-semibold
+                          prose-code:bg-muted prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
+                          prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-lg
+                          prose-blockquote:border-l-4 prose-blockquote:border-primary/40 prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-muted-foreground prose-blockquote:not-italic
+                          prose-img:rounded-lg prose-img:border prose-img:border-border
+                          prose-hr:border-border
+                          prose-table:border prose-table:border-border prose-th:bg-muted/50 prose-th:font-semibold prose-td:border-border prose-th:border-border
+                          prose-li:leading-7
+                        "
+                      >
                         <div dangerouslySetInnerHTML={{ __html: blog.content || "" }} />
                       </div>
                     )}
@@ -170,7 +197,9 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
             {/* Sidebar */}
             <aside className="space-y-8">
-               <div className="sticky top-24">
+               <div className="sticky top-24 space-y-8">
+                  <TableOfContents contentSelector=".article-content" />
+                  <Separator className="bg-border/40" />
                   <MostReadBlogs />
                </div>
             </aside>

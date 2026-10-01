@@ -151,20 +151,22 @@ export default function SignUpPage() {
     <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center flex justify-center">
-          <Link href="/" className="inline-block relative w-20 h-20">
-            <Image 
-               src="/night-logo.png" 
-               alt="CoinStaq" 
-               fill 
-               className="object-contain dark:opacity-100 opacity-0 transition-opacity duration-300 absolute inset-0"
-               priority
+          <Link href="/" className="inline-flex items-center justify-center">
+            <Image
+              src="/night-logo.svg"
+              alt="CoinStaq"
+              width={240}
+              height={72}
+              className="object-contain dark:block hidden"
+              priority
             />
-            <Image 
-               src="/day-logo.png" 
-               alt="CoinStaq" 
-               fill 
-               className="object-contain dark:opacity-0 opacity-100 transition-opacity duration-300 absolute inset-0"
-               priority
+            <Image
+              src="/day-logo.svg"
+              alt="CoinStaq"
+              width={240}
+              height={72}
+              className="object-contain dark:hidden block"
+              priority
             />
           </Link>
         </div>

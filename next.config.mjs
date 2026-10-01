@@ -16,7 +16,20 @@ const nextConfig = {
         '*.vercel.app'
       ]
     }
-  }
+  },
+  async headers() {
+    return [
+      {
+        source: "/(day-logo|night-logo|full-logo).(png|svg|jpeg|jpg)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
+        ],
+      },
+    ]
+  },
 };
 
 export default nextConfig;

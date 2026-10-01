@@ -1,46 +1,49 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Image from "next/image"
-import { Button } from "@/components/ui/button" // Assuming standard shadcn button exists
-import { Lock } from "lucide-react"
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { Button } from "@/components/ui/button"; // Assuming standard shadcn button exists
+import { Lock } from "lucide-react";
 
-export function HeroSection({ onJoinWaitlist }: { onJoinWaitlist?: () => void }) {
+export function HeroSection({
+  onJoinWaitlist,
+}: {
+  onJoinWaitlist?: () => void;
+}) {
   return (
     <section className="flex flex-col items-center justify-center text-center py-12 px-4 relative z-10 w-full max-w-xl mx-auto">
-      
       {/* Logo */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="mb-8 relative w-20 h-20"
+        className="mb-8 relative w-124 h-48"
       >
         <div className="relative w-full h-full">
-          <Image 
-             src="/night-logo.png" 
-             alt="CoinStaq" 
-             fill 
-             className="object-contain dark:opacity-100 opacity-0 transition-opacity duration-300 absolute inset-0"
-             priority
+          <Image
+            src="/night-logo.svg"
+            alt="CoinStaq"
+            fill
+            className="object-contain dark:opacity-100 opacity-0 transition-opacity duration-300 absolute inset-0"
+            priority
           />
-          <Image 
-             src="/day-logo.png" 
-             alt="CoinStaq" 
-             fill 
-             className="object-contain dark:opacity-0 opacity-100 transition-opacity duration-300 absolute inset-0"
-             priority
+          <Image
+            src="/day-logo.svg"
+            alt="CoinStaq"
+            fill
+            className="object-contain dark:opacity-0 opacity-100 transition-opacity duration-300 absolute inset-0"
+            priority
           />
         </div>
         {/* 
         <Image 
-           src="/night-logo.png" 
+           src="/night-logo.svg" 
            alt="CoinStaq" 
            fill 
            className="object-contain dark:block hidden"
         />
         <Image 
-           src="/day-logo.png" 
+           src="/day-logo.svg" 
            alt="CoinStaq" 
            fill 
            className="object-contain dark:hidden block"
@@ -65,9 +68,11 @@ export function HeroSection({ onJoinWaitlist }: { onJoinWaitlist?: () => void })
         transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
         className="text-muted-foreground text-lg md:text-xl font-medium max-w-md leading-relaxed mb-10"
       >
-       Institutional-Grade Crypto Intelligence Suite.
+        Institutional-Grade Crypto Intelligence Suite.
         <br />
-        <span className="text-muted-foreground/80 text-base">Your edge in one unified platform.</span>
+        <span className="text-muted-foreground/80 text-base">
+          Your edge in one unified platform.
+        </span>
       </motion.p>
 
       {/* Primary CTA */}
@@ -83,12 +88,10 @@ export function HeroSection({ onJoinWaitlist }: { onJoinWaitlist?: () => void })
         >
           <Lock className="w-4 h-4 mr-2 opacity-80" />
           Join Waitlist
-          
           {/* Subtle pulse effect */}
           <span className="absolute inset-0 rounded-xl ring-2 ring-white/20 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </Button>
       </motion.div>
-
     </section>
-  )
+  );
 }

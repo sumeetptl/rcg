@@ -1,40 +1,49 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2 } from "lucide-react"
+import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setIsLoading(true)
+    e.preventDefault();
+    setError(null);
+    setIsLoading(true);
 
-    const supabase = createClient()
+    const supabase = createClient();
 
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    const { data, error: signInError } = await supabase.auth.signInWithPassword(
+      {
+        email,
+        password,
+      },
+    );
 
     if (signInError || !data.user) {
-      setError(signInError?.message || "Failed to sign in")
-      setIsLoading(false)
-      return
+      setError(signInError?.message || "Failed to sign in");
+      setIsLoading(false);
+      return;
     }
 
     // Check if user is an admin
@@ -42,34 +51,36 @@ export default function LoginPage() {
       .from("profiles")
       .select("role")
       .eq("id", data.user.id)
-      .single()
+      .single();
 
     if (profile?.role === "admin") {
-      router.push("/admin")
+      router.push("/admin");
     } else {
-      router.push("/dashboard")
+      router.push("/dashboard");
     }
-    router.refresh()
-  }
+    router.refresh();
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center flex justify-center">
-          <Link href="/" className="inline-block relative w-20 h-20">
-            <Image 
-               src="/night-logo.png" 
-               alt="CoinStaq" 
-               fill 
-               className="object-contain dark:opacity-100 opacity-0 transition-opacity duration-300 absolute inset-0"
-               priority
+          <Link href="/" className="inline-flex items-center justify-center">
+            <Image
+              src="/night-logo.svg"
+              alt="CoinStaq"
+              width={240}
+              height={72}
+              className="object-contain dark:block hidden"
+              priority
             />
-            <Image 
-               src="/day-logo.png" 
-               alt="CoinStaq" 
-               fill 
-               className="object-contain dark:opacity-0 opacity-100 transition-opacity duration-300 absolute inset-0"
-               priority
+            <Image
+              src="/day-logo.svg"
+              alt="CoinStaq"
+              width={240}
+              height={72}
+              className="object-contain dark:hidden block"
+              priority
             />
           </Link>
         </div>
@@ -120,8 +131,8 @@ export default function LoginPage() {
               </Button>
               <p className="text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{" "}
-                <Link 
-                  href="/links" 
+                <Link
+                  href="/links"
                   className="font-medium text-primary hover:underline"
                 >
                   Join Waitlist
@@ -132,5 +143,5 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
