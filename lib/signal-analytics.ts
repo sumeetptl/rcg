@@ -9,16 +9,21 @@ export interface SignalAnalytics {
     label: string
     movePercent: string
     rr: string
+    roi: string        // e.g. "+3.42%"
+    roiRaw: number     // raw numeric ROI for sorting/math
+    isHit: boolean     // true if this target appears in signal.hit_targets
   }[]
   isLong: boolean
   directionColor: string
   directionBg: string
   directionBorder: string
+  achievedRoi: string | null   // ROI at the highest hit target, or null
 }
 
 export function analyzeSignal(signal: Signal): SignalAnalytics {
   const entry = signal.entry_price || 0
   const stop = signal.stop_loss || 0
+  const hitSet = new Set(signal.hit_targets ?? [])
   
   // Direction Logic
   const isLong = signal.direction.toUpperCase() === "LONG"
@@ -36,6 +41,7 @@ export function analyzeSignal(signal: Signal): SignalAnalytics {
   let riskPercent = "N/A"
   let maxRR = "N/A"
   let rrRatio: number | null = null
+  let achievedRoi: string | null = null
   const targets = []
 
   // Basic Stats
@@ -50,26 +56,35 @@ export function analyzeSignal(signal: Signal): SignalAnalytics {
 
     // Process Targets
     const rawTargets = [
-      { p: signal.target_1, l: "TP 1" },
-      { p: signal.target_2, l: "TP 2" },
-      { p: signal.target_3, l: "TP 3" }
+      { p: signal.target_1, l: "TP 1", n: 1 },
+      { p: signal.target_2, l: "TP 2", n: 2 },
+      { p: signal.target_3, l: "TP 3", n: 3 }
     ]
 
     let bestReward = 0
+    let bestHitRoi = -Infinity
 
     for (const t of rawTargets) {
       if (t.p) {
         const reward = Math.abs(t.p - entry)
         const moveRaw = (reward / entry) * 100
         const ratio = riskDiff > 0 ? reward / riskDiff : 0
+        const roiRaw = isLong
+          ? ((t.p - entry) / entry) * 100
+          : ((entry - t.p) / entry) * 100
+        const isHit = hitSet.has(t.n)
         
         if (ratio > bestReward) bestReward = ratio
+        if (isHit && roiRaw > bestHitRoi) bestHitRoi = roiRaw
 
         targets.push({
           price: t.p,
           label: t.l,
           movePercent: moveRaw.toFixed(2) + "%",
-          rr: `1:${ratio.toFixed(1)}`
+          rr: `1:${ratio.toFixed(1)}`,
+          roi: `+${roiRaw.toFixed(2)}%`,
+          roiRaw,
+          isHit,
         })
       }
     }
@@ -77,6 +92,10 @@ export function analyzeSignal(signal: Signal): SignalAnalytics {
     if (bestReward > 0) {
       maxRR = `1:${bestReward.toFixed(1)}`
       rrRatio = bestReward
+    }
+
+    if (bestHitRoi > -Infinity) {
+      achievedRoi = `+${bestHitRoi.toFixed(2)}%`
     }
   }
 
@@ -88,7 +107,8 @@ export function analyzeSignal(signal: Signal): SignalAnalytics {
     isLong,
     directionColor,
     directionBg,
-    directionBorder
+    directionBorder,
+    achievedRoi,
   }
 }
 

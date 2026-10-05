@@ -8,6 +8,8 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 const TIMEFRAMES = [
+  { label: "1m", value: "1m" },
+  { label: "5m", value: "5m" },
   { label: "15m", value: "15m" },
   { label: "1H", value: "1h" },
   { label: "4H", value: "4h" },

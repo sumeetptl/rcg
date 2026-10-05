@@ -75,6 +75,34 @@ export function NewsTable({ initialData }: NewsTableProps) {
     }
   }
 
+  const handleToggleStatus = async (item: News) => {
+    const newStatus = item.status === "published" ? "draft" : "published"
+    const newPublishedAt = newStatus === "published" ? new Date().toISOString() : null
+    const previousData = [...data]
+
+    // Optimistic update
+    setData(data.map(n => n.id === item.id ? { ...n, status: newStatus, published_at: newPublishedAt } : n))
+
+    try {
+      const supabase = createClient()
+      const { error } = await supabase
+        .from("news")
+        .update({
+          status: newStatus,
+          published_at: newPublishedAt,
+        })
+        .eq("id", item.id)
+
+      if (error) throw error
+      toast.success(newStatus === "published" ? "Article published" : "Article unpublished")
+      router.refresh()
+    } catch (error) {
+      setData(previousData)
+      toast.error("Failed to update status")
+      console.error(error)
+    }
+  }
+
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "Not published"
     return new Date(dateString).toLocaleDateString("en-US", {

@@ -180,7 +180,12 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
                   <CryptoLogo symbol={signal.asset} size={32} />
                   <div className="flex flex-col gap-0.5">
                     <span className="font-mono text-sm font-bold">{signal.asset}</span>
-                    <span className="text-[10px] text-muted-foreground font-mono">{formatDate(signal.created_at)}</span>
+                    <span className="text-[10px] text-muted-foreground font-mono">
+                      {formatDate(signal.created_at)}
+                      {signal.updated_at && (new Date(signal.updated_at).getTime() - new Date(signal.created_at).getTime() > 60000) && (
+                        <span className="block text-[9px] text-primary/80">Upd: {formatDate(signal.updated_at)}</span>
+                      )}
+                    </span>
                   </div>
                 </div>
                 <DropdownMenu>
@@ -314,6 +319,9 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
                         </span>
                         <span className="text-[10px] text-muted-foreground font-mono">
                           {formatDate(signal.created_at)}
+                          {signal.updated_at && (new Date(signal.updated_at).getTime() - new Date(signal.created_at).getTime() > 60000) && (
+                            <span className="block text-[9px] text-primary/80">Upd: {formatDate(signal.updated_at)}</span>
+                          )}
                         </span>
                       </div>
                     </div>

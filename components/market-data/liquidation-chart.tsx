@@ -164,6 +164,8 @@ export function LiquidationChart({ data, symbol = "BTCUSDT", className }: Liquid
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="1m">1m</SelectItem>
+            <SelectItem value="5m">5m</SelectItem>
             <SelectItem value="15m">15m</SelectItem>
             <SelectItem value="1h">1h</SelectItem>
             <SelectItem value="4h">4h</SelectItem>

@@ -13,7 +13,8 @@ import {
   XCircle,
   AlertCircle,
   Clock,
-  Lock
+  Lock,
+  TrendingUp,
 } from "lucide-react";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
@@ -135,6 +136,10 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
   // --- Server-Side Analytics Calculation ---
   // This runs on the server before HTML is generated.
   const analytics = analyzeSignal(signal);
+  const isUpdated = Boolean(
+    signal.updated_at &&
+    new Date(signal.updated_at).getTime() - new Date(signal.created_at).getTime() > 60000
+  );
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -201,8 +206,16 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
                   <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground font-medium">
                     <span className="flex items-center gap-1.5">
                       <Clock className="h-4 w-4" />
-                      {formatDate(signal.created_at)}
+                      Issued: {formatDate(signal.created_at)}
                     </span>
+                    {isUpdated && (
+                      <>
+                        <span className="h-1 w-1 rounded-full bg-border" />
+                        <span className="flex items-center gap-1 text-xs text-primary font-mono font-medium">
+                          Updated: {formatDate(signal.updated_at!)}
+                        </span>
+                      </>
+                    )}
                     <span className="h-1 w-1 rounded-full bg-border" />
                     <span>TIMEFRAME: {signal.timeframe || "Intraday"}</span>
                     {signal.confidence && (
@@ -363,14 +376,46 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
                               <AlertCircle className="h-8 w-8" />
                             )}
                           </div>
-                          <div className="space-y-3">
-                            <p className="font-serif text-2xl font-semibold capitalize tracking-tight">
-                              Outcome: {signal.result || "Closed"}
-                            </p>
+                          <div className="space-y-3 flex-1">
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                              <p className="font-serif text-2xl font-semibold capitalize tracking-tight">
+                                Outcome: {signal.result || "Closed"}
+                              </p>
+                              {(signal.achieved_roi !== null || analytics.achievedRoi) && (
+                                <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-sm font-mono font-bold px-3 py-1">
+                                  Realised ROI: {signal.achieved_roi !== null ? `+${signal.achieved_roi}%` : analytics.achievedRoi}
+                                </Badge>
+                              )}
+                            </div>
+                            {analytics.targets.some((t) => t.isHit) && (
+                              <div className="flex flex-wrap items-center gap-2 pt-1">
+                                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                  Targets Hit:
+                                </span>
+                                {analytics.targets
+                                  .filter((t) => t.isHit)
+                                  .map((t, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 text-xs font-mono font-bold flex items-center gap-1"
+                                    >
+                                      ✓ {t.label} ({t.roi})
+                                    </span>
+                                  ))}
+                              </div>
+                            )}
                             <p className="text-muted-foreground text-base leading-relaxed max-w-xl">
                               {signal.result_note ||
                                 "This execution has been archived by the editorial team after reaching neutral maturity."}
                             </p>
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono pt-1">
+                              <Clock className="h-3.5 w-3.5" />
+                              <span>
+                                {isUpdated
+                                  ? `Last updated: ${formatDate(signal.updated_at!)}`
+                                  : `Logged: ${formatDate(signal.created_at)}`}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -405,18 +450,29 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
                       </div>
                       {/* Targets */}
                       {analytics.targets.map((tp, i) => (
-                        <div key={i} className="px-5 py-4">
+                        <div
+                          key={i}
+                          className={cn(
+                            "px-5 py-4 transition-colors",
+                            tp.isHit && "bg-emerald-500/[0.04]"
+                          )}
+                        >
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-bold text-emerald-600/90">
+                            <span className="flex items-center gap-1.5 text-sm font-bold text-emerald-600/90">
                               {tp.label}
+                              {tp.isHit && (
+                                <span className="rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase">
+                                  ✓ Hit
+                                </span>
+                              )}
                             </span>
                             <span className="font-mono text-sm font-bold text-emerald-600">
                               {formatPrice(tp.price)}
                             </span>
                           </div>
                           <div className="flex items-center justify-between text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
-                            <span>
-                              {tp.movePercent ? `+${tp.movePercent}` : "-"}
+                            <span className={cn(tp.isHit && "text-emerald-500 font-bold")}>
+                              ROI: {tp.roi}
                             </span>
                             <span className="bg-muted px-1.5 py-0.5 rounded-sm">
                               {tp.rr} RR
@@ -424,6 +480,21 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
                           </div>
                         </div>
                       ))}
+
+                      {/* Achieved ROI Summary */}
+                      {(signal.achieved_roi !== null || analytics.achievedRoi) && (
+                        <div className="flex items-center justify-between px-5 py-4 bg-emerald-500/[0.06] border-t border-emerald-500/20">
+                          <div className="flex items-center gap-1.5">
+                            <TrendingUp className="h-4 w-4 text-emerald-500" />
+                            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                              Achieved ROI
+                            </span>
+                          </div>
+                          <span className="font-mono text-base font-bold text-emerald-600 dark:text-emerald-400">
+                            {signal.achieved_roi !== null ? `+${signal.achieved_roi}%` : analytics.achievedRoi}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
 

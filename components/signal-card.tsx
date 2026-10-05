@@ -2,14 +2,14 @@
 import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ArrowUp, ArrowDown, Clock, Target, AlertTriangle } from "lucide-react";
+import { ArrowUp, ArrowDown, Clock, Target, AlertTriangle, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Signal } from "@/lib/types";
 import { CryptoLogo } from "@/components/crypto/crypto-logo";
 import { toPng } from "html-to-image";
 import { toast } from "sonner";
-import { Download } from "lucide-react";
+import { analyzeSignal } from "@/lib/signal-analytics";
 
 interface SignalCardProps {
   signal: Signal;
@@ -24,6 +24,11 @@ export function SignalCard({ signal, showAnalysis = false, isPremium = false }: 
   const directionUpper = signal.direction.toUpperCase() as "LONG" | "SHORT";
   const isLong = directionUpper === "LONG";
   const isLocked = !isPremium && signal.access_level === "premium";
+  const analytics = analyzeSignal(signal);
+  const isUpdated = Boolean(
+    signal.updated_at &&
+    new Date(signal.updated_at).getTime() - new Date(signal.created_at).getTime() > 60000
+  );
 
   // Map schema statuses to colors
   const statusColors: Record<string, string> = {
@@ -228,37 +233,60 @@ export function SignalCard({ signal, showAnalysis = false, isPremium = false }: 
             </div>
 
             <div className="space-y-2">
-              <p className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Target className="h-3 w-3" /> Targets
-              </p>
+              <div className="flex items-center justify-between">
+                <p className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Target className="h-3 w-3" /> Targets
+                </p>
+                {analytics.achievedRoi && (
+                  <span className="font-mono text-xs font-bold text-emerald-500">
+                    Achieved: {analytics.achievedRoi}
+                  </span>
+                )}
+              </div>
               <div className="flex flex-wrap gap-2">
-                <span className={cn("rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit", isLocked && "blur-sm select-none bg-muted text-muted-foreground")}>
-                  TP1: {getPriceDisplay(signal.target_1)}
-                </span>
-                {signal.target_2 && (
-                  <span className={cn("rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit", isLocked && "blur-sm select-none bg-muted text-muted-foreground")}>
-                    TP2: {getPriceDisplay(signal.target_2)}
+                {analytics.targets.map((tp, idx) => (
+                  <span
+                    key={idx}
+                    className={cn(
+                      "rounded-md px-2 py-1 font-mono text-xs flex items-center gap-1.5 border transition-all",
+                      tp.isHit
+                        ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-500 font-semibold shadow-sm shadow-emerald-500/10"
+                        : "border-border/60 bg-muted/40 text-muted-foreground",
+                      isLocked && "blur-sm select-none bg-muted text-muted-foreground border-transparent"
+                    )}
+                  >
+                    {tp.isHit && <span className="text-[10px] font-bold">✓</span>}
+                    <span>{tp.label}:</span>
+                    <span>{isLocked ? "XXXXX" : formatPrice(tp.price)}</span>
+                    <span className={cn("text-[10px]", tp.isHit ? "text-emerald-400 font-bold" : "opacity-60")}>
+                      ({tp.roi})
+                    </span>
                   </span>
-                )}
-                {signal.target_3 && (
-                  <span className={cn("rounded-md bg-signal-hit/10 px-2 py-1 font-mono text-xs text-signal-hit", isLocked && "blur-sm select-none bg-muted text-muted-foreground")}>
-                    TP3: {getPriceDisplay(signal.target_3)}
-                  </span>
-                )}
+                ))}
               </div>
             </div>
 
             {signal.result && (
-              <div className="rounded-lg bg-muted/50 p-3">
-                <p className="text-sm text-muted-foreground">Result</p>
-                <p
-                  className={cn(
-                    "font-mono text-lg font-semibold uppercase",
-                    resultColors[signal.result],
-                  )}
-                >
-                  {signal.result}
-                </p>
+              <div className="rounded-lg bg-muted/50 p-3 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground">Result</p>
+                  <p
+                    className={cn(
+                      "font-mono text-base font-semibold uppercase",
+                      resultColors[signal.result],
+                    )}
+                  >
+                    {signal.result}
+                  </p>
+                </div>
+                {(signal.achieved_roi !== null || analytics.achievedRoi) && (
+                  <div className="text-right">
+                    <p className="text-xs text-muted-foreground">Realised ROI</p>
+                    <p className="font-mono text-base font-bold text-emerald-500">
+                      {signal.achieved_roi !== null ? `+${signal.achieved_roi}%` : analytics.achievedRoi}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -281,9 +309,16 @@ export function SignalCard({ signal, showAnalysis = false, isPremium = false }: 
             )}
 
             <div className="mt-auto pt-4 flex items-center justify-between">
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <Clock className="h-3 w-3" />
-                {formatDate(signal.created_at)}
+              <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+                <div className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  <span>{formatDate(signal.created_at)}</span>
+                </div>
+                {isUpdated && (
+                  <span className="text-[10px] font-mono text-primary/80 bg-primary/10 rounded px-1.5 py-0.5">
+                    Updated {formatDate(signal.updated_at!)}
+                  </span>
+                )}
               </div>
               
               <button 

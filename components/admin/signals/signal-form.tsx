@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, Save } from "lucide-react"
 import { FormSection } from "@/components/admin/form-section"
-import { Signal } from "@/lib/types"
+import { Signal, SignalStatus, AccessLevel } from "@/lib/types"
 
 interface SignalFormProps {
   initialData?: Partial<Signal>
@@ -40,6 +40,39 @@ export function SignalForm({ initialData }: SignalFormProps) {
     context: initialData?.context || "",
   })
 
+  // Track which targets were hit as an integer array: [1], [1,2], [1,2,3]
+  const [hitTargets, setHitTargets] = useState<number[]>(
+    initialData?.hit_targets ?? []
+  )
+
+  const toggleHitTarget = (n: number) => {
+    setHitTargets((prev) => {
+      if (prev.includes(n)) {
+        // Deselecting target n also unmarks any higher targets (e.g., unchecking TP2 removes TP2 and TP3)
+        return prev.filter((x) => x < n)
+      } else {
+        // Selecting target n automatically marks all preceding targets (e.g., checking TP2 marks TP1 and TP2)
+        const updated = new Set(prev)
+        for (let i = 1; i <= n; i++) {
+          updated.add(i)
+        }
+        return Array.from(updated).sort((a, b) => a - b)
+      }
+    })
+  }
+
+  // Compute ROI for a single target price given current form entry
+  const computeTargetRoi = (targetPrice: string): string | null => {
+    const entry = parseFloat(formData.entry_price)
+    const tp = parseFloat(targetPrice)
+    if (!entry || !tp || isNaN(entry) || isNaN(tp)) return null
+    const isLong = formData.direction === "LONG"
+    const roi = isLong
+      ? ((tp - entry) / entry) * 100
+      : ((entry - tp) / entry) * 100
+    return `${roi >= 0 ? "+" : ""}${roi.toFixed(2)}%`
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -54,11 +87,32 @@ export function SignalForm({ initialData }: SignalFormProps) {
         return
     }
 
+    // Compute achieved_roi from the highest hit target
+    const entry = parseFloat(formData.entry_price)
+    const isLong = formData.direction === "LONG"
+    const tpPrices: Record<number, number | null> = {
+      1: formData.target_1 ? parseFloat(formData.target_1) : null,
+      2: formData.target_2 ? parseFloat(formData.target_2) : null,
+      3: formData.target_3 ? parseFloat(formData.target_3) : null,
+    }
+    let achievedRoi: number | null = null
+    if (entry && hitTargets.length > 0) {
+      let best = -Infinity
+      for (const n of hitTargets) {
+        const tp = tpPrices[n]
+        if (tp) {
+          const roi = isLong ? ((tp - entry) / entry) * 100 : ((entry - tp) / entry) * 100
+          if (roi > best) best = roi
+        }
+      }
+      if (best > -Infinity) achievedRoi = parseFloat(best.toFixed(4))
+    }
+
     const payload = {
       title: formData.title,
       asset: formData.asset.toUpperCase(),
       direction: formData.direction,
-      entry_price: parseFloat(formData.entry_price),
+      entry_price: entry,
       stop_loss: parseFloat(formData.stop_loss),
       target_1: parseFloat(formData.target_1),
       target_2: formData.target_2 ? parseFloat(formData.target_2) : null,
@@ -70,6 +124,8 @@ export function SignalForm({ initialData }: SignalFormProps) {
       result: formData.result || null,
       result_note: formData.result_note || null,
       context: formData.context || null,
+      hit_targets: hitTargets,
+      achieved_roi: achievedRoi,
     }
 
     let queryError = null;
@@ -135,7 +191,7 @@ export function SignalForm({ initialData }: SignalFormProps) {
                 <Label htmlFor="direction">Direction</Label>
                 <Select
                 value={formData.direction}
-                onValueChange={(value) => setFormData({ ...formData, direction: value })}
+                onValueChange={(value) => setFormData({ ...formData, direction: value as "LONG" | "SHORT" })}
                 >
                 <SelectTrigger className={formData.direction === "LONG" ? "text-green-600 font-medium" : "text-red-600 font-medium"}>
                     <SelectValue />
@@ -264,7 +320,7 @@ export function SignalForm({ initialData }: SignalFormProps) {
                 <Label htmlFor="status">Status</Label>
                 <Select
                     value={formData.status}
-                    onValueChange={(value) => setFormData({ ...formData, status: value })}
+                    onValueChange={(value) => setFormData({ ...formData, status: value as SignalStatus })}
                 >
                     <SelectTrigger>
                     <SelectValue />
@@ -282,7 +338,7 @@ export function SignalForm({ initialData }: SignalFormProps) {
                 <Label htmlFor="access_level">Access Level</Label>
                 <Select
                     value={formData.access_level}
-                    onValueChange={(value) => setFormData({ ...formData, access_level: value })}
+                    onValueChange={(value) => setFormData({ ...formData, access_level: value as AccessLevel })}
                 >
                     <SelectTrigger>
                     <SelectValue />
@@ -322,6 +378,74 @@ export function SignalForm({ initialData }: SignalFormProps) {
                     value={formData.result_note}
                     onChange={(e) => setFormData({ ...formData, result_note: e.target.value })}
                     />
+                </div>
+
+                {/* Hit Targets */}
+                <div className="sm:col-span-2 space-y-3">
+                  <Label>Targets Achieved</Label>
+                  <div className="flex flex-wrap gap-3">
+                    {[
+                      { n: 1, price: formData.target_1, label: "TP 1" },
+                      { n: 2, price: formData.target_2, label: "TP 2" },
+                      { n: 3, price: formData.target_3, label: "TP 3" },
+                    ]
+                      .filter((t) => t.price)
+                      .map((t) => {
+                        const roi = computeTargetRoi(t.price)
+                        const isHit = hitTargets.includes(t.n)
+                        return (
+                          <button
+                            key={t.n}
+                            type="button"
+                            onClick={() => toggleHitTarget(t.n)}
+                            className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-mono transition-all ${
+                              isHit
+                                ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                : "border-border bg-muted/30 text-muted-foreground hover:border-border/80"
+                            }`}
+                          >
+                            <span
+                              className={`h-4 w-4 rounded-sm border-2 flex items-center justify-center flex-shrink-0 ${
+                                isHit ? "border-emerald-500 bg-emerald-500" : "border-muted-foreground/40"
+                              }`}
+                            >
+                              {isHit && (
+                                <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 12 12">
+                                  <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              )}
+                            </span>
+                            <span className="font-bold">{t.label}</span>
+                            <span className="text-[11px] opacity-70">${parseFloat(t.price).toLocaleString()}</span>
+                            {roi && (
+                              <span className={`text-[11px] font-bold ${
+                                isHit ? "text-emerald-500" : "text-muted-foreground"
+                              }`}>
+                                {roi}
+                              </span>
+                            )}
+                          </button>
+                        )
+                      })}
+                  </div>
+                  {hitTargets.length > 0 && (() => {
+                    const entry = parseFloat(formData.entry_price)
+                    const isLong = formData.direction === "LONG"
+                    const tpMap: Record<number, string> = { 1: formData.target_1, 2: formData.target_2, 3: formData.target_3 }
+                    let best = -Infinity
+                    for (const n of hitTargets) {
+                      const tp = parseFloat(tpMap[n])
+                      if (tp && entry) {
+                        const roi = isLong ? ((tp - entry) / entry) * 100 : ((entry - tp) / entry) * 100
+                        if (roi > best) best = roi
+                      }
+                    }
+                    return best > -Infinity ? (
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold">
+                        Achieved ROI: +{best.toFixed(2)}%
+                      </p>
+                    ) : null
+                  })()}
                 </div>
               </>
             )}
