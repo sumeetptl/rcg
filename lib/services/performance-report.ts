@@ -222,7 +222,7 @@ export function computePerformanceReport(
     .join("\n")
 
   const formattedText = `╔════════════════════════════╗
-           COINSTAQ
+    COINSTAQ INTELLIGENCE
      *PERFORMANCE REPORT*
 ╚════════════════════════════╝
 
@@ -242,7 +242,7 @@ ${bestTrade ? `• Best Trade: ${bestTrade.pair} (${bestTrade.direction}) +${bes
 ${textTrades ? `🎯 *RECENT CLOSED SETUPS*\n${textTrades}\n` : ""}
 *Less Noise. More Edge.*
 
-_Transparent data. Disciplined execution._`
+_CoinStaq Intelligence • Transparent data. Disciplined execution._`
 
   return {
     timeframe,

@@ -63,10 +63,10 @@ export function PerformanceReportView({ signals, className }: PerformanceReportV
       })
 
       const link = document.createElement("a")
-      link.download = `CoinStaq-Performance-Report-${timeframe}.png`
+      link.download = `CoinStaq-Intelligence-Performance-Report-${timeframe}.png`
       link.href = dataUrl
       link.click()
-      toast.success("Performance report downloaded successfully!")
+      toast.success("Intelligence performance report downloaded successfully!")
     } catch (err) {
       console.error("Capture error:", err)
       toast.error("Failed to download performance report image.")
@@ -183,7 +183,7 @@ export function PerformanceReportView({ signals, className }: PerformanceReportV
             <div className="space-y-1.5">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs font-bold uppercase tracking-widest text-primary px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20">
-                  COINSTAQ TERMINAL
+                  COINSTAQ INTELLIGENCE
                 </span>
                 <Badge variant="outline" className="font-mono text-xs">
                   {report.timeframeLabel}
@@ -409,11 +409,11 @@ export function PerformanceReportView({ signals, className }: PerformanceReportV
               <span className="font-serif font-bold text-foreground text-sm tracking-tight block">
                 Less Noise. More Edge.
               </span>
-              <span>CoinStaq Academy • Transparent Research & Mathematical Execution</span>
+              <span>CoinStaq Intelligence • Transparent Research & Mathematical Execution</span>
             </div>
 
             <div className="text-right text-[11px]">
-              <span>Official Terminal Report • Past performance is not indicative of future returns.</span>
+              <span>Official Intelligence Report • Past performance is not indicative of future returns.</span>
             </div>
           </footer>
         </div>
