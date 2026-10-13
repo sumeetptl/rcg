@@ -43,10 +43,12 @@ import {
   ArrowDown,
   Copy,
   Archive,
+  Share2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { CryptoLogo } from "@/components/crypto/crypto-logo";
+import { formatSignalToText } from "@/lib/signal-formatter";
 
 interface SignalsTableProps {
   initialData: Signal[];
@@ -135,6 +137,17 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
     }
   };
 
+  const handleCopySignalText = async (signal: Signal) => {
+    try {
+      const text = formatSignalToText(signal, { leverage: 10 });
+      await navigator.clipboard.writeText(text);
+      toast.success(`Copied ${signal.asset} signal in CoinStaq format!`);
+    } catch (error) {
+      toast.error("Failed to copy signal to clipboard");
+      console.error(error);
+    }
+  };
+
   const formatPrice = (price: number | null) => {
     if (price === null || price === undefined) return "-";
     return price < 1
@@ -201,6 +214,9 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
                       <Link href={`/admin/signals/${signal.id}/edit`}>
                         <Pencil className="mr-2 h-3.5 w-3.5" /> Edit Signal
                       </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleCopySignalText(signal)} className="text-xs">
+                      <Share2 className="mr-2 h-3.5 w-3.5" /> Copy Signal Text
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
@@ -367,40 +383,55 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
                     )}
                   </TableCell>
                   <TableCell className="text-right pr-4">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-                        >
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-[160px]">
-                        <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                          Actions
-                        </DropdownMenuLabel>
-                        <DropdownMenuItem asChild className="text-xs">
-                          <Link href={`/admin/signals/${signal.id}/edit`}>
-                            <Pencil className="mr-2 h-3.5 w-3.5" /> Edit Signal
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDuplicate(signal)} className="text-xs">
-                          <Copy className="mr-2 h-3.5 w-3.5" /> Duplicate
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleArchive(signal.id)} className="text-xs">
-                          <Archive className="mr-2 h-3.5 w-3.5" /> Archive
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => setDeleteId(signal.id)}
-                          className="text-xs text-red-600 focus:text-red-600 focus:bg-red-100 dark:focus:bg-red-900/20"
-                        >
-                          <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        title="Copy Signal Text (CoinStaq format)"
+                        onClick={() => handleCopySignalText(signal)}
+                      >
+                        <Share2 className="h-3.5 w-3.5" />
+                        <span className="sr-only">Copy Signal Text</span>
+                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                          >
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[165px]">
+                          <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                            Actions
+                          </DropdownMenuLabel>
+                          <DropdownMenuItem asChild className="text-xs">
+                            <Link href={`/admin/signals/${signal.id}/edit`}>
+                              <Pencil className="mr-2 h-3.5 w-3.5" /> Edit Signal
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleCopySignalText(signal)} className="text-xs">
+                            <Share2 className="mr-2 h-3.5 w-3.5" /> Copy Signal Text
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDuplicate(signal)} className="text-xs">
+                            <Copy className="mr-2 h-3.5 w-3.5" /> Duplicate
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleArchive(signal.id)} className="text-xs">
+                            <Archive className="mr-2 h-3.5 w-3.5" /> Archive
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => setDeleteId(signal.id)}
+                            className="text-xs text-red-600 focus:text-red-600 focus:bg-red-100 dark:focus:bg-red-900/20"
+                          >
+                            <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))

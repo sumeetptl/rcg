@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, Save } from "lucide-react"
 import { FormSection } from "@/components/admin/form-section"
 import { Signal, SignalStatus, AccessLevel } from "@/lib/types"
+import { CopySignalModal } from "@/components/admin/signals/copy-signal-modal"
 
 interface SignalFormProps {
   initialData?: Partial<Signal>
@@ -162,6 +163,15 @@ export function SignalForm({ initialData }: SignalFormProps) {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
+
+      {/* Copy Signal Text Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-lg border border-border/80 bg-muted/20">
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">Channel Broadcast Template</h3>
+          <p className="text-xs text-muted-foreground">Format and copy this trade directly in CoinStaq Telegram/Discord text format.</p>
+        </div>
+        <CopySignalModal signal={formData} variant="default" label="Copy Signal Text" />
+      </div>
 
       {/* 1. Signal Overview */}
       <FormSection title="Signal Overview" description="Core details about the asset and trade direction.">
@@ -452,7 +462,8 @@ export function SignalForm({ initialData }: SignalFormProps) {
         </div>
       </FormSection>
       
-      <div className="flex justify-end pt-4 border-t border-border">
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-border">
+         <CopySignalModal signal={formData} variant="outline" label="Copy Signal Text" />
          <Button onClick={handleSubmit} disabled={isLoading} className="w-full sm:w-auto">
              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
              {!isLoading && <Save className="mr-2 h-4 w-4" />}

@@ -16,6 +16,7 @@ import {
   Command,
   Hourglass,
   Sparkles,
+  BarChart3,
 } from "lucide-react"
 
 import {
@@ -60,6 +61,11 @@ const navGroups = [
         title: "Market Signals",
         url: "/admin/signals",
         icon: TrendingUp,
+      },
+      {
+        title: "Performance Report",
+        url: "/admin/signals/performance",
+        icon: BarChart3,
       },
     ],
   },
