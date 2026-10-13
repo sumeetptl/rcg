@@ -15,6 +15,7 @@ import {
   LogOut,
   Command,
   Hourglass,
+  Sparkles,
 } from "lucide-react"
 
 import {
@@ -69,6 +70,11 @@ const navGroups = [
         title: "Blog Posts",
         url: "/admin/blogs",
         icon: FileText,
+      },
+      {
+        title: "Market Briefing",
+        url: "/admin/briefing",
+        icon: Sparkles,
       },
       {
         title: "News Feed",
