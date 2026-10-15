@@ -3,20 +3,20 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Binding agreement and conditions of use for the RealCryptoG platform.",
+  description: "Binding agreement and conditions of use for the CoinStaq platform.",
 }
 
 export default function TermsOfServicePage() {
   return (
     <LegalLayout
       title="Terms of Service"
-      subtitle="Binding agreement governing your access to and use of RealCryptoG services."
+      subtitle="Binding agreement governing your access to and use of CoinStaq services."
       lastUpdated="February 1, 2026"
     >
       <section>
         <h2>1. Acceptance of Terms</h2>
         <p className="mb-3 text-muted-foreground">
-          These Terms of Service ("Terms") constitute a legally binding agreement between you ("User" or "you") and RealCryptoG ("Company," "we," "us," or "our"). By accessing, registering for, or using the RealCryptoG platform, website, API, or mobile applications (collectively, the "Service"), you agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, you must not access or use the Service.
+          These Terms of Service ("Terms") constitute a legally binding agreement between you ("User" or "you") and CoinStaq ("Company," "we," "us," or "our"). By accessing, registering for, or using the CoinStaq platform, website, API, or mobile applications (collectively, the "Service"), you agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, you must not access or use the Service.
         </p>
         <p className="mb-3 text-muted-foreground">
           We reserve the right to update or modify these Terms at any time without prior notice. Your continued use of the Service following any such change constitutes your agreement to follow and be bound by the Terms as changed.

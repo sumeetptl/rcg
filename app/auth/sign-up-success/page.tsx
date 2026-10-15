@@ -9,7 +9,7 @@ export default function SignUpSuccessPage() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-block">
-            <span className="font-serif text-2xl font-semibold tracking-tight">RealCryptoG</span>
+            <span className="font-serif text-2xl font-semibold tracking-tight">CoinStaq</span>
           </Link>
         </div>
 

@@ -16,10 +16,10 @@ export default function DisclaimerPage() {
       <section>
         <h2>1. General Disclaimer</h2>
         <p className="mb-3 text-muted-foreground">
-          RealCryptoG is a financial information provider and media platform. We are <strong>not</strong> a broker-dealer, financial advisor, investment advisor, or registered legal advisor. The information provided on this website, including but not limited to crypto signals, market analysis, news reports, and blog posts, is for strict <strong>informational and educational purposes only</strong>.
+          CoinStaq is a financial information provider and media platform. We are <strong>not</strong> a broker-dealer, financial advisor, investment advisor, or registered legal advisor. The information provided on this website, including but not limited to crypto signals, market analysis, news reports, and blog posts, is for strict <strong>informational and educational purposes only</strong>.
         </p>
         <p className="mb-3 text-muted-foreground">
-          Nothing contained herein constitutes a solicitation, recommendation, endorsement, or offer by RealCryptoG or any third party service provider to buy or sell any securities or other financial instruments in this or in any other jurisdiction in which such solicitation or offer would be unlawful under the securities laws of such jurisdiction.
+          Nothing contained herein constitutes a solicitation, recommendation, endorsement, or offer by CoinStaq or any third party service provider to buy or sell any securities or other financial instruments in this or in any other jurisdiction in which such solicitation or offer would be unlawful under the securities laws of such jurisdiction.
         </p>
       </section>
 
@@ -39,7 +39,7 @@ export default function DisclaimerPage() {
           </p>
         </div>
         <p className="mb-3 text-muted-foreground">
-          The high degree of leverage that is often obtainable in crypto trading can work against you as well as for you. The use of leverage can lead to large losses as well as large gains. RealCryptoG accepts no liability for any loss or damage, including without limitation to, any loss of profit, which may arise directly or indirectly from use of or reliance on such information.
+          The high degree of leverage that is often obtainable in crypto trading can work against you as well as for you. The use of leverage can lead to large losses as well as large gains. CoinStaq accepts no liability for any loss or damage, including without limitation to, any loss of profit, which may arise directly or indirectly from use of or reliance on such information.
         </p>
       </section>
 
@@ -60,7 +60,7 @@ export default function DisclaimerPage() {
       <section>
         <h2>6. Third-Party Links & Services</h2>
         <p className="mb-3 text-muted-foreground">
-          Our Service may contain links to third-party web sites or services that are not owned or controlled by RealCryptoG. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You acknowledge and agree that RealCryptoG shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services.
+          Our Service may contain links to third-party web sites or services that are not owned or controlled by CoinStaq. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You acknowledge and agree that CoinStaq shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services.
         </p>
       </section>
 

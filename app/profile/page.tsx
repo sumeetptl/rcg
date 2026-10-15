@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Profile - The Real Crypto G",
+  title: "Profile - CoinStaq",
   description: "Manage your profile and account settings",
 }
 

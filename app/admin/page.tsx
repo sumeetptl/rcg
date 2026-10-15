@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { getSignalStats } from "@/lib/services/signals"
-import { getBlogStats } from "@/lib/services/blogs"
+import { getAdminBlogStats } from "@/lib/services/blogs"
 import { getNewsStats } from "@/lib/services/news"
 import { getUserStats } from "@/lib/services/users"
 import { Button } from "@/components/ui/button"
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 export default async function AdminPage() {
   const [signals, blogs, news, users] = await Promise.all([
     getSignalStats(),
-    getBlogStats(),
+    getAdminBlogStats(),
     getNewsStats(),
     getUserStats(),
   ])
@@ -170,10 +170,10 @@ export default async function AdminPage() {
             <Table>
                <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                     <TableHead className="w-[100px]">Asset</TableHead>
+                     <TableHead className="w-25">Asset</TableHead>
                      <TableHead>Status</TableHead>
                      <TableHead className="text-right">Created</TableHead>
-                     <TableHead className="w-[40px]"></TableHead>
+                     <TableHead className="w-10"></TableHead>
                   </TableRow>
                </TableHeader>
                <TableBody>
@@ -211,16 +211,16 @@ export default async function AdminPage() {
             <Table>
                <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                     <TableHead className="w-[200px]">Title</TableHead>
+                     <TableHead className="w-50">Title</TableHead>
                      <TableHead>Status</TableHead>
                      <TableHead className="text-right">Date</TableHead>
-                     <TableHead className="w-[40px]"></TableHead>
+                     <TableHead className="w-10"></TableHead>
                   </TableRow>
                </TableHeader>
                <TableBody>
                   {recentBlogs.map((b) => (
                      <TableRow key={b.id} className="h-12">
-                        <TableCell className="font-medium truncate max-w-[200px]">{b.title}</TableCell>
+                        <TableCell className="font-medium truncate max-w-50">{b.title}</TableCell>
                         <TableCell>
                            <StatusBadge status={b.status} />
                         </TableCell>
@@ -229,7 +229,7 @@ export default async function AdminPage() {
                         </TableCell>
                         <TableCell>
                            <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                              <Link href={`/admin/blogs/${b.slug}/edit`}>
+                              <Link href={`/admin/blogs/${b.id}/edit`}>
                                  <MoreHorizontal className="h-4 w-4" />
                               </Link>
                            </Button>

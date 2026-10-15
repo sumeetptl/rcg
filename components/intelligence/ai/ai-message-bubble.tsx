@@ -1,0 +1,90 @@
+"use client"
+
+import { useState } from "react"
+import { cn } from "@/lib/utils"
+import { User, BrainCircuit, ChevronDown, ChevronRight, Check, Loader2, Sparkles } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Message } from "./ai-chat-interface"
+
+interface AIMessageBubbleProps {
+  message: Message
+}
+
+export function AIMessageBubble({ message }: AIMessageBubbleProps) {
+  const isUser = message.role === "user"
+  const [isThinkingOpen, setIsThinkingOpen] = useState(true)
+
+  const hasThinking = message.thinkingSteps && message.thinkingSteps.length > 0
+  const isThinkingDone = message.thinkingSteps?.every(s => s.status === "done")
+
+  return (
+    <div className={cn("flex w-full gap-4", isUser ? "justify-end" : "justify-start")}>
+      {!isUser && (
+        <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-xl bg-foreground text-background">
+          <Sparkles className="h-4 w-4" />
+        </div>
+      )}
+      
+      <div className={cn("relative flex max-w-[85%] flex-col gap-2", isUser ? "items-end" : "items-start")}>
+        
+        {/* Thinking Process UI */}
+        {!isUser && hasThinking && (
+           <div className="flex flex-col gap-2 w-full sm:min-w-70 rounded-2xl border border-border/50 bg-muted/20 p-3">
+             <button 
+               onClick={() => setIsThinkingOpen(!isThinkingOpen)}
+               className="flex items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+             >
+               <span className="flex items-center gap-2">
+                  {!isThinkingDone ? <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" /> : <Check className="h-3.5 w-3.5 text-green-500" />}
+                  {isThinkingDone ? "Analyzed market data" : "Thinking process..."}
+               </span>
+               {isThinkingOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+             </button>
+             
+             <AnimatePresence>
+               {isThinkingOpen && (
+                 <motion.div
+                   initial={{ height: 0, opacity: 0 }}
+                   animate={{ height: "auto", opacity: 1 }}
+                   exit={{ height: 0, opacity: 0 }}
+                   className="overflow-hidden"
+                 >
+                   <ul className="mt-2 space-y-2 text-[11px] text-muted-foreground/80 border-l-2 border-border/50 pl-3 ml-1">
+                     {message.thinkingSteps?.map((step) => (
+                       <li key={step.id} className="flex items-start gap-2">
+                         {step.status === "pending" ? (
+                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary/50 mt-1.25 animate-pulse" />
+                         ) : (
+                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-500/50 mt-1.25" />
+                         )}
+                         <span className={cn(step.status === "pending" && "text-foreground animate-pulse")}>
+                           {step.text}
+                         </span>
+                       </li>
+                     ))}
+                   </ul>
+                 </motion.div>
+               )}
+             </AnimatePresence>
+           </div>
+        )}
+
+        {/* Content Bubble */}
+        {message.content && (
+          <div
+            className={cn(
+              "relative flex flex-col gap-2 text-sm shadow-none",
+              isUser
+                ? "bg-muted text-foreground rounded-3xl rounded-br-lg px-5 py-3"
+                : "bg-transparent text-foreground px-1 py-1"
+            )}
+          >
+            <div className="whitespace-pre-wrap leading-relaxed text-[15px]">
+              {message.content}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

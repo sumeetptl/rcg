@@ -43,33 +43,32 @@ export function HeroSection() {
               variants={itemVariants} 
               className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground"
             >
-              Research & Analysis Platform
+              Intelligence for Digital Markets.
             </motion.div>
             
             <motion.h1 
               variants={itemVariants}
               className="font-serif text-4xl font-medium leading-[1.15] tracking-tight sm:text-5xl md:text-6xl"
             >
-              Institutional grade research for active crypto participants.
+              Less Noise. More Edge.
             </motion.h1>
 
             <motion.p 
               variants={itemVariants}
               className="mt-6 text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto"
             >
-              A focused environment providing data-driven market insights, transparent trade logic, and disciplined execution frameworks.
+              Research-driven market insights, structured strategies, and disciplined thinking for digital asset participants.
             </motion.p>
 
             <motion.div 
               variants={itemVariants} 
-              className="mt-8 flex items-center justify-center gap-8"
+              className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6"
             >
-              <Link 
-                href="/links" 
-                className="text-sm font-medium border-b border-foreground/30 pb-0.5 transition-colors hover:border-foreground"
-              >
-                Join Waitlist
-              </Link>
+              <Button asChild size="lg" className="rounded-full px-8">
+                <Link href="/links">
+                  Join Waitlist
+                </Link>
+              </Button>
               <Link 
                 href="/methodology" 
                 className="text-sm font-medium border-b border-transparent text-muted-foreground pb-0.5 transition-colors hover:text-foreground hover:border-foreground/30"

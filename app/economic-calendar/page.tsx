@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { CalendarFilters } from "@/components/economic-calendar/calendar-filters"
 import { CalendarDateStrip } from "@/components/economic-calendar/calendar-date-strip"
@@ -17,7 +16,6 @@ export default function EconomicCalendarPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <Header />
 
       <main className="flex-1">
         {/* Header Section */}

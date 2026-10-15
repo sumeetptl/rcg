@@ -1,5 +1,5 @@
 import Link from "next/link"
-import Image from "next/image"
+import { CloudinaryImage } from "@/components/cloudinary-image"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Clock, ArrowRight } from "lucide-react"
@@ -22,13 +22,13 @@ export function BlogCard({ blog, featured = false }: BlogCardProps) {
 
   if (featured) {
     return (
-      <Link href={`/blogs/${blog.slug}`} className="group block">
+      <Link href={`/academy/blogs/${blog.slug}`} className="group block">
         <Card className="overflow-hidden border-0 bg-transparent shadow-none">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-muted">
               {blog.cover_image ? (
-                <Image
-                  src={blog.cover_image || "/placeholder.svg"}
+                <CloudinaryImage
+                  src={blog.cover_image}
                   alt={blog.title}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -73,12 +73,12 @@ export function BlogCard({ blog, featured = false }: BlogCardProps) {
   }
 
   return (
-    <Link href={`/blogs/${blog.slug}`} className="group block">
+    <Link href={`/academy/blogs/${blog.slug}`} className="group block">
       <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           {blog.cover_image ? (
-            <Image
-              src={blog.cover_image || "/placeholder.svg"}
+            <CloudinaryImage
+              src={blog.cover_image}
               alt={blog.title}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"

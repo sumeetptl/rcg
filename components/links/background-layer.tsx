@@ -1,11 +1,10 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 export function BackgroundLayer() {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none transition-colors duration-300 bg-[#F7F7F7] dark:bg-transparent">
-      
       {/* 1. Base Gradient - Dark Only */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0A0A0A] to-[#121212] opacity-0 dark:opacity-100 transition-opacity duration-300" />
 
@@ -13,9 +12,9 @@ export function BackgroundLayer() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] opacity-100 dark:opacity-0 transition-opacity duration-300" />
 
       {/* 2. Soft radial glow behind center */}
-      <div 
+      <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[120px] 
-        bg-black/[0.02] dark:bg-white/[0.015] transition-colors duration-300" 
+        bg-black/[0.02] dark:bg-white/[0.015] transition-colors duration-300"
       />
 
       {/* 3. Floating gradient shapes */}
@@ -52,17 +51,17 @@ export function BackgroundLayer() {
 
       {/* 4. Animated Grain Texture */}
       <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none">
-        <svg className='w-full h-full'>
-          <filter id='noiseFilter'>
-            <feTurbulence 
-              type='fractalNoise' 
-              baseFrequency='0.6' 
-              stitchTiles='stitch' 
+        <svg className="w-full h-full">
+          <filter id="noiseFilter">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.6"
+              stitchTiles="stitch"
             />
           </filter>
-          <rect width='100%' height='100%' filter='url(#noiseFilter)' />
+          <rect width="100%" height="100%" filter="url(#noiseFilter)" />
         </svg>
       </div>
     </div>
-  )
+  );
 }

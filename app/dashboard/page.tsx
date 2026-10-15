@@ -18,6 +18,7 @@ import {
   Clock,
   Target,
   AlertTriangle,
+  Lock,
 } from "lucide-react";
 import { CryptoLogo } from "@/components/crypto/crypto-logo";
 
@@ -29,6 +30,18 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let isPremium = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan, role")
+      .eq("id", user.id)
+      .single();
+    
+    isPremium = profile?.plan === "premium" || profile?.role === "admin";
+  }
 
   const [signalsResult, newsResult, blogsResult] = await Promise.all([
     supabase
@@ -301,14 +314,15 @@ export default async function DashboardPage() {
                 </p>
               </div>
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/dashboard/signals">
+                <Link href="/intelligence/trade-ideas">
                   View All <ArrowUpRight className="ml-1 h-3 w-3" />
                 </Link>
               </Button>
             </div>
 
             <div className="rounded-xl border border-border/40 bg-card overflow-hidden shadow-sm">
-              <div className="max-h-[600px] overflow-y-auto">
+              {isPremium ? (
+                <div className="max-h-150 overflow-y-auto">
                 <Table>
                   <TableHeader className="bg-muted/20 hover:bg-muted/20 sticky top-0 z-10">
                     <TableRow className="hover:bg-transparent border-b border-border/40">
@@ -333,7 +347,7 @@ export default async function DashboardPage() {
                       <TableHead className="h-10 text-right text-[10px] uppercase tracking-widest font-semibold text-muted-foreground hidden xl:table-cell bg-muted/20">
                         Posted
                       </TableHead>
-                      <TableHead className="w-[50px] h-10 bg-muted/20"></TableHead>
+                      <TableHead className="w-12.5 h-10 bg-muted/20"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -349,7 +363,7 @@ export default async function DashboardPage() {
                           >
                             <TableCell className="font-semibold text-sm tracking-tight pl-6">
                               <Link
-                                href={`/signals/${signal.id}`}
+                                href={`/intelligence/trade-ideas/${signal.id}`}
                                 className="block w-full h-full py-4"
                               >
                                 <div className="flex items-center gap-3">
@@ -367,7 +381,7 @@ export default async function DashboardPage() {
                             </TableCell>
                             <TableCell>
                               <Link
-                                href={`/signals/${signal.id}`}
+                                href={`/intelligence/trade-ideas/${signal.id}`}
                                 className="block w-full h-full py-4"
                               >
                                 <span
@@ -427,7 +441,7 @@ export default async function DashboardPage() {
                             </TableCell>
                             <TableCell>
                               <Link
-                                href={`/signals/${signal.id}`}
+                                href={`/intelligence/trade-ideas/${signal.id}`}
                                 className="flex items-center justify-end text-muted-foreground/60 group-hover:text-primary transition-colors pr-4"
                               >
                                 <ArrowUpRight className="h-4 w-4" />
@@ -448,7 +462,21 @@ export default async function DashboardPage() {
                     )}
                   </TableBody>
                 </Table>
-              </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-20 text-center bg-muted/10">
+                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                    <Lock className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold tracking-tight text-foreground mb-2">Premium Signals Locked</h3>
+                  <p className="text-sm text-muted-foreground max-w-sm mb-6">
+                    Upgrade to Premium to view active trading setups, exact entry prices, and take-profit targets.
+                  </p>
+                  <Button asChild>
+                    <Link href="/profile">Upgrade to Premium</Link>
+                  </Button>
+                </div>
+              )}
             </div>
           </section>
 
@@ -472,14 +500,14 @@ export default async function DashboardPage() {
                   className="h-auto p-0"
                 >
                   <Link
-                    href="/blogs"
+                    href="/academy/blogs"
                     className="text-xs text-primary hover:text-primary/80"
                   >
                     All <ArrowUpRight className="ml-0.5 h-3 w-3 inline" />
                   </Link>
                 </Button>
               </div>
-              <div className="space-y-5 max-h-[500px] overflow-y-auto pr-2">
+              <div className="space-y-5 max-h-125 overflow-y-auto pr-2">
                 {blogs.length > 0 ? (
                   blogs.map((blog) => (
                     <Link
@@ -550,14 +578,14 @@ export default async function DashboardPage() {
                   className="h-auto p-0"
                 >
                   <Link
-                    href="/news"
+                    href="/community/news"
                     className="text-xs text-primary hover:text-primary/80"
                   >
                     All <ArrowUpRight className="ml-0.5 h-3 w-3 inline" />
                   </Link>
                 </Button>
               </div>
-              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+              <div className="space-y-4 max-h-100 overflow-y-auto pr-2">
                 {news.length > 0 ? (
                   news.map((item) => (
                     <div

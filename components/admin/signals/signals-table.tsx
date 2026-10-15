@@ -43,10 +43,12 @@ import {
   ArrowDown,
   Copy,
   Archive,
+  Share2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { CryptoLogo } from "@/components/crypto/crypto-logo";
+import { formatSignalToText } from "@/lib/signal-formatter";
 
 interface SignalsTableProps {
   initialData: Signal[];
@@ -135,6 +137,17 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
     }
   };
 
+  const handleCopySignalText = async (signal: Signal) => {
+    try {
+      const text = formatSignalToText(signal, { leverage: 10 });
+      await navigator.clipboard.writeText(text);
+      toast.success(`Copied ${signal.asset} signal in CoinStaq format!`);
+    } catch (error) {
+      toast.error("Failed to copy signal to clipboard");
+      console.error(error);
+    }
+  };
+
   const formatPrice = (price: number | null) => {
     if (price === null || price === undefined) return "-";
     return price < 1
@@ -166,11 +179,120 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
 
   return (
     <>
-      <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+      {/* Mobile Card View */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {data.length === 0 ? (
+          <div className="text-center text-sm text-muted-foreground p-8 bg-card rounded-xl border border-border">
+            No signals found.
+          </div>
+        ) : (
+          data.map((signal) => (
+            <Card key={signal.id} className="overflow-hidden">
+              <CardHeader className="p-4 pb-2 flex flex-row items-start justify-between space-y-0">
+                <div className="flex items-center gap-3">
+                  <CryptoLogo symbol={signal.asset} size={32} />
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-mono text-sm font-bold">{signal.asset}</span>
+                    <span className="text-[10px] text-muted-foreground font-mono">
+                      {formatDate(signal.created_at)}
+                      {signal.updated_at && (new Date(signal.updated_at).getTime() - new Date(signal.created_at).getTime() > 60000) && (
+                        <span className="block text-[9px] text-primary/80">Upd: {formatDate(signal.updated_at)}</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Actions</DropdownMenuLabel>
+                    <DropdownMenuItem asChild className="text-xs">
+                      <Link href={`/admin/signals/${signal.id}/edit`}>
+                        <Pencil className="mr-2 h-3.5 w-3.5" /> Edit Signal
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleCopySignalText(signal)} className="text-xs">
+                      <Share2 className="mr-2 h-3.5 w-3.5" /> Copy Signal Text
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => setDeleteId(signal.id)}
+                      className="text-xs text-red-600 focus:text-red-600 focus:bg-red-100 dark:focus:bg-red-900/20"
+                    >
+                      <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete Signal
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardHeader>
+              <CardContent className="p-4 pt-2">
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Direction</span>
+                    <span
+                      className={cn(
+                        "inline-flex items-center w-fit gap-1 px-2 py-0.5 rounded text-[10px] font-medium uppercase border",
+                        signal.direction === "LONG"
+                          ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400"
+                          : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-400",
+                      )}
+                    >
+                      {signal.direction === "LONG" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
+                      {signal.direction}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Status</span>
+                    <span
+                      className={cn(
+                        "inline-flex items-center w-fit px-2 py-0.5 rounded text-[10px] font-medium uppercase border",
+                        statusColors[signal.status.toLowerCase()] || statusColors.draft,
+                      )}
+                    >
+                      {signal.status}
+                    </span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Entry</span>
+                    <span className="font-mono text-sm">${formatPrice(signal.entry_price)}</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Result</span>
+                    {signal.result ? (
+                      <span
+                        className={cn(
+                          "font-mono text-sm font-medium",
+                          signal.result.toLowerCase() === "win"
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : signal.result.toLowerCase() === "loss"
+                              ? "text-rose-600 dark:text-rose-400"
+                              : "text-muted-foreground"
+                        )}
+                      >
+                        {signal.result}
+                      </span>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">—</span>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden hidden md:block">
         <Table>
           <TableHeader className="bg-muted/20">
             <TableRow className="hover:bg-transparent border-b border-border">
-              <TableHead className="w-[180px] h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground pl-6">
+              <TableHead className="w-45 h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground pl-6">
                 Asset
               </TableHead>
               <TableHead className="h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">
@@ -185,7 +307,7 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
               <TableHead className="h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">
                 Result
               </TableHead>
-              <TableHead className="h-10 text-right w-[80px]"></TableHead>
+              <TableHead className="h-10 text-right w-20"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -213,6 +335,9 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
                         </span>
                         <span className="text-[10px] text-muted-foreground font-mono">
                           {formatDate(signal.created_at)}
+                          {signal.updated_at && (new Date(signal.updated_at).getTime() - new Date(signal.created_at).getTime() > 60000) && (
+                            <span className="block text-[9px] text-primary/80">Upd: {formatDate(signal.updated_at)}</span>
+                          )}
                         </span>
                       </div>
                     </div>
@@ -258,40 +383,55 @@ export function SignalsTable({ initialData }: SignalsTableProps) {
                     )}
                   </TableCell>
                   <TableCell className="text-right pr-4">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-                        >
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-[160px]">
-                        <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                          Actions
-                        </DropdownMenuLabel>
-                        <DropdownMenuItem asChild className="text-xs">
-                          <Link href={`/admin/signals/${signal.id}/edit`}>
-                            <Pencil className="mr-2 h-3.5 w-3.5" /> Edit Signal
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDuplicate(signal)} className="text-xs">
-                          <Copy className="mr-2 h-3.5 w-3.5" /> Duplicate
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleArchive(signal.id)} className="text-xs">
-                          <Archive className="mr-2 h-3.5 w-3.5" /> Archive
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => setDeleteId(signal.id)}
-                          className="text-xs text-red-600 focus:text-red-600 focus:bg-red-100 dark:focus:bg-red-900/20"
-                        >
-                          <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        title="Copy Signal Text (CoinStaq format)"
+                        onClick={() => handleCopySignalText(signal)}
+                      >
+                        <Share2 className="h-3.5 w-3.5" />
+                        <span className="sr-only">Copy Signal Text</span>
+                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                          >
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-41.25">
+                          <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                            Actions
+                          </DropdownMenuLabel>
+                          <DropdownMenuItem asChild className="text-xs">
+                            <Link href={`/admin/signals/${signal.id}/edit`}>
+                              <Pencil className="mr-2 h-3.5 w-3.5" /> Edit Signal
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleCopySignalText(signal)} className="text-xs">
+                            <Share2 className="mr-2 h-3.5 w-3.5" /> Copy Signal Text
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDuplicate(signal)} className="text-xs">
+                            <Copy className="mr-2 h-3.5 w-3.5" /> Duplicate
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleArchive(signal.id)} className="text-xs">
+                            <Archive className="mr-2 h-3.5 w-3.5" /> Archive
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => setDeleteId(signal.id)}
+                            className="text-xs text-red-600 focus:text-red-600 focus:bg-red-100 dark:focus:bg-red-900/20"
+                          >
+                            <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))

@@ -8,6 +8,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import { WaitlistStatusSelect } from "@/components/admin/waitlist-status-select"
+import { WaitlistActions } from "@/components/admin/waitlist-actions"
 import { formatDistanceToNow } from "date-fns"
 
 export const dynamic = "force-dynamic"
@@ -38,6 +40,7 @@ export default async function AdminWaitlistPage() {
               <TableHead>Trading Level</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Joined</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -46,21 +49,19 @@ export default async function AdminWaitlistPage() {
                 <TableCell className="font-medium">{entry.email}</TableCell>
                 <TableCell className="capitalize">{entry.trading_level}</TableCell>
                 <TableCell>
-                  <Badge 
-                    variant={entry.status === "approved" ? "default" : "secondary"}
-                    className="capitalize"
-                  >
-                    {entry.status}
-                  </Badge>
+                  <WaitlistStatusSelect entryId={entry.id} initialStatus={entry.status} />
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {entry.created_at ? formatDistanceToNow(new Date(entry.created_at), { addSuffix: true }) : "-"}
+                </TableCell>
+                <TableCell className="text-right">
+                  <WaitlistActions email={entry.email} status={entry.status} />
                 </TableCell>
               </TableRow>
             ))}
             {(!entries || entries.length === 0) && (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
+                <TableCell colSpan={5} className="h-24 text-center">
                   No entries yet.
                 </TableCell>
               </TableRow>

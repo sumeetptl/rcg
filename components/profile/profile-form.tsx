@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useDropzone } from "react-dropzone"
+import { CldUploadWidget } from "next-cloudinary"
 import { Loader2, Upload, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { Profile } from "@/lib/types"
@@ -44,48 +44,12 @@ export function ProfileForm({ profile }: ProfileFormProps) {
     setSuccess(false)
   }
 
-  const onDrop = async (acceptedFiles: File[]) => {
-    try {
-      const file = acceptedFiles[0]
-      if (!file) return
-
-      setIsUploading(true)
+  const onUpload = (result: any) => {
+    if (result?.info?.secure_url) {
+      setFormData((prev) => ({ ...prev, avatar_url: result.info.secure_url }))
       setError(null)
-
-      const supabase = createClient()
-      const fileExt = file.name.split(".").pop()
-      const fileName = `${profile.id}_${Date.now()}.${fileExt}`
-      const filePath = `avatars/${fileName}`
-
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(filePath, file, { upsert: true })
-
-      if (uploadError) throw uploadError
-
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("avatars").getPublicUrl(filePath)
-
-      setFormData((prev) => ({ ...prev, avatar_url: publicUrl }))
-    } catch (err: any) {
-      setError(err.message || "Failed to upload avatar")
-      console.error("Upload error:", err)
-    } finally {
-      setIsUploading(false)
     }
   }
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      "image/jpeg": [],
-      "image/png": [],
-      "image/webp": [],
-    },
-    maxFiles: 1,
-    disabled: isUploading,
-  })
 
   const handleRemoveAvatar = () => {
     setFormData((prev) => ({ ...prev, avatar_url: "" }))
@@ -161,31 +125,33 @@ export function ProfileForm({ profile }: ProfileFormProps) {
                 </span>
               </div>
             ) : (
-              <div
-                {...getRootProps()}
-                className={cn(
-                  "cursor-pointer rounded-md border-2 border-dashed px-4 py-3 text-center transition-colors",
-                  isDragActive
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/50 hover:bg-muted/30",
-                  isUploading && "pointer-events-none opacity-50"
-                )}
+              <CldUploadWidget 
+                onSuccess={onUpload} 
+                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+                options={{
+                  maxFiles: 1,
+                  cropping: true,
+                  croppingAspectRatio: 1,
+                  clientAllowedFormats: ["jpg", "jpeg", "png", "webp"]
+                }}
               >
-                <input {...getInputProps()} />
-                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                  {isUploading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Uploading...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="h-4 w-4" />
-                      <span>Click or drag to upload avatar</span>
-                    </>
-                  )}
-                </div>
-              </div>
+                {({ open }) => {
+                  return (
+                    <div
+                      onClick={() => open()}
+                      className={cn(
+                        "cursor-pointer rounded-md border-2 border-dashed px-4 py-3 text-center transition-colors",
+                        "border-border hover:border-primary/50 hover:bg-muted/30"
+                      )}
+                    >
+                      <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                        <Upload className="h-4 w-4" />
+                        <span>Click to upload avatar</span>
+                      </div>
+                    </div>
+                  )
+                }}
+              </CldUploadWidget>
             )}
             <p className="text-xs text-muted-foreground">
               JPG, PNG or WEBP. Max 4MB.

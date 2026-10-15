@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
-import { NewsLayout } from "@/components/news/news-layout"
-import { EditorialNewsCard } from "@/components/news/editorial-news-card"
+import { NewsLayout } from "@/components/community/news/news-layout"
+import { EditorialNewsCard } from "@/components/community/news/editorial-news-card"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -39,7 +39,7 @@ export default async function DashboardNewsPage({
             <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
                 {category || "Global Wire"}
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground font-mono uppercase tracking-widest">
+            <p suppressHydrationWarning className="mt-2 text-sm text-muted-foreground font-mono uppercase tracking-widest">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
         </div>

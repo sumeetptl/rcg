@@ -1,0 +1,540 @@
+import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
+import { Footer } from "@/components/footer";
+import { createClient } from "@/lib/supabase/server";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { analyzeSignal, formatPrice } from "@/lib/signal-analytics";
+import {
+  ArrowLeft,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  Clock,
+  Lock,
+  TrendingUp,
+} from "lucide-react";
+import type { Metadata } from "next";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { CryptoLogo } from "@/components/crypto/crypto-logo";
+import { DownloadSignalButton } from "@/components/intelligence/trade-ideas/download-signal-button";
+import { SignalChart } from "@/components/intelligence/trade-ideas/signal-chart";
+
+interface SignalPageProps {
+  params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: SignalPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const { data: signal } = await supabase
+    .from("signals")
+    .select("asset, direction, status")
+    .eq("id", id)
+    .single();
+
+  if (!signal) {
+    return { title: "Signal Not Found" };
+  }
+
+  return {
+    title: `${signal.asset} ${signal.direction} - Trade Research`,
+    description: `Institutional analysis for ${signal.asset} (${signal.direction}). Status: ${signal.status}`,
+  };
+}
+
+export default async function SignalDetailPage({ params }: SignalPageProps) {
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background text-foreground">
+        <main className="flex-1 py-24 flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center text-center max-w-lg px-4">
+            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+              <Lock className="h-10 w-10 text-primary" />
+            </div>
+            <h2 className="text-3xl font-serif font-bold tracking-tight mb-4">Sign in Required</h2>
+            <p className="text-muted-foreground mb-8">
+              You must be signed in to view detailed signal executions and parameters.
+            </p>
+            <div className="flex gap-4">
+              <Button asChild variant="outline" className="rounded-full px-8">
+                <Link href="/intelligence/trade-ideas">Back</Link>
+              </Button>
+              <Button asChild size="lg" className="rounded-full px-8">
+                <Link href="/auth/login">Sign in to Access</Link>
+              </Button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  const { data: signal } = await supabase
+    .from("signals")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (!signal) {
+    notFound();
+  }
+
+  let isPremium = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan, role")
+      .eq("id", user.id)
+      .single();
+    isPremium = profile?.plan === "premium" || profile?.role === "admin";
+  }
+
+  if (signal.access_level === "premium" && !isPremium) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background text-foreground">
+        <main className="flex-1 py-24 flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center text-center max-w-lg px-4">
+            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+              <Lock className="h-10 w-10 text-primary" />
+            </div>
+            <h2 className="text-3xl font-serif font-bold tracking-tight mb-4">Premium Signal</h2>
+            <p className="text-muted-foreground mb-8">
+              This setup is reserved for premium members. Upgrade your account to unlock full institutional execution parameters, entry points, and take-profit levels.
+            </p>
+            <div className="flex gap-4">
+              <Button asChild variant="outline" className="rounded-full px-8">
+                <Link href="/intelligence/trade-ideas">Back</Link>
+              </Button>
+              <Button asChild size="lg" className="rounded-full px-8">
+                <Link href={user ? "/profile" : "/auth/login"}>
+                  {user ? "Upgrade to Premium" : "Sign in to Access"}
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // --- Server-Side Analytics Calculation ---
+  // This runs on the server before HTML is generated.
+  const analytics = analyzeSignal(signal);
+  const isUpdated = Boolean(
+    signal.updated_at &&
+    new Date(signal.updated_at).getTime() - new Date(signal.created_at).getTime() > 60000
+  );
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+
+      <main className="flex-1 py-12">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+          <div id="signal-detail-capture" className="relative overflow-hidden rounded-lg border border-border bg-background">
+            
+            {/* Watermark */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.02] dark:opacity-[0.03] z-0 overflow-hidden">
+               <span className="font-serif text-[12rem] font-black rotate-[-30deg] tracking-tighter whitespace-nowrap">COINSTAQ</span>
+            </div>
+
+            {/* Header section with asset, direction, and status */}
+            <header className="relative z-10 p-8 sm:p-12">
+              <div className="flex items-center justify-between mb-8">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  data-html2canvas-ignore="true"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Signals
+                </Link>
+
+                <div data-html2canvas-ignore="true">
+                  <DownloadSignalButton 
+                    elementId="signal-detail-capture" 
+                    filename={`CoinStaq-${signal.asset}-Detailed`} 
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="hidden sm:block">
+                      <CryptoLogo symbol={signal.asset} size={48} />
+                    </div>
+                    <h1 className="font-serif text-3xl font-semibold tracking-tight sm:text-4xl text-foreground flex items-center gap-2">
+                       <span className="sm:hidden">
+                        <CryptoLogo symbol={signal.asset} size={36} />
+                      </span>
+                      {signal.asset}{" "}
+                      <span className="text-muted-foreground font-sans text-2xl mx-1">
+                        —
+                      </span>{" "}
+                      <span className={cn(analytics.directionColor)}>
+                        {signal.direction} Setup
+                      </span>
+                    </h1>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground font-medium">
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="h-4 w-4" />
+                      Issued: {formatDate(signal.created_at)}
+                    </span>
+                    {isUpdated && (
+                      <>
+                        <span className="h-1 w-1 rounded-full bg-border" />
+                        <span className="flex items-center gap-1 text-xs text-primary font-mono font-medium">
+                          Updated: {formatDate(signal.updated_at!)}
+                        </span>
+                      </>
+                    )}
+                    <span className="h-1 w-1 rounded-full bg-border" />
+                    <span>TIMEFRAME: {signal.timeframe || "Intraday"}</span>
+                    {signal.confidence && (
+                      <>
+                        <span className="h-1 w-1 rounded-full bg-border" />
+                        <span className="uppercase tracking-wider font-bold text-primary/80">
+                          {signal.confidence} Confidence
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "h-10 px-4 text-xs tracking-widest font-bold uppercase",
+                    analytics.directionBg,
+                    analytics.directionColor,
+                    analytics.directionBorder,
+                  )}
+                >
+                  {signal.status}
+                </Badge>
+              </div>
+            </header>
+
+            <Separator className="relative z-10" />
+
+            {/* Main content section */}
+            <div className="relative z-10 p-8 sm:p-12">
+              {/* Signal Snapshot Grid */}
+              <div className="mb-12 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-5">
+                <div className="p-5 border border-border bg-muted/20 rounded-md">
+                  <span className="block text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-2">
+                    Entry
+                  </span>
+                  <span className="font-mono text-xl font-semibold">
+                    {formatPrice(signal.entry_price)}
+                  </span>
+                </div>
+                <div className="p-5 border border-border bg-muted/20 rounded-md">
+                  <span className="block text-[10px] uppercase tracking-widest text-rose-500/80 font-bold mb-2">
+                    Stop Loss
+                  </span>
+                  <span className="font-mono text-xl font-semibold text-rose-500">
+                    {formatPrice(signal.stop_loss)}
+                  </span>
+                </div>
+                <div className="p-5 border border-border bg-muted/20 rounded-md">
+                  <span className="block text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-2">
+                    Risk/Trade
+                  </span>
+                  <span className="font-mono text-xl font-semibold">
+                    {analytics.riskPercent}
+                  </span>
+                </div>
+                <div className="p-5 border border-border bg-muted/20 rounded-md">
+                  <span className="block text-[10px] uppercase tracking-widest text-emerald-500/80 font-bold mb-2">
+                    Max R:R
+                  </span>
+                  <span className="font-mono text-xl font-semibold text-emerald-500">
+                    {analytics.maxRR}
+                  </span>
+                </div>
+                <div className="p-5 border border-border bg-muted/20 rounded-md hidden lg:block">
+                  <span className="block text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-2">
+                    Leverage
+                  </span>
+                  <span className="font-mono text-xl font-semibold text-muted-foreground">
+                    10x ISO
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid gap-12 lg:grid-cols-[2fr_1fr]">
+                {/* Main Content Column */}
+                <div className="space-y-12">
+                  
+                  {/* Signal Chart */}
+                  <section>
+                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6 flex items-center gap-3">
+                      <span className="h-px w-8 bg-border" /> Technical Setup
+                    </h3>
+                    <SignalChart signal={signal} />
+                  </section>
+
+                  {/* Trade Rationale */}
+                  <section>
+                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6 flex items-center gap-3">
+                      <span className="h-px w-8 bg-border" /> Trade Rationale
+                    </h3>
+                    {signal.context ? (
+                      <div className="prose prose-neutral dark:prose-invert max-w-none text-foreground/80 leading-relaxed text-lg">
+                        <p className="whitespace-pre-wrap">{signal.context}</p>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground italic font-serif">
+                        No research notes attached to this execution.
+                      </p>
+                    )}
+                  </section>
+                </div>
+
+                {/* Side Column: Price Architecture & Risk Protocol */}
+                <div className="space-y-8">
+                  <div className="rounded-md border border-border bg-card overflow-hidden">
+                    <div className="bg-muted/40 px-5 py-3 border-b border-border text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      Price Architecture
+                    </div>
+                    <div className="divide-y divide-border/60">
+                      {/* Entry */}
+                      <div className="flex items-center justify-between px-5 py-4">
+                        <span className="text-sm font-medium text-muted-foreground">
+                          Target Entry
+                        </span>
+                        <span className="font-mono text-sm font-bold">
+                          {formatPrice(signal.entry_price)}
+                        </span>
+                      </div>
+                      {/* Stop */}
+                      <div className="flex items-center justify-between px-5 py-4 bg-rose-500/3">
+                        <span className="text-sm font-medium text-rose-600/80 uppercase tracking-wider">
+                          Invalidation
+                        </span>
+                        <span className="font-mono text-sm font-bold text-rose-600">
+                          {formatPrice(signal.stop_loss)}
+                        </span>
+                      </div>
+                      {/* Targets */}
+                      {analytics.targets.map((tp, i) => (
+                        <div
+                          key={i}
+                          className={cn(
+                            "px-5 py-4 transition-colors",
+                            tp.isHit && "bg-emerald-500/4"
+                          )}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="flex items-center gap-1.5 text-sm font-bold text-emerald-600/90">
+                              {tp.label}
+                              {tp.isHit && (
+                                <span className="rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase">
+                                  ✓ Hit
+                                </span>
+                              )}
+                            </span>
+                            <span className="font-mono text-sm font-bold text-emerald-600">
+                              {formatPrice(tp.price)}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
+                            <span className={cn(tp.isHit && "text-emerald-500 font-bold")}>
+                              ROI: {tp.roi}
+                            </span>
+                            <span className="bg-muted px-1.5 py-0.5 rounded-sm">
+                              {tp.rr} RR
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Achieved ROI Summary */}
+                      {(signal.achieved_roi !== null || analytics.achievedRoi) && (
+                        <div className="flex items-center justify-between px-5 py-4 bg-emerald-500/6 border-t border-emerald-500/20">
+                          <div className="flex items-center gap-1.5">
+                            <TrendingUp className="h-4 w-4 text-emerald-500" />
+                            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                              Achieved ROI
+                            </span>
+                          </div>
+                          <span className="font-mono text-base font-bold text-emerald-600 dark:text-emerald-400">
+                            {signal.achieved_roi !== null ? `+${signal.achieved_roi}%` : analytics.achievedRoi}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Risk Note - Positioned below Price Architecture */}
+                  <section className="bg-muted/30 border border-border/60 rounded-md p-6">
+                    <h4 className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-foreground mb-4">
+                      <AlertTriangle className="h-4 w-4 text-amber-500" /> Risk Protocol
+                    </h4>
+                    <ul className="text-sm text-muted-foreground space-y-3 list-disc pl-5">
+                      <li>
+                        Market volatility varies; ensure this setup aligns with
+                        your personal risk tolerance.
+                      </li>
+                      <li>
+                        Invalidation occurs if price closes consistently beyond
+                        the Stop Loss level.
+                      </li>
+                      <li>
+                        Take profit levels are technical projections, not
+                        guarantees. Secure profits proactively.
+                      </li>
+                    </ul>
+                  </section>
+
+                  {/* Context Info */}
+                  <div className="rounded-md border border-border bg-muted/10 p-5 space-y-4">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground uppercase tracking-wider font-bold">
+                        Asset Class
+                      </span>
+                      <span className="font-bold text-foreground">
+                        CRYPTO SPOT
+                      </span>
+                    </div>
+                    <Separator className="bg-border/60" />
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground uppercase tracking-wider font-bold">
+                        Execution Strategy
+                      </span>
+                      <span className="font-bold text-foreground">
+                        TREND ALPHA
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Execution Performance - Occupying Whole Width */}
+              {(signal.status === "closed" || signal.result) && (
+                <section className="mt-12 border-t border-border pt-12">
+                  <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground mb-8 flex items-center gap-3">
+                    <span className="h-px w-8 bg-border" /> Execution Performance
+                  </h3>
+                  <div
+                    className={cn(
+                      "border border-border p-8 rounded-md w-full",
+                      signal.result === "win"
+                        ? "bg-emerald-500/2 border-emerald-500/20"
+                        : signal.result === "loss"
+                          ? "bg-rose-500/2 border-rose-500/20"
+                          : "bg-muted/10",
+                    )}
+                  >
+                    <div className="flex flex-col sm:flex-row items-start gap-6">
+                      <div
+                        className={cn(
+                          "p-3 rounded-full shrink-0",
+                          signal.result === "win"
+                            ? "text-emerald-500 bg-emerald-500/10"
+                            : signal.result === "loss"
+                              ? "text-rose-500 bg-rose-500/10"
+                              : "text-muted-foreground bg-muted",
+                        )}
+                      >
+                        {signal.result === "win" ? (
+                          <CheckCircle2 className="h-8 w-8" />
+                        ) : signal.result === "loss" ? (
+                          <XCircle className="h-8 w-8" />
+                        ) : (
+                          <AlertCircle className="h-8 w-8" />
+                        )}
+                      </div>
+                      <div className="space-y-3 flex-1 w-full">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <p className="font-serif text-2xl font-semibold capitalize tracking-tight">
+                            Outcome: {signal.result || "Closed"}
+                          </p>
+                          {(signal.achieved_roi !== null || analytics.achievedRoi) && (
+                            <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-sm font-mono font-bold px-3 py-1">
+                              Realised ROI: {signal.achieved_roi !== null ? `+${signal.achieved_roi}%` : analytics.achievedRoi}
+                            </Badge>
+                          )}
+                        </div>
+                        {analytics.targets.some((t) => t.isHit) && (
+                          <div className="flex flex-wrap items-center gap-2 pt-1">
+                            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                              Targets Hit:
+                            </span>
+                            {analytics.targets
+                              .filter((t) => t.isHit)
+                              .map((t, idx) => (
+                                <span
+                                  key={idx}
+                                  className="rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 text-xs font-mono font-bold flex items-center gap-1"
+                                >
+                                  ✓ {t.label} ({t.roi})
+                                </span>
+                              ))}
+                          </div>
+                        )}
+                        <p className="text-muted-foreground text-base leading-relaxed max-w-4xl">
+                          {signal.result_note ||
+                            "This execution has been archived by the editorial team after reaching neutral maturity."}
+                        </p>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono pt-1">
+                          <Clock className="h-3.5 w-3.5" />
+                          <span>
+                            {isUpdated
+                              ? `Last updated: ${formatDate(signal.updated_at!)}`
+                              : `Logged: ${formatDate(signal.created_at)}`}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              )}
+            </div>
+
+            {/* Optional footer/meta section */}
+            <footer className="relative z-10 border-t border-border bg-muted/10 p-8 sm:px-12 flex items-center justify-between">
+              <p className="text-xs text-muted-foreground font-mono uppercase tracking-[0.2em]">
+                System Archive // verified execution
+              </p>
+              <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                G-INTEL PROTOCOL v1.2
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

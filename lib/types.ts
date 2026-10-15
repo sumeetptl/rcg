@@ -68,8 +68,11 @@ export interface Signal {
   result: SignalResult | null
   result_note: string | null
   context: string | null
+  hit_targets: number[] | null   // e.g. [1, 2] means TP1 and TP2 were achieved
+  achieved_roi: number | null    // realised ROI % at the highest hit target
   created_by: string | null
   created_at: string
+  updated_at?: string | null
 }
 
 export interface MarketData {

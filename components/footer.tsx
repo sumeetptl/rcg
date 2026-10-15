@@ -25,10 +25,10 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-4">
           <div className="md:col-span-1">
             <Link href="/" className="inline-block">
-              <span className="font-serif text-xl font-semibold tracking-tight">RealCryptoG</span>
+              <span className="font-serif text-xl font-semibold tracking-tight">CoinStaq</span>
             </Link>
             <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              Professional crypto trading signals and institutional-grade market analysis.
+              Intelligence for Digital Markets. Research. Strategy. Conviction.
             </p>
           </div>
 
@@ -89,7 +89,7 @@ export function Footer() {
 
         <div className="mt-12 border-t border-border pt-8">
           <p className="text-center text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} RealCryptoG Editorial. All rights reserved.
+            &copy; {new Date().getFullYear()} CoinStaq. All rights reserved.
             <span className="mx-2">|</span>
             Trading involves risk. Past performance is not indicative of future results.
           </p>

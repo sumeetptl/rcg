@@ -2,7 +2,8 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 import {
   LayoutDashboard,
   TrendingUp,
@@ -13,6 +14,9 @@ import {
   MoreHorizontal,
   LogOut,
   Command,
+  Hourglass,
+  Sparkles,
+  BarChart3,
 } from "lucide-react"
 
 import {
@@ -30,6 +34,7 @@ import {
   SidebarInput,
   useSidebar,
   SidebarSeparator,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 import {
   DropdownMenu,
@@ -57,6 +62,11 @@ const navGroups = [
         url: "/admin/signals",
         icon: TrendingUp,
       },
+      {
+        title: "Performance Report",
+        url: "/admin/signals/performance",
+        icon: BarChart3,
+      },
     ],
   },
   {
@@ -66,6 +76,11 @@ const navGroups = [
         title: "Blog Posts",
         url: "/admin/blogs",
         icon: FileText,
+      },
+      {
+        title: "Market Briefing",
+        url: "/admin/briefing",
+        icon: Sparkles,
       },
       {
         title: "News Feed",
@@ -85,7 +100,7 @@ const navGroups = [
       {
         title: "Waitlist",
         url: "/admin/waitlist",
-        icon: Users, 
+        icon: Hourglass, 
       },
     ],
   },
@@ -93,22 +108,33 @@ const navGroups = [
 
 export function AdminSidebar({ userProfile }: { userProfile: any }) {
   const pathname = usePathname()
+  const router = useRouter()
   const { state } = useSidebar()
+  
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/')
+    router.refresh()
+  }
 
   return (
-    <Sidebar variant="floating" className="group-data-[side=left]:border-r-0">
+    <Sidebar collapsible="icon" variant="floating" className="group-data-[side=left]:border-r-0">
       <SidebarHeader className="gap-4 pt-5 pb-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex items-center gap-2 px-1 transition-all group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Command className="size-4" />
+                <div className="flex items-center justify-between w-full px-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+                    <div className="flex items-center gap-2 group-data-[collapsible=icon]:hidden">
+                      <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                        <Command className="size-4" />
+                      </div>
+                      <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-semibold">CoinStaq</span>
+                        <span className="truncate text-xs text-muted-foreground">Admin Console</span>
+                      </div>
+                    </div>
+                    <SidebarTrigger />
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                  <span className="truncate font-semibold">RealCryptoG</span>
-                  <span className="truncate text-xs text-muted-foreground">Admin Console</span>
-                </div>
-            </div>
           </SidebarMenuItem>
         </SidebarMenu>
         <div className="px-2 group-data-[collapsible=icon]:hidden">
@@ -193,7 +219,7 @@ export function AdminSidebar({ userProfile }: { userProfile: any }) {
                 <DropdownMenuItem asChild>
                     <Link href="/dashboard">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
-                        Back to User Dashboard
+                        Preview End User Experience
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -204,13 +230,11 @@ export function AdminSidebar({ userProfile }: { userProfile: any }) {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                    className="text-red-600 focus:text-red-600 focus:bg-red-100 dark:focus:bg-red-900/20"
-                    asChild
+                    className="text-red-600 focus:text-red-600 focus:bg-red-100 dark:focus:bg-red-900/20 cursor-pointer"
+                    onClick={handleLogout}
                 >
-                  <Link href="/auth/login">
                     <LogOut className="mr-2 h-4 w-4" />
                     Log out
-                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

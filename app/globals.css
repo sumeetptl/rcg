@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* RealCrypto Editorial - Trust-first fintech design */
+/* CoinStaq Editorial - Trust-first fintech design */
 :root {
   /* Warm cream background with deep charcoal text */
   --background: oklch(0.98 0.005 85);

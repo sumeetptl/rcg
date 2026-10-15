@@ -6,22 +6,22 @@ import { Globe, Lightbulb, ShieldCheck } from "lucide-react"
 
 const practicalAnalysis = [
   {
-    title: "Market Context",
-    description: "Every analysis begins with a high-timeframe objective review. We define the current market regime, identifying major pivot points and narrative drivers before looking for specific setups.",
+    title: "Research",
+    description: "Understand markets through structured analysis. We define the current market regime, identifying major pivot points and narrative drivers.",
     icon: Globe,
-    label: "PHASE 01"
+    label: "PILLAR 01"
   },
   {
-    title: "Trade Logic",
-    description: "Setup identification is purely systematic. We utilize a proprietary technical framework to identify confluence between order flow, volume profile, and structural liquidity.",
+    title: "Strategy",
+    description: "Translate insights into defined approaches. We utilize a systematic framework to identify confluence between order flow, volume profile, and liquidity.",
     icon: Lightbulb,
-    label: "PHASE 02"
+    label: "PILLAR 02"
   },
   {
-    title: "Risk Framing",
-    description: "We define failure before success. Every trade comes with explicit invalidation zones and position sizing recommendations designed for long-term capital preservation.",
+    title: "Conviction",
+    description: "Build informed decisions with clear assumptions. Every thesis comes with explicit invalidation zones and risk frameworks for capital preservation.",
     icon: ShieldCheck,
-    label: "PHASE 03"
+    label: "PILLAR 03"
   },
 ]
 
@@ -31,12 +31,11 @@ export function AnalysisPhilosophy() {
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl mb-16">
           <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
-            Analysis Methodology
+            Our Philosophy
           </div>
-          <h2 className="font-serif text-3xl font-medium sm:text-4xl">Practical Analysis Delivery</h2>
+          <h2 className="font-serif text-3xl font-medium sm:text-4xl">Structured Information Over Noise</h2>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            Our research is structured to provide clarity in high-volatility environments. 
-            We avoid emotional forecasting in favor of repeatable, data-driven frameworks.
+            Our approach is built on clear frameworks. We prioritize research over hype, strategy over impulsive execution, and risk awareness over overconfidence.
           </p>
         </div>
 

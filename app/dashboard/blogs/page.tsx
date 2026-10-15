@@ -1,8 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
 import { Badge } from "@/components/ui/badge"
-import { BlogViewContainer } from "@/components/blogs/blog-view-container"
-import { MostReadBlogs } from "@/components/blogs/most-read-blogs"
-import { BlogShortcuts } from "@/components/blogs/blog-shortcuts"
+import { BlogViewContainer } from "@/components/academy/blogs/blog-view-container"
+import { MostReadBlogs } from "@/components/academy/blogs/most-read-blogs"
+import { BlogShortcuts } from "@/components/academy/blogs/blog-shortcuts"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {

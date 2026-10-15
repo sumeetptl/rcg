@@ -3,8 +3,12 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Lora, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/theme-provider'
+import { TopNavigation } from '@/components/layout/TopNavigation'
+import { BottomNavigation } from '@/components/layout/BottomNavigation'
+import { createClient } from '@/lib/supabase/server'
 import './globals.css'
 import { Disclaimer } from '@/components/disclaimer'
+import { Toaster } from '@/components/ui/sonner'
 
 const _inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const _lora = Lora({ subsets: ['latin'], variable: '--font-lora' })
@@ -12,15 +16,15 @@ const _jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-je
 
 export const metadata: Metadata = {
   title: {
-    default: 'Real Crypto G | Crypto Research and Live Market Tools',
-    template: '%s | Real Crypto G Research',
+    default: 'CoinStaq | Intelligence for Digital Markets.',
+    template: '%s | CoinStaq',
   },
-  description: 'Institutional-grade crypto market intelligence and research-driven trading signals. The Real Crypto G provides deep-dive analysis for serious traders and investors.',
-  keywords: ['crypto research', 'institutional signals', 'bitcoin analysis', 'market intelligence', 'digital assets', 'trading strategy'],
-  authors: [{ name: 'Real Crypto G Research' }],
+  description: 'Research-driven market insights, structured strategies, and disciplined thinking for digital asset participants. Less Noise. More Edge.',
+  keywords: ['crypto research', 'market intelligence', 'digital assets', 'trading strategy', 'coinstaq'],
+  authors: [{ name: 'CoinStaq' }],
   openGraph: {
-    title: 'Real Crypto G | Crypto Research and Live Market Tools',
-    description: 'Institutional-grade crypto market intelligence and research-driven trading signals.',
+    title: 'CoinStaq | Intelligence for Digital Markets.',
+    description: 'Research-driven market insights, structured strategies, and disciplined thinking for digital asset participants.',
     type: 'website',
   },
     generator: 'v0.app'
@@ -35,11 +39,32 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  let isAdmin = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role, avatar_url, first_name, username")
+      .eq("id", user.id)
+      .single()
+      
+    if (profile) {
+      isAdmin = profile.role === 'admin'
+      user.user_metadata = {
+         ...user.user_metadata,
+         avatar_url: profile.avatar_url || user.user_metadata?.avatar_url,
+         name: profile.first_name || profile.username || user.user_metadata?.name
+      }
+    }
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased">
@@ -49,9 +74,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <Disclaimer />
+          <div className="md:pb-0 pb-17">
+            <TopNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
+            {children}
+          </div>
+          <BottomNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
+          <Toaster />
         </ThemeProvider>
-        <Disclaimer />
         <Analytics />
       </body>
     </html>

@@ -4,7 +4,7 @@ import React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase/client"
+import { createAdminBlog } from "@/app/admin/blogs/actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -55,34 +55,32 @@ export default function NewBlogPage() {
     setError(null)
     setIsLoading(true)
 
-    const supabase = createClient()
-
-    const { error: insertError } = await supabase.from("blogs").insert({
-      title: formData.title,
-      slug: formData.slug,
-      excerpt: formData.excerpt || null,
-      content: formData.content,
-      cover_image: formData.cover_image || null,
-      tags: formData.tags,
-      access_level: formData.access_level,
-      status: formData.status,
-      published_at: formData.status === "published" ? new Date().toISOString() : null,
-    })
-
-    if (insertError) {
-      setError(insertError.message)
+    try {
+      await createAdminBlog({
+        title: formData.title,
+        slug: formData.slug,
+        excerpt: formData.excerpt || null,
+        content: formData.content,
+        cover_image: formData.cover_image || null,
+        tags: formData.tags,
+        access_level: formData.access_level,
+        status: formData.status,
+        published_at: formData.status === "published" ? new Date().toISOString() : null,
+      })
+    } catch (err: any) {
+      setError(err.message)
       setIsLoading(false)
       return
     }
 
+    setIsLoading(false)
     router.push("/admin/blogs")
-    router.refresh()
   }
 
   return (
     <div className="mx-auto max-w-5xl p-6 lg:p-8 space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4">
         <div className="flex flex-col gap-1">
              <Link
               href="/admin/blogs"
@@ -93,11 +91,11 @@ export default function NewBlogPage() {
             </Link>
             <h1 className="font-serif text-3xl font-semibold tracking-tight">New Article</h1>
         </div>
-        <div className="flex gap-3">
-            <Button variant="outline" onClick={() => router.back()}>
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            <Button variant="outline" onClick={() => router.back()} className="flex-1 sm:flex-none">
                 Cancel
             </Button>
-            <Button onClick={handleSubmit} disabled={isLoading}>
+            <Button onClick={handleSubmit} disabled={isLoading} className="flex-1 sm:flex-none">
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {!isLoading && <Save className="mr-2 h-4 w-4" />}
                 Save Article
@@ -115,7 +113,7 @@ export default function NewBlogPage() {
         {/* 1. Article Metadata */}
         <FormSection title="Article Metadata" description="Core details and SEO information.">
             <div className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-4">
+                <div className="space-y-4 min-w-0">
                     <div className="space-y-2">
                         <Label htmlFor="title">Title</Label>
                         <Input
@@ -129,15 +127,15 @@ export default function NewBlogPage() {
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="slug">Slug</Label>
-                        <div className="flex rounded-md shadow-sm">
-                            <span className="flex items-center rounded-l-md border border-r-0 bg-muted px-3 text-sm text-muted-foreground">
+                        <div className="flex w-full rounded-md shadow-sm">
+                            <span className="flex items-center rounded-l-md border border-r-0 bg-muted px-3 text-sm text-muted-foreground whitespace-nowrap shrink-0">
                                 /blog/
                             </span>
                             <Input
                                 id="slug"
                                 placeholder="url-friendly-slug"
                                 value={formData.slug}
-                                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                                onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
                                 required
                                 className="rounded-l-none font-mono text-sm"
                             />
@@ -147,7 +145,7 @@ export default function NewBlogPage() {
                         <Label htmlFor="category">Category</Label>
                         <Select
                             value={formData.tags[0]}
-                            onValueChange={(value) => setFormData({ ...formData, tags: [value] })}
+                            onValueChange={(value) => setFormData(prev => ({ ...prev, tags: [value] }))}
                         >
                             <SelectTrigger>
                                 <SelectValue />
@@ -166,18 +164,18 @@ export default function NewBlogPage() {
                             placeholder="Brief summary for SEO and previews..."
                             rows={3}
                             value={formData.excerpt}
-                            onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                            onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
                             className="resize-none"
                         />
                     </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 min-w-0">
                     <Label>Cover Image</Label>
                     <ImageUpload 
                         value={formData.cover_image}
-                        onChange={(url) => setFormData({ ...formData, cover_image: url })}
-                        onRemove={() => setFormData({ ...formData, cover_image: "" })}
+                        onChange={(url) => setFormData(prev => ({ ...prev, cover_image: url }))}
+                        onRemove={() => setFormData(prev => ({ ...prev, cover_image: "" }))}
                     />
                 </div>
             </div>
@@ -187,7 +185,7 @@ export default function NewBlogPage() {
         <FormSection title="Content">
                 <RichTextEditor
                     value={formData.content}
-                    onChange={(html) => setFormData({ ...formData, content: html })}
+                    onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
                 />
         </FormSection>
 
@@ -198,7 +196,7 @@ export default function NewBlogPage() {
                         <Label htmlFor="access_level">Access Level</Label>
                         <Select
                             value={formData.access_level}
-                            onValueChange={(value) => setFormData({ ...formData, access_level: value })}
+                            onValueChange={(value) => setFormData(prev => ({ ...prev, access_level: value }))}
                         >
                             <SelectTrigger>
                                 <SelectValue />
@@ -221,7 +219,7 @@ export default function NewBlogPage() {
                     <Switch
                         id="status"
                         checked={formData.status === "published"}
-                        onCheckedChange={(checked) => setFormData({ ...formData, status: checked ? "published" : "draft" })}
+                        onCheckedChange={(checked) => setFormData(prev => ({ ...prev, status: checked ? "published" : "draft" }))}
                     />
                 </div>
             </div>
