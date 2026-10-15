@@ -68,7 +68,7 @@ export function ImageUpload({
               <Card
                 onClick={onClick}
                 className={cn(
-                  "border-2 border-dashed p-10 transition-colors cursor-pointer hover:bg-muted/50 flex flex-col items-center justify-center gap-4 text-center min-h-[200px]",
+                  "border-2 border-dashed p-10 transition-colors cursor-pointer hover:bg-muted/50 flex flex-col items-center justify-center gap-4 text-center min-h-50",
                   "border-muted-foreground/25",
                   disabled && "opacity-50 cursor-not-allowed pointer-events-none"
                 )}
@@ -76,7 +76,7 @@ export function ImageUpload({
                 <div className="rounded-full bg-muted p-4">
                    <UploadCloud className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <div className="max-w-[15rem] space-y-1">
+                <div className="max-w-60 space-y-1">
                    <p className="text-sm font-medium">
                       Click to upload image
                    </p>

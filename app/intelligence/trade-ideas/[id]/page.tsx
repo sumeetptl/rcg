@@ -318,112 +318,9 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
                       </p>
                     )}
                   </section>
-
-                  {/* Risk Note */}
-                  <section className="bg-muted/30 border border-border/60 rounded-md p-6">
-                    <h4 className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-foreground mb-4">
-                      <AlertTriangle className="h-4 w-4 text-amber-500" /> Risk
-                      Protocol
-                    </h4>
-                    <ul className="text-sm text-muted-foreground space-y-3 list-disc pl-5">
-                      <li>
-                        Market volatility varies; ensure this setup aligns with
-                        your personal risk tolerance.
-                      </li>
-                      <li>
-                        Invalidation occurs if price closes consistently beyond
-                        the Stop Loss level.
-                      </li>
-                      <li>
-                        Take profit levels are technical projections, not
-                        guarantees. Secure profits proactively.
-                      </li>
-                    </ul>
-                  </section>
-
-                  {/* Result Section (Conditional) */}
-                  {(signal.status === "closed" || signal.result) && (
-                    <section className="border-t border-border pt-12">
-                      <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground mb-8">
-                        Execution Performance
-                      </h3>
-                      <div
-                        className={cn(
-                          "border border-border p-8 rounded-md",
-                          signal.result === "win"
-                            ? "bg-emerald-500/[0.02] border-emerald-500/20"
-                            : signal.result === "loss"
-                              ? "bg-rose-500/[0.02] border-rose-500/20"
-                              : "bg-muted/10",
-                        )}
-                      >
-                        <div className="flex items-start gap-6">
-                          <div
-                            className={cn(
-                              "p-3 rounded-full",
-                              signal.result === "win"
-                                ? "text-emerald-500 bg-emerald-500/10"
-                                : signal.result === "loss"
-                                  ? "text-rose-500 bg-rose-500/10"
-                                  : "text-muted-foreground bg-muted",
-                            )}
-                          >
-                            {signal.result === "win" ? (
-                              <CheckCircle2 className="h-8 w-8" />
-                            ) : signal.result === "loss" ? (
-                              <XCircle className="h-8 w-8" />
-                            ) : (
-                              <AlertCircle className="h-8 w-8" />
-                            )}
-                          </div>
-                          <div className="space-y-3 flex-1">
-                            <div className="flex flex-wrap items-center justify-between gap-3">
-                              <p className="font-serif text-2xl font-semibold capitalize tracking-tight">
-                                Outcome: {signal.result || "Closed"}
-                              </p>
-                              {(signal.achieved_roi !== null || analytics.achievedRoi) && (
-                                <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-sm font-mono font-bold px-3 py-1">
-                                  Realised ROI: {signal.achieved_roi !== null ? `+${signal.achieved_roi}%` : analytics.achievedRoi}
-                                </Badge>
-                              )}
-                            </div>
-                            {analytics.targets.some((t) => t.isHit) && (
-                              <div className="flex flex-wrap items-center gap-2 pt-1">
-                                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                                  Targets Hit:
-                                </span>
-                                {analytics.targets
-                                  .filter((t) => t.isHit)
-                                  .map((t, idx) => (
-                                    <span
-                                      key={idx}
-                                      className="rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 text-xs font-mono font-bold flex items-center gap-1"
-                                    >
-                                      ✓ {t.label} ({t.roi})
-                                    </span>
-                                  ))}
-                              </div>
-                            )}
-                            <p className="text-muted-foreground text-base leading-relaxed max-w-xl">
-                              {signal.result_note ||
-                                "This execution has been archived by the editorial team after reaching neutral maturity."}
-                            </p>
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono pt-1">
-                              <Clock className="h-3.5 w-3.5" />
-                              <span>
-                                {isUpdated
-                                  ? `Last updated: ${formatDate(signal.updated_at!)}`
-                                  : `Logged: ${formatDate(signal.created_at)}`}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </section>
-                  )}
                 </div>
 
-                {/* Side Column: Price Architecture */}
+                {/* Side Column: Price Architecture & Risk Protocol */}
                 <div className="space-y-8">
                   <div className="rounded-md border border-border bg-card overflow-hidden">
                     <div className="bg-muted/40 px-5 py-3 border-b border-border text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -440,7 +337,7 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
                         </span>
                       </div>
                       {/* Stop */}
-                      <div className="flex items-center justify-between px-5 py-4 bg-rose-500/[0.03]">
+                      <div className="flex items-center justify-between px-5 py-4 bg-rose-500/3">
                         <span className="text-sm font-medium text-rose-600/80 uppercase tracking-wider">
                           Invalidation
                         </span>
@@ -454,7 +351,7 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
                           key={i}
                           className={cn(
                             "px-5 py-4 transition-colors",
-                            tp.isHit && "bg-emerald-500/[0.04]"
+                            tp.isHit && "bg-emerald-500/4"
                           )}
                         >
                           <div className="flex items-center justify-between mb-2">
@@ -483,7 +380,7 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
 
                       {/* Achieved ROI Summary */}
                       {(signal.achieved_roi !== null || analytics.achievedRoi) && (
-                        <div className="flex items-center justify-between px-5 py-4 bg-emerald-500/[0.06] border-t border-emerald-500/20">
+                        <div className="flex items-center justify-between px-5 py-4 bg-emerald-500/6 border-t border-emerald-500/20">
                           <div className="flex items-center gap-1.5">
                             <TrendingUp className="h-4 w-4 text-emerald-500" />
                             <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
@@ -497,6 +394,27 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
                       )}
                     </div>
                   </div>
+
+                  {/* Risk Note - Positioned below Price Architecture */}
+                  <section className="bg-muted/30 border border-border/60 rounded-md p-6">
+                    <h4 className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-foreground mb-4">
+                      <AlertTriangle className="h-4 w-4 text-amber-500" /> Risk Protocol
+                    </h4>
+                    <ul className="text-sm text-muted-foreground space-y-3 list-disc pl-5">
+                      <li>
+                        Market volatility varies; ensure this setup aligns with
+                        your personal risk tolerance.
+                      </li>
+                      <li>
+                        Invalidation occurs if price closes consistently beyond
+                        the Stop Loss level.
+                      </li>
+                      <li>
+                        Take profit levels are technical projections, not
+                        guarantees. Secure profits proactively.
+                      </li>
+                    </ul>
+                  </section>
 
                   {/* Context Info */}
                   <div className="rounded-md border border-border bg-muted/10 p-5 space-y-4">
@@ -520,6 +438,87 @@ export default async function SignalDetailPage({ params }: SignalPageProps) {
                   </div>
                 </div>
               </div>
+
+              {/* Execution Performance - Occupying Whole Width */}
+              {(signal.status === "closed" || signal.result) && (
+                <section className="mt-12 border-t border-border pt-12">
+                  <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground mb-8 flex items-center gap-3">
+                    <span className="h-px w-8 bg-border" /> Execution Performance
+                  </h3>
+                  <div
+                    className={cn(
+                      "border border-border p-8 rounded-md w-full",
+                      signal.result === "win"
+                        ? "bg-emerald-500/2 border-emerald-500/20"
+                        : signal.result === "loss"
+                          ? "bg-rose-500/2 border-rose-500/20"
+                          : "bg-muted/10",
+                    )}
+                  >
+                    <div className="flex flex-col sm:flex-row items-start gap-6">
+                      <div
+                        className={cn(
+                          "p-3 rounded-full shrink-0",
+                          signal.result === "win"
+                            ? "text-emerald-500 bg-emerald-500/10"
+                            : signal.result === "loss"
+                              ? "text-rose-500 bg-rose-500/10"
+                              : "text-muted-foreground bg-muted",
+                        )}
+                      >
+                        {signal.result === "win" ? (
+                          <CheckCircle2 className="h-8 w-8" />
+                        ) : signal.result === "loss" ? (
+                          <XCircle className="h-8 w-8" />
+                        ) : (
+                          <AlertCircle className="h-8 w-8" />
+                        )}
+                      </div>
+                      <div className="space-y-3 flex-1 w-full">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <p className="font-serif text-2xl font-semibold capitalize tracking-tight">
+                            Outcome: {signal.result || "Closed"}
+                          </p>
+                          {(signal.achieved_roi !== null || analytics.achievedRoi) && (
+                            <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-sm font-mono font-bold px-3 py-1">
+                              Realised ROI: {signal.achieved_roi !== null ? `+${signal.achieved_roi}%` : analytics.achievedRoi}
+                            </Badge>
+                          )}
+                        </div>
+                        {analytics.targets.some((t) => t.isHit) && (
+                          <div className="flex flex-wrap items-center gap-2 pt-1">
+                            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                              Targets Hit:
+                            </span>
+                            {analytics.targets
+                              .filter((t) => t.isHit)
+                              .map((t, idx) => (
+                                <span
+                                  key={idx}
+                                  className="rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 text-xs font-mono font-bold flex items-center gap-1"
+                                >
+                                  ✓ {t.label} ({t.roi})
+                                </span>
+                              ))}
+                          </div>
+                        )}
+                        <p className="text-muted-foreground text-base leading-relaxed max-w-4xl">
+                          {signal.result_note ||
+                            "This execution has been archived by the editorial team after reaching neutral maturity."}
+                        </p>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono pt-1">
+                          <Clock className="h-3.5 w-3.5" />
+                          <span>
+                            {isUpdated
+                              ? `Last updated: ${formatDate(signal.updated_at!)}`
+                              : `Logged: ${formatDate(signal.created_at)}`}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              )}
             </div>
 
             {/* Optional footer/meta section */}

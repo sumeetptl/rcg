@@ -154,10 +154,10 @@ export default async function BlogPage({ params }: BlogPageProps) {
                           Sign in or create an account to access this premium article.
                         </p>
                         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                          <Button asChild size="lg" className="min-w-[140px]">
+                          <Button asChild size="lg" className="min-w-35">
                             <Link href="/auth/sign-up">Get Started Free</Link>
                           </Button>
-                          <Button variant="outline" asChild size="lg" className="min-w-[140px]">
+                          <Button variant="outline" asChild size="lg" className="min-w-35">
                             <Link href="/auth/login">Sign In</Link>
                           </Button>
                         </div>

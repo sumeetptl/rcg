@@ -132,7 +132,7 @@ export default async function SignalsPage({
           >
             <Badge
               variant={(!status && filterStatus === "All") || status === filterStatus.toLowerCase() ? "default" : "outline"}
-              className="cursor-pointer transition-colors capitalize px-3 py-1 font-medium uppercase tracking-tighter"
+              className="cursor-pointer transition-colors px-3 py-1 font-medium uppercase tracking-tighter"
             >
               {filterStatus}
             </Badge>

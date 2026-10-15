@@ -61,8 +61,8 @@ export function WaitlistDialog({ open, onOpenChange }: WaitlistDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] bg-background/80 dark:bg-[#0A0A0A]/90 backdrop-blur-xl border-black/5 dark:border-white/10 text-foreground dark:text-white p-0 overflow-hidden gap-0 shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
+      <DialogContent className="sm:max-w-106.25 bg-background/80 dark:bg-[#0A0A0A]/90 backdrop-blur-xl border-black/5 dark:border-white/10 text-foreground dark:text-white p-0 overflow-hidden gap-0 shadow-2xl">
+        <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent pointer-events-none" />
         
         <div className="p-6 relative z-10">
           <AnimatePresence mode="wait">

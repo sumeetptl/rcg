@@ -177,7 +177,7 @@ export function SignalViewContainer({ signals, isPremium = false }: SignalViewCo
                 <CryptoLogo 
                   symbol={signal.asset} 
                   size={48} 
-                  className="flex-shrink-0"
+                  className="shrink-0"
                 />
 
                 <div className="flex-1 w-full space-y-1">

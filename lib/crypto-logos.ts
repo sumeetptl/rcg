@@ -22,10 +22,15 @@ const QUOTE_SUFFIXES = [
  * Automatically strips common quote suffixes (e.g. BTCUSDT -> btc).
  */
 export function getLogoPath(symbol: string): string {
-  if (!symbol) return `${LOGO_BASE_PATH}/default.svg`;
+  if (!symbol || typeof symbol !== "string" || !symbol.trim()) {
+    return FALLBACK_LOGO;
+  }
   
-  let normalized = symbol.toLowerCase();
+  let normalized = symbol.toLowerCase().trim();
   
+  // Strip delimiters like slashes, dashes, underscores (e.g. BTC/USDT -> btcusdt, BTC-USD -> btcusd)
+  normalized = normalized.replace(/[\/\-_]/g, "");
+
   // Strip common quote suffixes
   for (const suffix of QUOTE_SUFFIXES) {
     if (normalized.endsWith(suffix) && normalized.length > suffix.length) {

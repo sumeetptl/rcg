@@ -29,7 +29,7 @@ export function AIMessageBubble({ message }: AIMessageBubbleProps) {
         
         {/* Thinking Process UI */}
         {!isUser && hasThinking && (
-           <div className="flex flex-col gap-2 w-full sm:min-w-[280px] rounded-2xl border border-border/50 bg-muted/20 p-3">
+           <div className="flex flex-col gap-2 w-full sm:min-w-70 rounded-2xl border border-border/50 bg-muted/20 p-3">
              <button 
                onClick={() => setIsThinkingOpen(!isThinkingOpen)}
                className="flex items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -53,9 +53,9 @@ export function AIMessageBubble({ message }: AIMessageBubbleProps) {
                      {message.thinkingSteps?.map((step) => (
                        <li key={step.id} className="flex items-start gap-2">
                          {step.status === "pending" ? (
-                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary/50 mt-[5px] animate-pulse" />
+                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary/50 mt-1.25 animate-pulse" />
                          ) : (
-                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-500/50 mt-[5px]" />
+                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-500/50 mt-1.25" />
                          )}
                          <span className={cn(step.status === "pending" && "text-foreground animate-pulse")}>
                            {step.text}
@@ -75,7 +75,7 @@ export function AIMessageBubble({ message }: AIMessageBubbleProps) {
             className={cn(
               "relative flex flex-col gap-2 text-sm shadow-none",
               isUser
-                ? "bg-muted text-foreground rounded-[24px] rounded-br-[4px] px-5 py-3"
+                ? "bg-muted text-foreground rounded-3xl rounded-br-lg px-5 py-3"
                 : "bg-transparent text-foreground px-1 py-1"
             )}
           >

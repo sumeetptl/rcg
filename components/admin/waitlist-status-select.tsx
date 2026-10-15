@@ -46,7 +46,7 @@ export function WaitlistStatusSelect({ entryId, initialStatus }: WaitlistStatusS
   return (
     <div className="flex items-center gap-2">
       <Select value={status} onValueChange={handleStatusChange} disabled={isUpdating}>
-        <SelectTrigger className="w-[120px] h-8 text-xs capitalize">
+        <SelectTrigger className="w-30 h-8 text-xs capitalize">
           <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent>

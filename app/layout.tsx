@@ -75,7 +75,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <Disclaimer />
-          <div className="md:pb-0 pb-[68px]">
+          <div className="md:pb-0 pb-17">
             <TopNavigation isAuthenticated={!!user} isAdmin={isAdmin} user={user} />
             {children}
           </div>

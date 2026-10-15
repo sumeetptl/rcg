@@ -322,7 +322,7 @@ export default async function DashboardPage() {
 
             <div className="rounded-xl border border-border/40 bg-card overflow-hidden shadow-sm">
               {isPremium ? (
-                <div className="max-h-[600px] overflow-y-auto">
+                <div className="max-h-150 overflow-y-auto">
                 <Table>
                   <TableHeader className="bg-muted/20 hover:bg-muted/20 sticky top-0 z-10">
                     <TableRow className="hover:bg-transparent border-b border-border/40">
@@ -347,7 +347,7 @@ export default async function DashboardPage() {
                       <TableHead className="h-10 text-right text-[10px] uppercase tracking-widest font-semibold text-muted-foreground hidden xl:table-cell bg-muted/20">
                         Posted
                       </TableHead>
-                      <TableHead className="w-[50px] h-10 bg-muted/20"></TableHead>
+                      <TableHead className="w-12.5 h-10 bg-muted/20"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -507,7 +507,7 @@ export default async function DashboardPage() {
                   </Link>
                 </Button>
               </div>
-              <div className="space-y-5 max-h-[500px] overflow-y-auto pr-2">
+              <div className="space-y-5 max-h-125 overflow-y-auto pr-2">
                 {blogs.length > 0 ? (
                   blogs.map((blog) => (
                     <Link
@@ -585,7 +585,7 @@ export default async function DashboardPage() {
                   </Link>
                 </Button>
               </div>
-              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+              <div className="space-y-4 max-h-100 overflow-y-auto pr-2">
                 {news.length > 0 ? (
                   news.map((item) => (
                     <div

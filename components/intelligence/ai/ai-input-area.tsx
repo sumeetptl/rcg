@@ -41,7 +41,7 @@ export function AIInputArea({ onSend, isGenerating }: AIInputAreaProps) {
 
   return (
     <div className="relative flex w-full items-end gap-1.5 rounded-full border border-border/50 bg-muted/30 p-1 pl-3 pr-1 shadow-sm backdrop-blur-xl transition-all focus-within:bg-background focus-within:border-primary/30 focus-within:ring-1 focus-within:ring-primary/30">
-      <div className="flex flex-col justify-end pb-[2px]">
+      <div className="flex flex-col justify-end pb-0.5">
         <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full text-muted-foreground hover:bg-muted/80 hover:text-foreground">
           <Paperclip className="h-3 w-3" />
         </Button>
@@ -53,11 +53,11 @@ export function AIInputArea({ onSend, isGenerating }: AIInputAreaProps) {
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Ask CoinStaq AI..."
-        className="min-h-[28px] w-full resize-none border-0 bg-transparent px-1 py-1.5 text-[13px] shadow-none focus-visible:ring-0 leading-relaxed"
+        className="min-h-7 w-full resize-none border-0 bg-transparent px-1 py-1.5 text-[13px] shadow-none focus-visible:ring-0 leading-relaxed"
         rows={1}
       />
       
-      <div className="flex flex-col justify-end pb-[2px]">
+      <div className="flex flex-col justify-end pb-0.5">
         <Button 
           size="icon" 
           className={cn(
@@ -67,7 +67,7 @@ export function AIInputArea({ onSend, isGenerating }: AIInputAreaProps) {
           onClick={handleSend}
           disabled={!input.trim() || isGenerating}
         >
-          <Send className="h-3 w-3 ml-[1px]" />
+          <Send className="h-3 w-3 ml-px" />
         </Button>
       </div>
     </div>

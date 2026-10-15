@@ -131,7 +131,7 @@ export function BlogsTable({ initialData }: BlogsTableProps) {
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[160px]">
+                  <DropdownMenuContent align="end" className="w-40">
                     <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Actions</DropdownMenuLabel>
                     <DropdownMenuItem asChild className="text-xs">
                       <Link href={`/admin/blogs/${blog.id}/edit`}>
@@ -200,12 +200,12 @@ export function BlogsTable({ initialData }: BlogsTableProps) {
         <Table>
             <TableHeader className="bg-muted/20">
               <TableRow className="hover:bg-transparent border-b border-border">
-                <TableHead className="w-[300px] h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground pl-6">Title</TableHead>
+                <TableHead className="w-75 h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground pl-6">Title</TableHead>
                 <TableHead className="h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Tags</TableHead>
                 <TableHead className="h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Status</TableHead>
                 <TableHead className="h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Access</TableHead>
                 <TableHead className="h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Date</TableHead>
-                <TableHead className="h-10 text-right w-[80px]"></TableHead>
+                <TableHead className="h-10 text-right w-20"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -262,7 +262,7 @@ export function BlogsTable({ initialData }: BlogsTableProps) {
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-[160px]">
+                        <DropdownMenuContent align="end" className="w-40">
                           <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Actions</DropdownMenuLabel>
                           <DropdownMenuItem asChild className="text-xs">
                             <Link href={`/admin/blogs/${blog.id}/edit`}>

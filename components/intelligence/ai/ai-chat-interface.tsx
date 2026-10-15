@@ -142,7 +142,7 @@ export function AIChatInterface() {
         </div>
 
         {/* Input Area - Absolute positioned at bottom like Grok */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background to-transparent pt-10 pb-0 px-4 sm:px-6">
+        <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-background via-background to-transparent pt-10 pb-0 px-4 sm:px-6">
           <div className="mx-auto max-w-3xl flex flex-col gap-3">
             {messages.length === 0 && (
               <div className="flex flex-wrap justify-center gap-2 mb-4">

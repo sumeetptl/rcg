@@ -170,10 +170,10 @@ export default async function AdminPage() {
             <Table>
                <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                     <TableHead className="w-[100px]">Asset</TableHead>
+                     <TableHead className="w-25">Asset</TableHead>
                      <TableHead>Status</TableHead>
                      <TableHead className="text-right">Created</TableHead>
-                     <TableHead className="w-[40px]"></TableHead>
+                     <TableHead className="w-10"></TableHead>
                   </TableRow>
                </TableHeader>
                <TableBody>
@@ -211,16 +211,16 @@ export default async function AdminPage() {
             <Table>
                <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                     <TableHead className="w-[200px]">Title</TableHead>
+                     <TableHead className="w-50">Title</TableHead>
                      <TableHead>Status</TableHead>
                      <TableHead className="text-right">Date</TableHead>
-                     <TableHead className="w-[40px]"></TableHead>
+                     <TableHead className="w-10"></TableHead>
                   </TableRow>
                </TableHeader>
                <TableBody>
                   {recentBlogs.map((b) => (
                      <TableRow key={b.id} className="h-12">
-                        <TableCell className="font-medium truncate max-w-[200px]">{b.title}</TableCell>
+                        <TableCell className="font-medium truncate max-w-50">{b.title}</TableCell>
                         <TableCell>
                            <StatusBadge status={b.status} />
                         </TableCell>

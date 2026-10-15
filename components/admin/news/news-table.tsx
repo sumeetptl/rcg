@@ -144,7 +144,7 @@ export function NewsTable({ initialData }: NewsTableProps) {
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[160px]">
+                  <DropdownMenuContent align="end" className="w-40">
                     <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Actions</DropdownMenuLabel>
                     <DropdownMenuItem asChild className="text-xs">
                       <Link href={`/admin/news/${item.id}/edit`}>
@@ -203,12 +203,12 @@ export function NewsTable({ initialData }: NewsTableProps) {
         <Table>
             <TableHeader className="bg-muted/20">
               <TableRow className="hover:bg-transparent border-b border-border">
-                <TableHead className="w-[350px] h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground pl-6">Title</TableHead>
+                <TableHead className="w-87.5 h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground pl-6">Title</TableHead>
                 <TableHead className="h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Category</TableHead>
                 <TableHead className="h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Source</TableHead>
                 <TableHead className="h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Status</TableHead>
                 <TableHead className="h-10 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Date</TableHead>
-                <TableHead className="h-10 text-right w-[80px]"></TableHead>
+                <TableHead className="h-10 text-right w-20"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -263,7 +263,7 @@ export function NewsTable({ initialData }: NewsTableProps) {
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-[160px]">
+                        <DropdownMenuContent align="end" className="w-40">
                           <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Actions</DropdownMenuLabel>
                           <DropdownMenuItem asChild className="text-xs">
                             <Link href={`/admin/news/${item.id}/edit`}>
